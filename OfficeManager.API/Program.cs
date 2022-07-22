@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OfficeManager.API;
 using OfficeManager.Application;
 using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
 using System.Text;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,37 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
+//swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Office Manager - Api", Version = "v1", });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description =
+                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+            Reference = new OpenApiReference
+                {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+                }
+            },
+            new string[]{ }
+        }
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,12 +78,15 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 
-    using(var scope = app.Services.CreateScope())
+    using (var scope = app.Services.CreateScope())
     {
         var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
         await initializer.InitializeAsync();
         await initializer.SeedAsync();
     }
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OfficeManagerAPI v1"));
 }
 else
 {
@@ -63,11 +99,12 @@ app.UseStaticFiles();
 
 app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
 
-app.UseSwaggerUi3(settings =>
-{
-    settings.Path = "/api";
-    settings.DocumentPath = "/api/specification.json";
-});
+//app.UseSwaggerUi3(settings =>
+//{
+//    settings.Path = "/api";
+//    settings.DocumentPath = "/api/specification.json";
+//});
+
 
 app.UseRouting();
 app.UseAuthentication();
