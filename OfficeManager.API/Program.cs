@@ -7,6 +7,7 @@ using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,7 +111,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+InitializeDatabase(app);
 app.MapFallbackToFile("index.html"); ;
 
 app.Run();
+
+
+void InitializeDatabase(IApplicationBuilder app)
+{
+    using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+    {
+        serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+    }
+}
