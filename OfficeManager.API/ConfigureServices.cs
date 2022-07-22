@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NSwag.Generation.Processors.Security;
 using OfficeManager.API.Services;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Infrastructure.Persistence;
@@ -16,11 +15,10 @@ namespace OfficeManager.API
 
             services.AddHttpContextAccessor();
 
-            services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>();
+            services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
 
             services.Configure<ApiBehaviorOptions>(options =>
-            options.SuppressModelStateInvalidFilter = true);
+                                options.SuppressModelStateInvalidFilter = true);
 
             services.AddOpenApiDocument(configure =>
             {

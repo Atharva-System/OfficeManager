@@ -14,6 +14,7 @@ namespace OfficeManager.Application.UserRoles.Command.UpdateUserRoles
         public string Title { get; init; }
         public string Description { get; init; }
     }
+
     public class UpdateUserRoleCommandHandler : IRequestHandler<UpdateUserRoleCommand, Result>
     {
         private readonly IApplicationDbContext _context;
@@ -25,10 +26,12 @@ namespace OfficeManager.Application.UserRoles.Command.UpdateUserRoles
         public async Task<Result> Handle(UpdateUserRoleCommand request, CancellationToken cancellationToken)
         {
             var userRole = _context.UserRole.FirstOrDefault(r => r.Id == request.Id);
+            
             if(userRole == null)
             {
                 throw new NotFoundException();
             }
+
             userRole.Title = request.Title;
             userRole.Description = request.Description;
 

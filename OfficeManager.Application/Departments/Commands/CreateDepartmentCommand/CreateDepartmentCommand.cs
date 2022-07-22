@@ -23,12 +23,14 @@ namespace OfficeManager.Application.Departments.Commands.CreateDepartmentCommand
 
         public async Task<Result> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            DepartmentMaster department = new DepartmentMaster
+            var department = new DepartmentMaster
             {
                 Name = request.Name,
             };
+
             _context.DepartmentMasters.Add(department);
             await _context.SaveChangesAsync(cancellationToken);
+
             return Result.Success("Department created successfully.");
         }
     }

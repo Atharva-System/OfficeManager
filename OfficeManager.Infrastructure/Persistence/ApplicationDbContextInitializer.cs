@@ -51,6 +51,7 @@ namespace OfficeManager.Infrastructure.Persistence
                 Title = "Administrator",
                 Description = "Who own the whole system. He can access with this role. And he/she can do everything provided by the system."
             };
+
             if(_context.UserRole.All(r => r.Title != "Administrator"))
             {
                 _context.UserRole.Add(administratorRole);

@@ -28,12 +28,12 @@ namespace OfficeManager.Application.Designations.Queries.GetAllDesignationsQuery
                     .ProjectTo<DesignationDto>(_mapper.ConfigurationProvider)
                     .ToListAsync();
             }
+
             return await _context.DesignationMasters
                 .Where(d => d.Name.Contains(request.search))
                 .OrderBy(d => d.Name)
                 .ProjectTo<DesignationDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-
         }
     }
 }
