@@ -34,6 +34,7 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
         public void UpdateEntities(DbContext? context)
         {
             if (context == null) return;
+
             foreach(var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
             {
                 if(entry.State == EntityState.Added)

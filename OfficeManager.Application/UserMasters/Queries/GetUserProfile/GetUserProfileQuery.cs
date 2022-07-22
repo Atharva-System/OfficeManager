@@ -17,14 +17,16 @@ namespace OfficeManager.Application.UserMasters.Queries.GetUserProfile
         public async Task<UserProfileDto> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
         {
             var user = _context.UserMaster.FirstOrDefault(u => u.Id == request.Id);
+
             if(user == null)
             {
                 throw new NotFoundException();
             }
+
             user.Profile = _context.UserProfile.FirstOrDefault(u => u.UserId == user.Id);
             user.Role = _context.UserRole.FirstOrDefault(r => r.Id == user.RoleId);
 
-            UserProfileDto response = new UserProfileDto
+            var response = new UserProfileDto
             {
                 Id = request.Id,
                 Email = user.Email,
@@ -33,6 +35,7 @@ namespace OfficeManager.Application.UserMasters.Queries.GetUserProfile
                 DateOfJoining = user.Profile.DateOfJoining.Value,
                 PersonalEmail = user.Profile.PersonalEmail,
             };
+
             return response;
         }
     }

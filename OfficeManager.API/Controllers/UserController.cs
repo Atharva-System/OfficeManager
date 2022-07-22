@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OfficeManager.Application.Common.Models;
@@ -32,10 +31,10 @@ namespace OfficeManager.API.Controllers
         public async Task<ActionResult<LoggedInUserDto>> Login(AuthenticateUserCommand command)
         {
             var user = await Mediator.Send(command);
+
             if(user == null)
-            {
                 return BadRequest("Authentication failed please check username and password.");
-            }
+
             return GenerateJWT(user);
         }
 
@@ -43,6 +42,7 @@ namespace OfficeManager.API.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
             var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            
             IEnumerable<Claim> claims = new Claim[]
             {
                 new Claim("Id",user.UserId.ToString()),
@@ -53,6 +53,7 @@ namespace OfficeManager.API.Controllers
                 new Claim(JwtRegisteredClaimNames.Aud, _config["JWT:ValidAudience"]),
                 new Claim(JwtRegisteredClaimNames.Iss, _config["JWT:ValidIssuer"])
             };
+
             var token = new JwtSecurityToken(
                 _config["Jwt:Issuer"],
                 null,
@@ -60,11 +61,12 @@ namespace OfficeManager.API.Controllers
                 expires: DateTime.Now.AddDays(30),
                 signingCredentials: credential
                 );
+
             user.Token =  new JwtSecurityTokenHandler().WriteToken(token);
             return user;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<UserProfileDto>> GetUserProfile(Guid id)

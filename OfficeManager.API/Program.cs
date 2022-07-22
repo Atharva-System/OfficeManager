@@ -45,8 +45,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Office Manager - Api", Version = "v1", });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description =
-                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
@@ -61,8 +60,8 @@ builder.Services.AddSwaggerGen(c =>
             {
             Reference = new OpenApiReference
                 {
-                Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
             },
             new string[]{ }

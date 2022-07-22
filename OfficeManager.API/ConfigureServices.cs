@@ -15,11 +15,10 @@ namespace OfficeManager.API
 
             services.AddHttpContextAccessor();
 
-            services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>();
+            services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
 
             services.Configure<ApiBehaviorOptions>(options =>
-            options.SuppressModelStateInvalidFilter = true);
+                                options.SuppressModelStateInvalidFilter = true);
 
             return services;
         }
