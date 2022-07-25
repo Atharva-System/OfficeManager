@@ -12,7 +12,7 @@ namespace OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationU
     public class CreateApplicationUserRolesCommandHandler : IRequestHandler<CreateApplicationUserRolesCommand,Result>
     {
         private readonly IIdentityService _identityService;
-
+        
         public CreateApplicationUserRolesCommandHandler(IIdentityService identityService)
         {
             _identityService = identityService;

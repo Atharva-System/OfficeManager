@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Interfaces;
-using System.Security.Claims;
 
 namespace OfficeManager.API.Services
 {

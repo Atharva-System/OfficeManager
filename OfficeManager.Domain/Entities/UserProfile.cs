@@ -1,5 +1,4 @@
-﻿using OfficeManager.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OfficeManager.Domain.Entities
 {

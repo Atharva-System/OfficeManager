@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Common.Security;
 
 namespace OfficeManager.Application.UserRoles.Queries.GetAllUserRolesQueries
 {
@@ -31,6 +30,7 @@ namespace OfficeManager.Application.UserRoles.Queries.GetAllUserRolesQueries
                     .OrderBy(r => r.Title)
                     .ToListAsync(cancellationToken);
             }
+
             return await _context.UserRole
                     .AsNoTracking()
                     .ProjectTo<UserRoleDto>(_mapper.ConfigurationProvider)

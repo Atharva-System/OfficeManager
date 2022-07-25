@@ -30,6 +30,7 @@ namespace OfficeManager.Application.Common.Behaviours
                 if (failures.Any())
                     throw new ValidationException(failures);
             }
+
             return await next();
         }
     }

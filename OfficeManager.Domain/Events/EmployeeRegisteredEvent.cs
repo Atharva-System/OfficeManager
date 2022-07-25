@@ -1,7 +1,4 @@
-﻿using OfficeManager.Domain.Common;
-using OfficeManager.Domain.Entities;
-
-namespace OfficeManager.Domain.Events
+﻿namespace OfficeManager.Domain.Events
 {
     public class EmployeeRegisteredEvent : BaseEvent
     {

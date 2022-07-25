@@ -18,6 +18,7 @@ namespace OfficeManager.Application.Designations.Commands.DeleteDesignationComma
         public async Task<Result> Handle(DeleteDesignationCommand request, CancellationToken cancellationToken)
         {
             DesignationMaster designation = _context.DesignationMasters.FirstOrDefault(d => d.Id == request.id);
+
             if (designation == null)
                 throw new NotFoundException();
 

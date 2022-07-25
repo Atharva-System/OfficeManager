@@ -25,6 +25,7 @@ namespace OfficeManager.Application.Departments.Queries.GetAllDepartmentsQuery
                 return await _context.DepartmentMasters.OrderBy(d => d.Name)
                         .ProjectTo<DepartmentDto>(_mapper.ConfigurationProvider)
                         .ToListAsync();
+
             return await _context.DepartmentMasters
                         .Where(d => d.Name.Contains(request.search))
                         .OrderBy(d => d.Name)

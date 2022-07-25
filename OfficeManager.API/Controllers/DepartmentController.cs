@@ -8,7 +8,7 @@ using OfficeManager.Application.Departments.Queries.GetAllDepartmentsQuery;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class DepartmentController : ApiControllerBase
     {
         [HttpGet]

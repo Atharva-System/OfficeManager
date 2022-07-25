@@ -55,6 +55,7 @@ namespace OfficeManager.Application.Common.Behaviours
                     }
                 }
             }
+
             return await next();
         }
     }

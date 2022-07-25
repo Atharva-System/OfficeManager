@@ -22,6 +22,7 @@ namespace OfficeManager.API.Filters
         private void HandleException(ExceptionContext context)
         {
             Type type = context.Exception.GetType();
+
             if(_exceptionHandlers.ContainsKey(type))
             {
                 _exceptionHandlers[type].Invoke(context);
