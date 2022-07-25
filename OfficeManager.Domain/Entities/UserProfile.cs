@@ -8,6 +8,8 @@ namespace OfficeManager.Domain.Entities
         public Guid UserId { get; set; }
         public string Contact { get; set; }
         public string PersonalEmail { get; set; }
+        public string? ProfilePic { get; set; } = "";
+        public Nullable<DateTime> DateOfBirth { get; set; }
         public DateTime? DateOfJoining { get; set; }
         [ForeignKey("UserId")]
         public UserMaster User { get; set; }

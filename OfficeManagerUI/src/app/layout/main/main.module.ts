@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MaterialImportsModule } from 'src/app/shared/importsModules/materialimports.module';
 import { AuthGuard } from 'src/app/shared/Authentication/authgaurd';
 import { ProfileComponent } from './profile/profile.component';
+import { EmployeeComponent } from './employee/employee.component';
 
 const routes: Routes = [
   {
@@ -39,7 +40,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    MainComponent
+    MainComponent,
+    EmployeeComponent
   ],
   imports: [
     CommonModule,
