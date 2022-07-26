@@ -2,6 +2,7 @@
 using OfficeManager.Application.ApplicationUsers.Commands.ForgotPasswordConfirmation;
 using OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUser;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Employees.Queries.GetAllEmployees;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Common.Interfaces
@@ -26,5 +27,7 @@ namespace OfficeManager.Application.Common.Interfaces
 
         Task<Result> DeleteRoleAsync(string id);
         Task<bool> RoleExists(string name);
+
+        //Task<List<EmployeeDto>> GetAllEmployeesAsync(GetAllEmployeesQuery request);
     }
 }

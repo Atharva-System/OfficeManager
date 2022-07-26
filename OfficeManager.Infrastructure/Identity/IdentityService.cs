@@ -6,6 +6,7 @@ using OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUser;
 using OfficeManager.Application.Common.Exceptions;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Employees.Queries.GetAllEmployees;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Infrastructure.Identity
@@ -28,7 +29,7 @@ namespace OfficeManager.Infrastructure.Identity
         { 
             IdentityResult result = await _userManager.CreateAsync(user, password);
             IdentityRole role = await _roleManager.FindByIdAsync(roleId);
-            _userManager.AddToRoleAsync(user, role.Id);
+            result = await _userManager.AddToRoleAsync (user, role.Name);
 
             return (result.ToApplicationResult(),user.Id);
         }
@@ -135,5 +136,26 @@ namespace OfficeManager.Infrastructure.Identity
 
             return true;
         }
+
+        //public async Task<List<EmployeeDto>> GetAllEmployeesAsync(GetAllEmployeesQuery request)
+        //{
+        //    List<ApplicationUser> users = await _userManager.Users.ToListAsync();
+        //    if(!string.IsNullOrEmpty(request.Search))
+        //    {
+        //        users = users.Where(u => u.FirstName.Contains(request.Search) || u.LastName.Contains(request.Search) || u.Email.Contains(request.Search) || u.UserName.Contains(request.Search)).ToList();
+        //    }
+        //    if(request.DesignationId != Guid.Empty && request.DesignationId != null)
+        //    {
+        //        users = users.Where(u => u.DesignationId == request.DesignationId).ToList();
+        //    }
+        //    if(request.DepartmentId != Guid.Empty && request.DepartmentId != null)
+        //    {
+        //        users = users.Where(u => _context.ApplicationUserDepartments.Where(aud => aud.DepartmentId == request.DepartmentId && aud.UserId == u.Id).Count() > 0).ToList();
+        //    }
+        //    if(!string.IsNullOrEmpty(request.RoleId))
+        //    {
+        //        users = users.Where(u => )
+        //    }
+        //}
     }
 }
