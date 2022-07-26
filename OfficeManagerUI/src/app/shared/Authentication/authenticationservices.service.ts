@@ -8,12 +8,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { WeatherForecastDto } from './dtos/WeatherForecastDto';
 import { UserProfileDto } from './dtos/UserProfileDto';
-import { ThisReceiver } from '@angular/compiler';
 import { DepartmentDto } from './dtos/DepartmentDto';
 import { DesignationDto } from './dtos/DesignationDto';
 import { ForgotPasswordDto } from './dtos/FrogotPasswordDto';
+import { environment } from 'src/environments/environment';
 
-const BASE_ROUTE = 'https://localhost:7177/api/'
 
 @Injectable({
   providedIn: 'root'
@@ -56,40 +55,33 @@ export class AuthenticationservicesService {
     }
   }
 
-  getUserRoles(): void {
-    this.role$ = this.http.get("https://localhost:7177/api/Roles/")
-    .pipe(map((result:any)=>{
-      return result as UserRoleDto[];
-    }));
-  }
-
   getApplicationUserRoles(): void{
-    this.http.get(BASE_ROUTE + "UserRoles",{headers:this.getHeader()}).subscribe((result)=>{
+    this.http.get(environment.baseRoute + "UserRoles/GetAll",{headers:this.getHeader()}).subscribe((result)=>{
       this._appRoles.next(result as ApplicationRolesDto[]);
     });
   }
 
   getDepartments(search:string): void{
-    this.departments$ = this.http.get(BASE_ROUTE + "Department?search="+search,{headers:this.getHeader()}).pipe(map((result)=>{
+    this.departments$ = this.http.get(environment.baseRoute + "Department?search="+search,{headers:this.getHeader()}).pipe(map((result)=>{
       return result as DepartmentDto[];
     }));
   }
 
   getDesignations(search:string): void{
-    this.designations$ = this.http.get(BASE_ROUTE + "Designation?search="+search,{headers:this.getHeader()}).pipe(map((result)=>{
+    this.designations$ = this.http.get(environment.baseRoute + "Designation?search="+search,{headers:this.getHeader()}).pipe(map((result)=>{
       return result as DesignationDto[];
     }));
   }
 
   addEmployee(data:RegisterEmployeeDto): void{
-    this.http.post(BASE_ROUTE + "User/Register",data,{headers:this.getHeader()}).subscribe((result)=>{
+    this.http.post(environment.baseRoute + "User/Register",data,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Employee registered successfully.");
       this.getApplicationUserRoles();
     });
   }
 
   deleteRole(id:string):any{
-    return this.http.delete(BASE_ROUTE + "UserRoles/delete/"+id,{headers:this.getHeader()}).subscribe((result)=>{
+    return this.http.delete(environment.baseRoute + "UserRoles/delete/"+id,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Role deleted successfully");
       this.getApplicationUserRoles();
       return true;
@@ -102,7 +94,7 @@ export class AuthenticationservicesService {
 
   addRole(data:ApplicationRolesDto)
   {
-    this.http.post(BASE_ROUTE + "UserRoles",data,{headers:this.getHeader()}).subscribe((result)=>{
+    this.http.post(environment.baseRoute + "UserRoles",data,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Role added successfully");
       this.getApplicationUserRoles();
     })
@@ -110,7 +102,7 @@ export class AuthenticationservicesService {
 
   loginUser(data:LoginDto)
   {
-    this.http.post("https://localhost:7177/api/User/Login",data,{headers:this.getHeader()})
+    this.http.post(environment.baseRoute + "User/Login",data,{headers:this.getHeader()})
     .subscribe((result)=>{
       this.loginResponse = result as loginResponseDto;
       localStorage.setItem("token",this.loginResponse.token);
@@ -122,13 +114,13 @@ export class AuthenticationservicesService {
   getUserProfile()
   {
     debugger
-    this.userProfile$ = this.http.get(BASE_ROUTE + "User/"+this.loginResponse.userId,{headers:this.getHeader()}).pipe(map((result)=>{
+    this.userProfile$ = this.http.get(environment.baseRoute + "User/"+this.loginResponse.userId,{headers:this.getHeader()}).pipe(map((result)=>{
       return result as UserProfileDto;
     }));
   }
 
   forgotPassword(data:ForgotPasswordDto): void{
-    this.forgotPasswordMailSent$ = this.http.post(BASE_ROUTE + 'User/ForgotPassword',data,{headers:this.getHeader()})
+    this.forgotPasswordMailSent$ = this.http.post(environment.baseRoute + 'User/ForgotPassword',data,{headers:this.getHeader()})
     .pipe(map((result)=>{
       return result as boolean;
     }));
