@@ -1,17 +1,23 @@
 <div class="page">
     <mat-card>
+        <mat-card-title>Sign In</mat-card-title>
         <mat-card-content>
-            <mat-card-title>Login</mat-card-title>
+            
             <form [formGroup]="loginForm" class="example-form" (ngSubmit)="loginUser()">
                 <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Email</mat-label>
-                    <input type="email" matInput formControlName="email">
+                    <mat-label>Username</mat-label>
+                    <input type="text" matInput formControlName="username">
                 </mat-form-field>
                 <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Password</mat-label>
                     <input type="password" matInput formControlName="password">
                 </mat-form-field>
-                <button type="submit" mat-raised-button color="primary">Login</button>
+                <button type="submit" mat-raised-button color="primary" class="fullwidth">Login</button>
+                <div class="links-row">
+                    <a [routerLink]="['register']">SignUp here!</a> 
+                    <a [routerLink]="['forgotpassword']">Forgot Password?</a>
+                </div>
+
             </form>
         </mat-card-content>
     </mat-card>

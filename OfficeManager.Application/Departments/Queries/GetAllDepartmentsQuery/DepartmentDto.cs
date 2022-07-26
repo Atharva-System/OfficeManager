@@ -8,6 +8,7 @@ namespace OfficeManager.Application.Departments.Queries.GetAllDepartmentsQuery
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public void Mapping(Profile profile)
         {
             profile.CreateMap<DepartmentMaster, DepartmentDto>();

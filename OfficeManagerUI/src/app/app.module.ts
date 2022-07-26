@@ -11,13 +11,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialImportsModule } from './shared/importsModules/materialimports.module';
 import { RouterRoutingModule } from './shared/router/router-routing.module';
 import { ToastrModule } from 'ngx-toastr';
+import { ForgotpasswordComponent } from './authentication/forgotpassword/forgotpassword.component';
+import { ForgotpasswordconfirmationComponent } from './authentication/forgotpasswordconfirmation/forgotpasswordconfirmation.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ForgotpasswordComponent,
+    ForgotpasswordconfirmationComponent
   ],
   imports: [
     BrowserModule,

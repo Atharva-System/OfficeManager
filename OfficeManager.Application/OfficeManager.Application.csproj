@@ -10,9 +10,13 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
+    <PackageReference Include="MailKit" Version="3.3.0" />
+    <PackageReference Include="MailKit.NET" Version="2.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
+    <PackageReference Include="MimeKit" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UserMasters\EventHandlers\" />
+    <Folder Include="ApplicationUsers\Queries\GetUserProfile\" />
+    <Folder Include="ApplicationUsers\Queries\UpdateUserProfile\" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Commands.CreateDepartmentCommand;
 using OfficeManager.Application.Departments.Commands.DeleteDepartmentCommand;
+using OfficeManager.Application.Departments.Commands.UpdateDepartment;
 using OfficeManager.Application.Departments.Queries.GetAllDepartmentsQuery;
 
 namespace OfficeManager.API.Controllers
@@ -30,6 +31,13 @@ namespace OfficeManager.API.Controllers
         public async Task<ActionResult<Result>> DeleteDepartment(Guid id)
         {
             return await Mediator.Send(new DeleteDepartmentCommand(id));
+        }
+
+        [HttpPut]
+        [Route("Edit")]
+        public async Task<ActionResult<Result>> EditDepartment(UpdateDepartmentCommand command)
+        {
+            return await Mediator.Send(command);
         }
     }
 }

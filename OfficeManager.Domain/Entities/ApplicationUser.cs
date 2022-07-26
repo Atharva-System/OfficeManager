@@ -12,14 +12,8 @@ namespace OfficeManager.Domain.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public Guid DepartmentId { get; set; }
         public Guid DesignationId { get; set; }
-        public Guid ProfileId { get; set; }
-        [ForeignKey("DepartmentId")]
-        public virtual DepartmentMaster Department { get; set; }
         [ForeignKey("DesignationId")]
         public virtual DesignationMaster Designation { get; set; }
-        [ForeignKey("ProfileId")]
-        public virtual UserProfile Profile { get; set; }
     }
 }

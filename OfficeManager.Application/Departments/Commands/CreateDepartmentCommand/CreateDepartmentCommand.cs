@@ -10,6 +10,7 @@ namespace OfficeManager.Application.Departments.Commands.CreateDepartmentCommand
     public record CreateDepartmentCommand : IRequest<Result>
     {
         public string Name { get; init; }
+        public string Description { get; init; }
     }
 
     public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand, Result>
@@ -26,6 +27,7 @@ namespace OfficeManager.Application.Departments.Commands.CreateDepartmentCommand
             var department = new DepartmentMaster
             {
                 Name = request.Name,
+                Description = request.Description
             };
 
             _context.DepartmentMasters.Add(department);

@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OfficeManager.Domain.Entities;
+using OfficeManager.Application.Common.Interfaces;
 
 namespace OfficeManager.Infrastructure.Persistence
 {
@@ -8,11 +9,15 @@ namespace OfficeManager.Infrastructure.Persistence
     {
         private readonly ILogger<ApplicationDbContext> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IIdentityService _service;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ApplicationDbContextInitializer(ILogger<ApplicationDbContext> logger, ApplicationDbContext context)
+        public ApplicationDbContextInitializer(ILogger<ApplicationDbContext> logger, ApplicationDbContext context, IIdentityService service, RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
             _context = context;
+            _service = service;
+            _roleManager = roleManager;
         }
 
         public async Task InitializeAsync()
@@ -46,16 +51,14 @@ namespace OfficeManager.Infrastructure.Persistence
 
         public async Task TrySeedAsync()
         {
-            var administratorRole = new UserRole
+            var administratorRole = new IdentityRole
             {
-                Title = "Administrator",
-                Description = "Who own the whole system. He can access with this role. And he/she can do everything provided by the system."
+                Name = "Administrator"
             };
 
-            if(_context.UserRole.All(r => r.Title != "Administrator"))
+            if(_roleManager.Roles.All(r => r.Name != "Admin"))
             {
-                _context.UserRole.Add(administratorRole);
-                _context.SaveChangesAsync();
+                await _roleManager.CreateAsync(administratorRole);
             }
         }
     }

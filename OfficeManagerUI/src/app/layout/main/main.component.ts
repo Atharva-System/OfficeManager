@@ -22,7 +22,7 @@ export class MainComponent implements OnInit {
   signout()
   {
      localStorage.clear();
-     this.service.loginResponse = new loginResponseDto("","","","","");
+     this.service.loginResponse = new loginResponseDto("","","","",[]);
      this.router.navigate(['/login']);
   }
 

@@ -9,11 +9,6 @@ namespace OfficeManager.API.Controllers
     [Authorize]
     public class EmployeeController : ApiControllerBase
     {
-        [HttpPost]
-        [Route("Add")]
-        public async Task<ActionResult<Result>> AddEmployee(RegisterApplicationUserCommand command)
-        {
-            return await Mediator.Send(command);
-        }
+        
     }
 }

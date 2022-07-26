@@ -8,6 +8,27 @@
     mat-card{
         display: block;
         max-width: fit-content;
+        mat-card-title{
+            font-size: 24px;
+            height: 34px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .links-row{
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            a{
+                font-size: 18px;
+                text-decoration: none;
+                color: skyblue;
+            }
+            a:hover{
+                text-decoration: underline;
+            }
+        }
     }
 }
     .example-form {

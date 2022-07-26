@@ -38,13 +38,13 @@ namespace OfficeManager.Application.Common.Behaviours
                     {
                         foreach (var role in roles)
                         {
-                            var userRole = _context.UserRole.FirstOrDefault(r => r.Title == role);
-                            var user = _context.UserMaster.Where(u => u.Id == currentUserService.UserId && u.RoleId == userRole.Id);
-                            if (user.Any())
-                            {
-                                authorized = true;
-                                break;
-                            }
+                            //var userRole = _context.UserRole.FirstOrDefault(r => r.Title == role);
+                            //var user = _context.UserMaster.Where(u => u.Id == currentUserService.UserId && u.RoleId == userRole.Id);
+                            //if (user.Any())
+                            //{
+                            //    authorized = true;
+                            //    break;
+                            //}
                         }
                     }
 

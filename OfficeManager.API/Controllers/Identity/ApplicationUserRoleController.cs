@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationUserRoles;
+using OfficeManager.Application.ApplicationRoles.Commands.DeleteUserRoles;
 using OfficeManager.Application.ApplicationRoles.Queries;
 using OfficeManager.Application.Common.Models;
 
 namespace OfficeManager.API.Controllers.Identity
 {
     //[Authorize]
-    [Route("api/Roles")]
+    [Route("api/UserRoles")]
 
     public class ApplicationUserRoleController : ApiControllerBase
     {
@@ -22,6 +21,13 @@ namespace OfficeManager.API.Controllers.Identity
         public async Task<ActionResult<List<ApplicationRolesDto>>> GetAll()
         {
             return await Mediator.Send(new GetApplicationRolesQuery());
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<ActionResult<Result>> DeleteApplicationRole(string id)
+        {
+            return await Mediator.Send(new DeleteUserRoleCommand(id));
         }
     }
 }

@@ -11,3 +11,14 @@ export class UserRoleDto
         this.description = description;
     }
 }
+
+export class ApplicationRolesDto 
+{
+    id: string;
+    name: string;
+
+    constructor(id:string,name:string){
+        this.id = id;
+        this.name = name;
+    }
+}

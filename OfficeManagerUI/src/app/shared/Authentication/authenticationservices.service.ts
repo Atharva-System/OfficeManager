@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { RegisterUserDto } from './dtos/RegisterUserDto';
-import { UserRoleDto } from './dtos/UserRoleDto';
+import { RegisterEmployeeDto } from './dtos/RegisterUserDto';
+import { ApplicationRolesDto, UserRoleDto } from './dtos/UserRoleDto';
 import { LoginDto, loginResponseDto } from './dtos/loginDto';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { WeatherForecastDto } from './dtos/WeatherForecastDto';
 import { UserProfileDto } from './dtos/UserProfileDto';
+import { ThisReceiver } from '@angular/compiler';
+import { DepartmentDto } from './dtos/DepartmentDto';
+import { DesignationDto } from './dtos/DesignationDto';
+import { ForgotPasswordDto } from './dtos/FrogotPasswordDto';
 
 const BASE_ROUTE = 'https://localhost:7177/api/'
 
@@ -16,11 +20,16 @@ const BASE_ROUTE = 'https://localhost:7177/api/'
 })
 export class AuthenticationservicesService {
 
-  registerUserData:RegisterUserDto = new RegisterUserDto("","","","",new Date(),"");
-
   roles:UserRoleDto[] = [];
   _role = new BehaviorSubject<UserRoleDto[]>([]);
   role$ = this._role.asObservable();
+
+  forgotPasswordMailSent$ = new Observable<boolean>();
+
+  _appRoles = new BehaviorSubject<ApplicationRolesDto[]>([]);
+  appRoles$ = this._appRoles.asObservable();
+  departments$ = new Observable<DepartmentDto[]>();
+  designations$ = new Observable<DesignationDto[]>();
 
   _weatherForecast = new BehaviorSubject<WeatherForecastDto[]>([]);
   weatherForecast$ = this._weatherForecast.asObservable();
@@ -28,7 +37,7 @@ export class AuthenticationservicesService {
   _userProfile = new BehaviorSubject<UserProfileDto>(new UserProfileDto("","","",new UserRoleDto("","",""),"",new Date()));
   userProfile$ = this._userProfile.asObservable();
 
-  loginResponse: loginResponseDto = new loginResponseDto("","","","","");
+  loginResponse: loginResponseDto = new loginResponseDto("","","","",[]);
 
   constructor(private http:HttpClient,private toastr:ToastrService,private router:Router) { }
 
@@ -47,13 +56,6 @@ export class AuthenticationservicesService {
     }
   }
 
-  registerUser(): void{
-    this.http.post("https://localhost:7177/api/User/Register",this.registerUserData).subscribe((result)=>
-    {
-      console.log(result);
-    });
-  }
-
   getUserRoles(): void {
     this.role$ = this.http.get("https://localhost:7177/api/Roles/")
     .pipe(map((result:any)=>{
@@ -61,18 +63,35 @@ export class AuthenticationservicesService {
     }));
   }
 
-  editRole(data:UserRoleDto)
-  {
-    this.http.put(BASE_ROUTE + "Roles/Edit/",data,{headers:this.getHeader()}).subscribe((result)=>{
-      this.toastr.success("Role updated successfully");
-      this.getUserRoles();
-    })
+  getApplicationUserRoles(): void{
+    this.http.get(BASE_ROUTE + "UserRoles",{headers:this.getHeader()}).subscribe((result)=>{
+      this._appRoles.next(result as ApplicationRolesDto[]);
+    });
+  }
+
+  getDepartments(search:string): void{
+    this.departments$ = this.http.get(BASE_ROUTE + "Department?search="+search,{headers:this.getHeader()}).pipe(map((result)=>{
+      return result as DepartmentDto[];
+    }));
+  }
+
+  getDesignations(search:string): void{
+    this.designations$ = this.http.get(BASE_ROUTE + "Designation?search="+search,{headers:this.getHeader()}).pipe(map((result)=>{
+      return result as DesignationDto[];
+    }));
+  }
+
+  addEmployee(data:RegisterEmployeeDto): void{
+    this.http.post(BASE_ROUTE + "User/Register",data,{headers:this.getHeader()}).subscribe((result)=>{
+      this.toastr.success("Employee registered successfully.");
+      this.getApplicationUserRoles();
+    });
   }
 
   deleteRole(id:string):any{
-    return this.http.delete(BASE_ROUTE + "Roles/Delete/"+id,{headers:this.getHeader()}).subscribe((result)=>{
+    return this.http.delete(BASE_ROUTE + "UserRoles/delete/"+id,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Role deleted successfully");
-      this.getUserRoles();
+      this.getApplicationUserRoles();
       return true;
     },
     (error)=>{
@@ -81,11 +100,11 @@ export class AuthenticationservicesService {
     })
   }
 
-  addRole(data:UserRoleDto)
+  addRole(data:ApplicationRolesDto)
   {
-    this.http.post(BASE_ROUTE + "Roles/Add/",data,{headers:this.getHeader()}).subscribe((result)=>{
+    this.http.post(BASE_ROUTE + "UserRoles",data,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Role added successfully");
-      this.getUserRoles();
+      this.getApplicationUserRoles();
     })
   }
 
@@ -100,18 +119,18 @@ export class AuthenticationservicesService {
     })
   }
 
-  getWeatherForecast()
-  {
-    this.weatherForecast$ = this.http.get(BASE_ROUTE + "WeatherForecast/All",{headers:this.getHeader()}).pipe(map((result)=>{
-      return result as WeatherForecastDto[];
-    }));
-  }
-
   getUserProfile()
   {
     debugger
     this.userProfile$ = this.http.get(BASE_ROUTE + "User/"+this.loginResponse.userId,{headers:this.getHeader()}).pipe(map((result)=>{
       return result as UserProfileDto;
+    }));
+  }
+
+  forgotPassword(data:ForgotPasswordDto): void{
+    this.forgotPasswordMailSent$ = this.http.post(BASE_ROUTE + 'User/ForgotPassword',data,{headers:this.getHeader()})
+    .pipe(map((result)=>{
+      return result as boolean;
     }));
   }
 

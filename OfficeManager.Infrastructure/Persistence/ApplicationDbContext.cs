@@ -24,12 +24,10 @@ namespace OfficeManager.Infrastructure.Persistence
             _mediator = mediator;
             _interceptor = interceptor;
         }
-
-        public DbSet<UserMaster> UserMaster { get; set; }
-        public DbSet<UserProfile> UserProfile { get; set; }
-        public DbSet<UserRole> UserRole { get; set; }
         public DbSet<DepartmentMaster> DepartmentMasters { get; set; }
         public DbSet<DesignationMaster> DesignationMasters { get; set; }
+        public DbSet<ApplicationUserDepartment> ApplicationUserDepartments { get; set; }
+        public DbSet<ProfileMaster> Profiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

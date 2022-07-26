@@ -29,8 +29,8 @@ const routes: Routes = [
         loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
       },
       {
-        path: 'weatherforecast',
-        loadChildren: () => import('./weatherforecast/weatherforecast.module').then(m => m.WeatherforecastModule)
+        path: 'employee',
+        loadChildren: () => import('./employee/employee.module').then(m => m.EmployeeModule)
       }
     ],
     canActivate: [AuthGuard]
@@ -40,8 +40,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    MainComponent,
-    EmployeeComponent
+    MainComponent
   ],
   imports: [
     CommonModule,

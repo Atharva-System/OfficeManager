@@ -1,9 +1,9 @@
 export class LoginDto {
-    Email: string;
+    UserName: string;
     Password: string;
 
-    constructor(email:string,password:string){
-        this.Email = email;
+    constructor(userName:string,password:string){
+        this.UserName = userName;
         this.Password =  password;
     }
 }
@@ -11,13 +11,11 @@ export class LoginDto {
 export class loginResponseDto {
     userId: string;
     email: string;
-    contact: string;
     token: string;
-    role: string;
-    constructor(userId:string,email:string,contact:string,token:string,role:string){
+    role: string[];
+    constructor(userId:string,email:string,contact:string,token:string,role:string[]){
         this.userId = userId;
         this.email = email;
-        this.contact = contact;
         this.token = token;
         this.role = role;
     }

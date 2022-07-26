@@ -14,6 +14,8 @@ namespace OfficeManager.Application.Departments.Commands.CreateDepartmentCommand
                 .MaximumLength(100).WithMessage("Department name must not exceed 100 characters")
                 .NotEmpty().WithMessage("Departname is required.")
                 .MustAsync(BeUniqueDepartment).WithMessage("Specified department already exists");
+            RuleFor(v => v.Description)
+                .MaximumLength(500).WithMessage("Department description must not exceed 500 characters");
         }
 
         public async Task<bool> BeUniqueDepartment(string department, CancellationToken cancellationToken)

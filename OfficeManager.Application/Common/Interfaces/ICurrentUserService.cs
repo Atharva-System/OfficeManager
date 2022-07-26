@@ -2,7 +2,7 @@
 {
     public interface ICurrentUserService
     {
-        Guid UserId { get; set; }
-        Guid GetUserId { get; }
+        string UserId { get; set; }
+        string GetUserId { get; }
     }
 }

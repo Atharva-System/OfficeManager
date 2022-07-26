@@ -12,8 +12,8 @@ namespace OfficeManager.API.Services
             _contextAccessor = contextAccessor;
         }
 
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
-        public Guid GetUserId => UserId != null ? UserId : Guid.Empty;
+        public string GetUserId => UserId != null ? UserId : string.Empty;
     }
 }

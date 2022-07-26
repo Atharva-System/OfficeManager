@@ -1,12 +1,88 @@
 <div class="page">
     <mat-card>
+        <mat-card-title>Sign Up</mat-card-title>
         <mat-card-content>
-            <mat-card-title>Register</mat-card-title>
-            <form [formGroup]="registerForm" class="example-form" (ngSubmit)="registerUser()">
+            <form [formGroup]="registerForm" class="example-form" (ngSubmit)="registerEmployee()">
+                <div class="row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>First Name</mat-label>
+                        <input type="text" matInput formControlName="firstName">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width ml-2" appearance="fill">
+                        <mat-label>Last Name</mat-label>
+                        <input type="text" matInput formControlName="lastName">
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Email</mat-label>
+                        <input type="email" matInput formControlName="email">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width ml-2" appearance="fill">
+                        <mat-label>Personal Email</mat-label>
+                        <input type="email" matInput formControlName="personalEmail">
+                    </mat-form-field>
+                </div>
+            
+                <div class="row">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Phone Number</mat-label>
+                        <input type="text" matInput formControlName="phoneNumber">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width ml-2" appearance="fill">
+                        <mat-label>Personal Phone Number</mat-label>
+                        <input type="text" matInput formControlName="personalPhoneNumber">
+                    </mat-form-field>
+                </div>
+            
+                <!---- DOB & DOJ --->
                 <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Email</mat-label>
-                    <input type="email" matInput formControlName="email">
+                    <mat-label>Date Of Joining</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="dateOfJoining">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Date Of Birth</mat-label>
+                    <input matInput [matDatepicker]="dob" formControlName="dateOfBirth">
+                    <mat-datepicker-toggle matSuffix [for]="dob"></mat-datepicker-toggle>
+                    <mat-datepicker #dob></mat-datepicker>
+                </mat-form-field>
+            
+                <!---- roles ---->
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Department</mat-label>
+                    <mat-select formControlName="departmentId">
+                        <mat-option value="">Select Department</mat-option>
+                        <mat-option *ngFor="let department of departments" value="{{department.id}}">{{ department.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            
+                <!---- roles ---->
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Designation</mat-label>
+                    <mat-select formControlName="designationId">
+                        <mat-option value="">Select Designation</mat-option>
+                        <mat-option *ngFor="let designation of designations" value="{{designation.id}}">{{ designation.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            
+                <!---- roles ---->
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="roleId">
+                        <mat-option value="">Select Role</mat-option>
+                        <mat-option *ngFor="let role of userRoles" value="{{role.id}}">{{ role.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            
+                <!----- username ----->
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Username</mat-label>
+                    <input type="text" matInput formControlName="username">
+                </mat-form-field>
+            
+                <!----- password ----->
                 <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Password</mat-label>
                     <input type="password" matInput formControlName="password">
@@ -15,28 +91,8 @@
                     <mat-label>Confirm Password</mat-label>
                     <input type="password" matInput formControlName="confirmPassword">
                 </mat-form-field>
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Personal Email</mat-label>
-                    <input type="email" matInput formControlName="personalEmail">
-                </mat-form-field>
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Contact</mat-label>
-                    <input type="text" matInput formControlName="contact">
-                </mat-form-field>
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Date Of Joining</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="dateOfJoining">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Role</mat-label>
-                    <mat-select formControlName="role">
-                        <mat-option value="">Select Role</mat-option>
-                        <mat-option *ngFor="let role of service.roles" value="{{role.id}}">{{ role.title }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <button type="submit" mat-raised-button color="primary">Register</button>
+                <button type="submit" mat-raised-button color="primary" class="fullwidth mb-2">SingUp</button>
+                <span class="suggestion"> Already have an account? <a [routerLink]="['/']">Login</a> here</span>
             </form>
         </mat-card-content>
     </mat-card>

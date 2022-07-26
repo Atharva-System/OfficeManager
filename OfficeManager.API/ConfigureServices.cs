@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using OfficeManager.API.Services;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Infrastructure.Persistence;
@@ -19,6 +20,9 @@ namespace OfficeManager.API
 
             services.Configure<ApiBehaviorOptions>(options =>
                                 options.SuppressModelStateInvalidFilter = true);
+
+
+            services.Configure<DataProtectionTokenProviderOptions>(opt => opt.TokenLifespan = TimeSpan.FromHours(2));
 
             return services;
         }
