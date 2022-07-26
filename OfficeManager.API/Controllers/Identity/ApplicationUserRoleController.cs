@@ -19,6 +19,7 @@ namespace OfficeManager.API.Controllers.Identity
         }
 
         [HttpGet]
+        [Route("GetAll")]
         public async Task<ActionResult<List<ApplicationRolesDto>>> GetAll()
         {
             return await Mediator.Send(new GetApplicationRolesQuery());
