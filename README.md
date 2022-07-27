@@ -46,7 +46,8 @@
 * Frontend
     * OfficeManagerUI
 
-=======
+============================================================================================
+
 ## Getting Started
 
 The easiest way to get started is to install below packages:
@@ -62,7 +63,7 @@ The template is configured to use an in-memory database by default. This ensures
 <br/>
 
 <h1 align="center">CQRS with Mediator</h1>
-<p align="center">Simple soap API made with .NET 6 using the concepts of <b>CQRS</b> and <b>Mediator pattern</b></p>
+<p align="center">Simple REST API made with .NET 6 using the concepts of <b>CQRS</b> and <b>Mediator pattern</b></p>
 
 &nbsp;
 
@@ -95,6 +96,7 @@ This api works as a getway which provide token which will then allow the user to
 
 In the same way all apis work.
 
-=======
+============================================================================================
+
 Thank You!
 
