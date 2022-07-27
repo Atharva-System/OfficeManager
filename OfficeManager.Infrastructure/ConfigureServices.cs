@@ -25,6 +25,7 @@ namespace OfficeManager.Infrastructure
                 .AddDefaultTokenProviders();
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+            services.AddScoped<IContextServices>(provider => provider.GetRequiredService<ContextServices>());
 
             services.AddScoped<ApplicationDbContextInitializer>();
 

@@ -28,7 +28,10 @@ namespace OfficeManager.Application.Common.Behaviours
                     .ToList();
 
                 if (failures.Any())
+                {
+                    failures.ForEach(x => { x.ErrorMessage = "Validation: " + x.ErrorMessage; });
                     throw new ValidationException(failures);
+                }
             }
 
             return await next();

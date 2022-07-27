@@ -1,19 +1,30 @@
-
+:host{
+    height:  100% !important;
+    width: 100% !important;
+}
 .page{
     width: 100%;
-    height: 100%;
+    //height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
     mat-card{
         display: block;
         max-width: fit-content;
         mat-card-title{
-            font-size: 24px;
+            font-size: 34px;
             height: 34px;
             display: flex;
             justify-content: center;
             align-items: center;
+            color: #1F4690;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+        mat-card-content{
+            height: 100%;
         }
     }
 }
@@ -36,10 +47,7 @@
     .example-full-width {
       width: 100%;
     }
-
-    .mb-2{
-        margin-bottom: 10px;
-    }
     .suggestion{
         font-size: 18px;
+        color: #1F4690;
     }

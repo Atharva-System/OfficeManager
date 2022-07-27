@@ -12,6 +12,41 @@
 * [NUnit](https://nunit.org/), [FluentAssertions](https://fluentassertions.com/), [Moq](https://github.com/moq) & [Respawn](https://github.com/jbogard/Respawn)
 
 
+## Architecture
+* Clean architecture
+
+## Project Hierarchy and folders to consider
+* Backend
+    * OfficeManager.API
+        1. Controllers
+        2. Filters
+        3. Services
+        4. appsettings.json
+        5. ConfigureServices.cs
+        6. Program.cs
+    * OfficeManager.Infra
+        1. Common
+        2. Identity
+        3. Persistence
+        4. Services
+        5. ConfigureServices.cs
+    * OfficeManager.Application
+        1. ApplicationRoles<br>
+            a. Commands
+        2. ApplicationUsers
+        3. Common
+        4. Departments
+        5. Designations
+        6. Employees
+        7. ConfigureServices.cs
+    * OfficeManager.Domain<br>
+        1. Common
+        2. Entities
+        3. Events
+* Frontend
+    * OfficeManagerUI
+
+=======
 ## Getting Started
 
 The easiest way to get started is to install below packages:
@@ -41,5 +76,25 @@ The template is configured to use an in-memory database by default. This ensures
 The application uses [Entity Framework Core](https://docs.microsoft.com/pt-br/ef/core/) for running migrations and database connection, which we use in the **Commands** and **Queries** of the application, and we use [MediatR](https://github.com/jbogard/MediatR) for the Mediator Pattern implementation.
 The controllers have a MediatR reference which we use the to execute the Queries and Commands, after that the Handlers execute your logic.
 
+## How Register user api works?
+This api takes all the data needed for Application user models and Profile models which has the it's id as Foreign key. And <br>
+> It stores the data of Application users in AspNetUsers.<br>
+
+> The role took for user will be stored in AspNetUserRoles Tale which is bride table stores userId and roleId
+
+> If it generates any validation exception it will be handled and passed as bad request response with all validation messages to the frontend and there it will show all those as error in toast.
+
+<br>
+
+## How login works?
+This api works as a getway which provide token which will then allow the user to access the actual application.
+
+> It takes the username and password from frontend and call Login command which will call identity service to do the authentication and get logged in user's data and return it to controller, where it will generate and attache token and return to frontend.
+
+> In frontend it will store token in localstorage and redirect to roles page.
+
+In the same way all apis work.
+
+=======
 Thank You!
 

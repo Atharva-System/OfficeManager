@@ -2,8 +2,8 @@
     <div class="table">
         <div class="header">
             <h1 class="title">Designations</h1>
-            <button mat-raised-button color="primary" (click)="addDesignation()">
-                Add <mat-icon>add</mat-icon>
+            <button mat-raised-button color="primary" class="custom-btn bg-primary fit-btn" (click)="addDesignation()">
+                <mat-icon>add</mat-icon> New Role
             </button>
         </div>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

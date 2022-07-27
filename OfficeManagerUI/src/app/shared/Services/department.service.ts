@@ -5,6 +5,7 @@ import { AuthenticationservicesService } from '../Authentication/authentications
 import { BehaviorSubject } from 'rxjs';
 import { DepartmentDto } from '../Authentication/dtos/DepartmentDto';
 import { ToastrService } from 'ngx-toastr';
+import { ResultDto } from '../Authentication/dtos/ResultDto';
 
 @Injectable({
   providedIn: 'root'
@@ -29,10 +30,18 @@ export class DepartmentService {
     .subscribe((result)=>{
       this.toastr.success("Department added successfully!");
       this.getDepartments('');
-    },
-    (error)=>{
-      console.log(error);
-      this.toastr.error("Something went wrong!");
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
     });
   }
 
@@ -41,10 +50,18 @@ export class DepartmentService {
     .subscribe((result)=>{
       this.toastr.success("Department updated successfully!");
       this.getDepartments('');
-    },
-    (error)=>{
-      console.log(error);
-      this.toastr.error("Something went wrong!");
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
     });
   }
 
@@ -54,8 +71,17 @@ export class DepartmentService {
       this.toastr.success("Department deleted successfully!");
       this.getDepartments('');
     },(error)=>{
-      console.log(error);
-      this.toastr.error("Something went wrong!");
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
     });
   }
 

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OfficeManager.Application.Common.Interfaces;
 
 namespace OfficeManager.Application.Employees.Queries.GetAllEmployees
 {
@@ -10,8 +11,18 @@ namespace OfficeManager.Application.Employees.Queries.GetAllEmployees
         public string RoleId { get; set; }
     }
 
-    public class GetAllEmployeeQueryHandler //: IRequestHandler<GetAllEmployeesQuery,List<EmployeeDto>>
+    public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployeesQuery,List<EmployeeDto>>
     {
-        //private
+        private readonly IContextServices _service;
+
+        public GetAllEmployeeQueryHandler(IContextServices service)
+        {
+            _service = service;
+        }
+
+        public async Task<List<EmployeeDto>> Handle(GetAllEmployeesQuery request,CancellationToken cancellationToken)
+        {
+            return new List<EmployeeDto>();
+        }
     }
 }

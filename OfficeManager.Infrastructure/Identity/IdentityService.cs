@@ -28,10 +28,17 @@ namespace OfficeManager.Infrastructure.Identity
         public async Task<(Result result, string userId)> CreateAsync(ApplicationUser user, string roleId, string password)
         { 
             IdentityResult result = await _userManager.CreateAsync(user, password);
-            IdentityRole role = await _roleManager.FindByIdAsync(roleId);
-            result = await _userManager.AddToRoleAsync (user, role.Name);
+            if (result.Succeeded)
+            {
+                IdentityRole role = await _roleManager.FindByIdAsync(roleId);
+                result = await _userManager.AddToRoleAsync(user, role.Name);
 
-            return (result.ToApplicationResult(),user.Id);
+                return (result.ToApplicationResult(), user.Id);
+            }
+            else
+            {
+                return (result.ToApplicationResult(), "");
+            }
         }
 
         public async Task<List<ApplicationRolesDto>> GetApplicationRoles()
@@ -64,8 +71,9 @@ namespace OfficeManager.Infrastructure.Identity
                 loggedInUser.UserName = userName;
                 loggedInUser.Roles = (await _userManager.GetRolesAsync(user)).ToList();
                 loggedInUser.Token = "";
+                return loggedInUser;
             }
-            return loggedInUser;
+            return null;
         }
 
         public async Task<bool> AuthorizeAsync(Guid userId, string policyName)

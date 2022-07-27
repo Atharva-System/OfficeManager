@@ -12,6 +12,7 @@ import { DepartmentDto } from './dtos/DepartmentDto';
 import { DesignationDto } from './dtos/DesignationDto';
 import { ForgotPasswordDto } from './dtos/FrogotPasswordDto';
 import { environment } from 'src/environments/environment';
+import { ResultDto } from './dtos/ResultDto';
 
 
 @Injectable({
@@ -23,7 +24,8 @@ export class AuthenticationservicesService {
   _role = new BehaviorSubject<UserRoleDto[]>([]);
   role$ = this._role.asObservable();
 
-  forgotPasswordMailSent$ = new Observable<boolean>();
+  _forgotPasswordMailSent = new BehaviorSubject<boolean>(false);
+  forgotPasswordMailSent$ = this._forgotPasswordMailSent.asObservable();
 
   _appRoles = new BehaviorSubject<ApplicationRolesDto[]>([]);
   appRoles$ = this._appRoles.asObservable();
@@ -77,6 +79,18 @@ export class AuthenticationservicesService {
     this.http.post(environment.baseRoute + "User/Register",data,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Employee registered successfully.");
       this.getApplicationUserRoles();
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
     });
   }
 
@@ -85,11 +99,19 @@ export class AuthenticationservicesService {
       this.toastr.success("Role deleted successfully");
       this.getApplicationUserRoles();
       return true;
-    },
-    (error)=>{
-      this.toastr.error("Something went wrong.");
-      return false;
-    })
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
+    });
   }
 
   addRole(data:ApplicationRolesDto)
@@ -97,7 +119,19 @@ export class AuthenticationservicesService {
     this.http.post(environment.baseRoute + "UserRoles",data,{headers:this.getHeader()}).subscribe((result)=>{
       this.toastr.success("Role added successfully");
       this.getApplicationUserRoles();
-    })
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
+    });
   }
 
   loginUser(data:LoginDto)
@@ -108,7 +142,19 @@ export class AuthenticationservicesService {
       localStorage.setItem("token",this.loginResponse.token);
       this.toastr.success("User logged in successfully.");
       this.router.navigate(['/main']);
-    })
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
+    });
   }
 
   getUserProfile()
@@ -120,10 +166,23 @@ export class AuthenticationservicesService {
   }
 
   forgotPassword(data:ForgotPasswordDto): void{
-    this.forgotPasswordMailSent$ = this.http.post(environment.baseRoute + 'User/ForgotPassword',data,{headers:this.getHeader()})
-    .pipe(map((result)=>{
+    this.http.post(environment.baseRoute + 'User/ForgotPassword',data,{headers:this.getHeader()})
+    .subscribe((result)=>{
       return result as boolean;
-    }));
+    },
+    (error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
+    });
   }
 
 }

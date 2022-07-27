@@ -19,15 +19,24 @@ namespace OfficeManager.Application.Designations.Commands.CreateDesignationComma
         }
         public async Task<Result> Handle(CreateDesignationCommand request,CancellationToken cancellationToken)
         {
-            DesignationMaster designation = new DesignationMaster
+            try
             {
-                Name = request.Name
-            };
+                DesignationMaster designation = new DesignationMaster
+                {
+                    Name = request.Name
+                };
 
-            _context.DesignationMasters.Add(designation);
-            await _context.SaveChangesAsync(cancellationToken);
+                _context.DesignationMasters.Add(designation);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Designation added successfully");
+                return Result.Success("Designation added successfully");
+            }
+            catch (Exception ex)
+            {
+                List<string> innerExceptions = new List<string>();
+                innerExceptions.Add(ex.InnerException.Message);
+                return Result.Failure(innerExceptions, ex.Message);
+            }
         }
     }
 }

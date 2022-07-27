@@ -23,16 +23,25 @@ namespace OfficeManager.Application.Departments.Commands.UpdateDepartment
 
         public async Task<Result> Handle(UpdateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var department = await _context.DepartmentMasters.FirstOrDefaultAsync(d => d.Id == request.Id);
-            if (department == null)
+            try
             {
-                throw new NotFoundException();
-                return Result.Failure(Enumerable.Empty<string>(), "depament not found");
+                var department = await _context.DepartmentMasters.FirstOrDefaultAsync(d => d.Id == request.Id);
+                if (department == null)
+                {
+                    throw new NotFoundException();
+                    return Result.Failure(Enumerable.Empty<string>(), "depament not found");
+                }
+                department.Name = request.Name;
+                department.Description = request.Description;
+                await _context.SaveChangesAsync(cancellationToken);
+                return Result.Success("Department updated successfully!");
             }
-            department.Name = request.Name;
-            department.Description = request.Description;
-            await _context.SaveChangesAsync(cancellationToken);
-            return Result.Success("Department updated successfully!");
+            catch (Exception ex)
+            {
+                List<string> innerExceptions = new List<string>();
+                innerExceptions.Add(ex.InnerException.Message);
+                return Result.Failure(innerExceptions, ex.Message);
+            }
         }
     }
 }

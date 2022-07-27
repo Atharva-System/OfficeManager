@@ -17,15 +17,26 @@ namespace OfficeManager.Application.Designations.Commands.DeleteDesignationComma
 
         public async Task<Result> Handle(DeleteDesignationCommand request, CancellationToken cancellationToken)
         {
-            DesignationMaster designation = _context.DesignationMasters.FirstOrDefault(d => d.Id == request.id);
+            try
+            {
+                DesignationMaster designation = _context.DesignationMasters.FirstOrDefault(d => d.Id == request.id);
 
-            if (designation == null)
-                throw new NotFoundException();
+                if (designation == null)
+                {
+                    throw new NotFoundException();
+                    return Result.Failure(Enumerable.Empty<string>(), "Designation not found!");
+                }
 
-            _context.DesignationMasters.Remove(designation);
-            await _context.SaveChangesAsync(cancellationToken);
+                _context.DesignationMasters.Remove(designation);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success($"{designation.Name} designation deleted successfully");
+                return Result.Success($"{designation.Name} designation deleted successfully");
+            }
+
+            catch (Exception ex)
+            {
+                return Result.Failure(Enumerable.Empty<string>(), ex.Message);
+            }
         }
     }
 }
