@@ -12,7 +12,6 @@
 * [NUnit](https://nunit.org/), [FluentAssertions](https://fluentassertions.com/), [Moq](https://github.com/moq) & [Respawn](https://github.com/jbogard/Respawn)
 
 
-
 ## Architecture
 * Clean architecture
 
@@ -47,6 +46,7 @@
 * Frontend
     * OfficeManagerUI
 
+=======
 ## Getting Started
 
 The easiest way to get started is to install below packages:
@@ -95,5 +95,6 @@ This api works as a getway which provide token which will then allow the user to
 
 In the same way all apis work.
 
+=======
 Thank You!
 

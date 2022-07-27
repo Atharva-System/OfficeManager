@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OfficeManager.Application.Common.Behaviours;
 using OfficeManager.Application.Common.EmailService;
@@ -18,8 +17,6 @@ namespace OfficeManager.Application
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-
-            
             services.AddScoped<IEmailSender, EmailSender>();
 
             return services;
