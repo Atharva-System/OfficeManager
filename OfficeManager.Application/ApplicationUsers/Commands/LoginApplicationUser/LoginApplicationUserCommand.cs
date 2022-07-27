@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Application.Common.Models;
 
 namespace OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUser
 {
@@ -12,14 +13,22 @@ namespace OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUs
     public class LoginApplicationUserCommandHandler : IRequestHandler<LoginApplicationUserCommand,LoggedInUserDto>
     {
         private readonly IIdentityService _service;
-        public LoginApplicationUserCommandHandler(IIdentityService service)
+        private readonly ICurrentUserService _currentUserService;
+        public LoginApplicationUserCommandHandler(IIdentityService service, ICurrentUserService currentUserService)
         {
             _service = service;
+            _currentUserService = currentUserService;
         }
 
         public async Task<LoggedInUserDto> Handle(LoginApplicationUserCommand request, CancellationToken cancellationToken)
         {
-            return await _service.LoginAsync(request.UserName, request.Password);
+             var result = await _service.LoginAsync(request.UserName, request.Password);
+            if(result.UserName != null)
+            {
+                _currentUserService.UserId = result.UserId;
+                return result;
+            }
+            return null;
         }
     }
 }

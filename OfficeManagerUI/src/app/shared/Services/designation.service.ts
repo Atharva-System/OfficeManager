@@ -5,6 +5,7 @@ import { AuthenticationservicesService } from '../Authentication/authentications
 import { BehaviorSubject } from 'rxjs';
 import { DesignationDto } from '../Authentication/dtos/DesignationDto';
 import { ToastrService } from 'ngx-toastr';
+import { ResultDto } from '../Authentication/dtos/ResultDto';
 
 @Injectable({
   providedIn: 'root'
@@ -28,21 +29,39 @@ export class DesignationService {
     .subscribe((result)=>{
       this.toastr.success("Designation added successfully!");
       this.getDesignations('');
-    },
-    (error)=>{
-      console.log(error);
-      this.toastr.error("Something went wrong!");
+    },(error)=>{
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
     });
   }
 
   deleteDesignation(id:string){
     this.http.delete(environment.baseRoute + `Designation/${id}/Delete`,{headers:this.authService.getHeader()})
     .subscribe((result)=>{
-      this.toastr.success("Designation deleted successfully!");
+      let response = result as ResultDto
+      this.toastr.success(response.message);
       this.getDesignations('');
     },(error)=>{
-      console.log(error);
-      this.toastr.error("Something went wrong!");
+      let response = error.error as ResultDto;
+      if(response.errors && response.errors.length > 0)
+      {
+        for(let error in response.errors)
+        {
+          this.toastr.error(response.errors[error]);
+        }
+      }
+      else{
+        this.toastr.error(response.message);
+      }
     });
   }
 }

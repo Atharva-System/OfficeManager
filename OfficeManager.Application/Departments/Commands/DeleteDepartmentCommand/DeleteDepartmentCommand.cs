@@ -20,13 +20,23 @@ namespace OfficeManager.Application.Departments.Commands.DeleteDepartmentCommand
 
         public async Task<Result> Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
         {
-            DepartmentMaster department = _context.DepartmentMasters.FirstOrDefault(d => d.Id == request.id);
-            if (department == null)
-                throw new NotFoundException();
-            _context.DepartmentMasters.Remove(department);
-            await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                DepartmentMaster department = _context.DepartmentMasters.FirstOrDefault(d => d.Id == request.id);
+                if (department == null)
+                {
+                    throw new NotFoundException();
+                    return Result.Failure(Enumerable.Empty<string>(), "Department not found!");
+                }
+                _context.DepartmentMasters.Remove(department);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success("Department deleted successfully.");
+                return Result.Success("Department deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Enumerable.Empty<string>(), ex.Message);
+            }
         }
     }
 }

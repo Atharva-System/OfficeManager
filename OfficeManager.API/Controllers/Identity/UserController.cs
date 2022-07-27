@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OfficeManager.Application.ApplicationUsers.Commands.ForgotPassword;
@@ -24,19 +25,44 @@ namespace OfficeManager.API.Controllers.Identity
         [Route("Register")]
         public async Task<ActionResult<Result>> Register(RegisterApplicationUserCommand command)
         {
-            return await Mediator.Send(command);
+            try
+            {
+                var result = await Mediator.Send(command);
+                if (result.Succeeded)
+                    return Ok(result);
+                return BadRequest(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+            }
         }
 
         [HttpPost]
         [Route("Login")]
         public async Task<ActionResult<LoggedInUserDto>> Login(LoginApplicationUserCommand command)
         {
-            var user = await Mediator.Send(command);
+            try
+            {
+                var user = await Mediator.Send(command);
 
-            if (user == null)
-                return BadRequest("Authentication failed please check username and password.");
+                if (user == null)
+                    return BadRequest(Result.Failure(Enumerable.Empty<string>(), "Login Failed, Please check the credentials"));
 
-            return GenerateJWT(user);
+                return GenerateJWT(user);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+            }
         }
 
         private LoggedInUserDto GenerateJWT(LoggedInUserDto user)
@@ -80,7 +106,18 @@ namespace OfficeManager.API.Controllers.Identity
         [Route("ForgotPassword")]
         public async Task<ActionResult<bool>> ForgotPassword(ForgotPasswordCommand command)
         {
-            return await Mediator.Send(command);
+            try
+            {
+                return await Mediator.Send(command);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+            }
         }
 
         [HttpPost]

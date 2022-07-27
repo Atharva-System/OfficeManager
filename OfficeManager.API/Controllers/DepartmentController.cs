@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
@@ -23,21 +24,63 @@ namespace OfficeManager.API.Controllers
         [Route("Add")]
         public async Task<ActionResult<Result>> CreateDepartment(CreateDepartmentCommand command)
         {
-            return await Mediator.Send(command);
+            try
+            {
+                var result = await Mediator.Send(command);
+                if (result.Succeeded)
+                    return Ok(result);
+                return BadRequest(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+            }
         }
 
         [HttpDelete]
         [Route("{id}/Delete")]
         public async Task<ActionResult<Result>> DeleteDepartment(Guid id)
         {
-            return await Mediator.Send(new DeleteDepartmentCommand(id));
+            try
+            {
+                var result = await Mediator.Send(new DeleteDepartmentCommand(id));
+                if (result.Succeeded)
+                    return Ok(result);
+                return BadRequest(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+            }
         }
 
         [HttpPut]
         [Route("Edit")]
         public async Task<ActionResult<Result>> EditDepartment(UpdateDepartmentCommand command)
         {
-            return await Mediator.Send(command);
+            try
+            {
+                var result = await Mediator.Send(command);
+                if (result.Succeeded)
+                    return Ok(result);
+                return BadRequest(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+            }
         }
     }
 }

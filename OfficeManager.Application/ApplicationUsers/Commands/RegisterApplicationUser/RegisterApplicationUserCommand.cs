@@ -18,7 +18,6 @@ namespace OfficeManager.Application.ApplicationUsers.Commands.RegisterApplicatio
         public string PersonalPhoneNumber { get; set; }
         public DateTime DateOfJoining { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public Guid? DepartmentId { get; set; }
         public Guid? DesignationId { get; set; }
     }
 
@@ -35,44 +34,41 @@ namespace OfficeManager.Application.ApplicationUsers.Commands.RegisterApplicatio
 
         public async Task<Result> Handle(RegisterApplicationUserCommand request, CancellationToken cancellationToken)
         {
-            ApplicationUser user = new ApplicationUser
+            try
             {
-                UserName = request.Username,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                DesignationId = request.DesignationId.Value
-            };
-
-            var result = await _identityService.CreateAsync(user, request.roleId, request.Password);
-            ProfileMaster profile = new ProfileMaster
-            {
-                PersonalEmail = request.PersonalEmail,
-                Contact = request.PersonalPhoneNumber,
-                DateOfBirth = request.DateOfBirth,
-                DateOfJoining = request.DateOfJoining,
-                ProfilePic = "",
-                UserId = result.userId
-            };
-            _context.Profiles.Add(profile);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            if (request.DepartmentId != null)
-            {
-                var userDepartment = new ApplicationUserDepartment
+                ApplicationUser user = new ApplicationUser
                 {
-                    DepartmentId = request.DepartmentId.Value,
-                    UserId = result.userId
+                    UserName = request.Username,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email,
+                    PhoneNumber = request.PhoneNumber,
+                    DesignationId = request.DesignationId.Value
                 };
 
-                _context.ApplicationUserDepartments.Add(userDepartment);
+                var result = await _identityService.CreateAsync(user, request.roleId, request.Password);
+                ProfileMaster profile = new ProfileMaster
+                {
+                    PersonalEmail = request.PersonalEmail,
+                    Contact = request.PersonalPhoneNumber,
+                    DateOfBirth = request.DateOfBirth,
+                    DateOfJoining = request.DateOfJoining,
+                    ProfilePic = "",
+                    UserId = result.userId
+                };
+                _context.Profiles.Add(profile);
                 await _context.SaveChangesAsync(cancellationToken);
+
+                result.result.Message = $"{result.userId} is registered successfully.";
+
+                return result.result;
             }
-
-            result.result.Message = $"{result.userId} is registered successfully.";
-
-            return result.result;
+            catch (Exception ex)
+            {
+                List<string> innerExceptions = new List<string>();
+                innerExceptions.Add(ex.InnerException.Message);
+                return Result.Failure(innerExceptions, ex.Message);
+            }
         }
     }
 }
