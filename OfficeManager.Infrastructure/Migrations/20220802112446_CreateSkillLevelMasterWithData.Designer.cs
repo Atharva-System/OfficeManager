@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficeManager.Infrastructure.Persistence;
 
@@ -11,9 +12,10 @@ using OfficeManager.Infrastructure.Persistence;
 namespace OfficeManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220802112446_CreateSkillLevelMasterWithData")]
+    partial class CreateSkillLevelMasterWithData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,30 +266,6 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.ToTable("ApplicationUserDepartments");
                 });
 
-            modelBuilder.Entity("OfficeManager.Domain.Entities.DepartMent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DepartMent");
-                });
-
             modelBuilder.Entity("OfficeManager.Domain.Entities.DepartmentMaster", b =>
                 {
                     b.Property<Guid>("Id")
@@ -318,30 +296,6 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DepartmentMasters");
-                });
-
-            modelBuilder.Entity("OfficeManager.Domain.Entities.Designation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Designation");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.DesignationMaster", b =>
@@ -417,30 +371,6 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Profiles");
-                });
-
-            modelBuilder.Entity("OfficeManager.Domain.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.Skill", b =>
