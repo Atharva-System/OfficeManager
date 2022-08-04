@@ -10,29 +10,23 @@ namespace OfficeManager.Infrastructure.Persistence
     {
         private readonly ILogger<ApplicationDbContext> _logger;
         private readonly ApplicationDbContext _context;
-        private readonly IIdentityService _service;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ApplicationDbContextInitializer(ILogger<ApplicationDbContext> logger, ApplicationDbContext context, IIdentityService service, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public ApplicationDbContextInitializer(ILogger<ApplicationDbContext> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
-            _service = service;
-            _roleManager = roleManager;
-            _userManager = userManager;
         }
 
         public async Task InitializeAsync()
         {
             try
             {
-                if(_context.Database.IsSqlServer())
+                if (_context.Database.IsSqlServer())
                 {
                     await _context.Database.MigrateAsync();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occured while initializing the database.");
                 throw;
@@ -54,28 +48,50 @@ namespace OfficeManager.Infrastructure.Persistence
 
         public async Task TrySeedAsync()
         {
-            var administratorRole = new IdentityRole("Admin");
-
-            if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
+            if (_context.Roles.All(r => !r.Name.Equals("Admin")))
             {
-                await _roleManager.CreateAsync(administratorRole);
+                _context.Roles.Add(new RoleMaster() { Name = "Admin", Description = "Manage All Application" });
             }
 
-            var Designation = new DesignationMaster
+            //var Designation = new DesignationMaster
+            //{
+            //    Name = "Admin",
+            //};
+            //_context.DesignationMasters.Add(Designation);
+
+            if(!_context.Employees.Any(a => a.EmployeeNo == 1))
             {
-                Name = "Admin",
-            };
-            _context.DesignationMasters.Add(Designation);
-            _context.SaveChanges();
+                Employee employee = new Employee()
+                {
+                    EmployeeNo = 1,
+                    DesignationId = 0,
+                    DepartmentId = 0,
+                    EmployeeName = "Akash Malaviya",
+                    Email = "akash@atharvasystem.com",
+                    DateOfBirth = DateTime.Now,
+                    DateOfJoining = DateTime.Now
+                };
+                _context.Employees.Add(employee);
+                _context.SaveChanges();
 
-            // Default users
+                // Default users
 
-            var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost.com", FirstName="Admin", LastName="Admin", DesignationId = Designation.Id };
+                var administrator = new UserMaster { EmployeeID = employee.Id, Email = "akash@atharvasystem.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123") };
 
-            if (_userManager.Users.All(u => u.UserName != administrator.UserName))
-            {
-                await _userManager.CreateAsync(administrator, "Atharva@123");
-                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
+                if (_context.Users.All(u => u.EmployeeID != administrator.EmployeeID))
+                    _context.Users.Add(administrator);
+
+                _context.SaveChanges();
+
+                if (_context.UserRoleMapping.All(u => u.UserId != administrator.Id && u.RoleId != _context.Roles.First().Id))
+                {
+                    _context.UserRoleMapping.Add(new UserRoleMapping()
+                    {
+                        UserId = administrator.Id,
+                        RoleId = _context.Roles.First().Id
+                    });
+                    _context.SaveChanges();
+                }
             }
         }
     }

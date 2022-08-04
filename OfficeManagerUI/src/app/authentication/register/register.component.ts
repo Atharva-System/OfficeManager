@@ -62,8 +62,8 @@ export class RegisterComponent implements OnInit,AfterViewInit {
       ,designationId:['',[Validators.required]]
       ,roleId:['',[Validators.required]]
       ,username:['',[Validators.required,Validators.maxLength(200)]]
-      ,password:['',[Validators.required,Validators.maxLength(200),Validators.minLength(8),Validators.pattern('^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$')]]
-      ,confirmPassword:['',[Validators.required,Validators.maxLength(200),Validators.minLength(8),Validators.pattern('^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$')]]
+      ,password:['',[Validators.required,Validators.maxLength(200),Validators.minLength(8),Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$')]]
+      ,confirmPassword:['',[Validators.required,Validators.maxLength(200),Validators.minLength(8),Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$')]]
     },{validator:PasswordMatcher.match});
   }
 

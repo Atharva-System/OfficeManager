@@ -11,15 +11,15 @@ namespace OfficeManager.Application.ApplicationUsers.Commands.ForgotPasswordConf
     }
     public class ForgotPasswordConfirmationCommandHandler : IRequestHandler<ForgotPasswordConfirmationCommand,bool>
     {
-        private readonly IIdentityService _service;
-        public ForgotPasswordConfirmationCommandHandler(IIdentityService service)
+        private readonly IApplicationDbContext _context;
+        public ForgotPasswordConfirmationCommandHandler(IApplicationDbContext context)
         {
-            _service = service;
+            _context = context;
         }
 
         public async Task<bool> Handle(ForgotPasswordConfirmationCommand request,CancellationToken cancellationToken)
         {
-            return await _service.ForgotPasswordConfirmationAsync(request,cancellationToken);
+            return true;
         }
     }
 }

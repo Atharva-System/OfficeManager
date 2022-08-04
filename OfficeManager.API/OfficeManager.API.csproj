@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\DepartmentController.cs" />
+    <Compile Remove="Controllers\DesignationController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.7" />
@@ -27,6 +32,10 @@
   <ItemGroup>
     <ProjectReference Include="..\OfficeManager.Application\OfficeManager.Application.csproj" />
     <ProjectReference Include="..\OfficeManager.Infrastructure\OfficeManager.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
