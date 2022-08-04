@@ -10,6 +10,8 @@ namespace OfficeManager.Application.Common.Interfaces
         DbSet<ApplicationUserDepartment> ApplicationUserDepartments { get; set; }
         DbSet<ProfileMaster> Profiles { get; set; }
 
+        DbSet<Client> Client { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

@@ -23,6 +23,7 @@ namespace OfficeManager.API
 
 
             services.Configure<DataProtectionTokenProviderOptions>(opt => opt.TokenLifespan = TimeSpan.FromHours(2));
+            services.AddTransient<IFilesServices, FilesServices>();
 
             return services;
         }

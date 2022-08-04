@@ -28,6 +28,7 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<DesignationMaster> DesignationMasters { get; set; }
         public DbSet<ApplicationUserDepartment> ApplicationUserDepartments { get; set; }
         public DbSet<ProfileMaster> Profiles { get; set; }
+        public DbSet<Client> Client { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

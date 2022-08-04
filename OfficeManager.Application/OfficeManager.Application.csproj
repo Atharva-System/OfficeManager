@@ -27,6 +27,8 @@
   <ItemGroup>
     <Folder Include="ApplicationUsers\Queries\GetUserProfile\" />
     <Folder Include="ApplicationUsers\Queries\UpdateUserProfile\" />
+    <Folder Include="Clients\Commands\" />
+    <Folder Include="Clients\Queries\" />
     <Folder Include="Employees\Commands\UpdateEmployee\" />
   </ItemGroup>
 
