@@ -36,7 +36,6 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<SkillRate> SkillRate { get; set; }
         public DbSet<DepartMent> DepartMent { get; set; }
         public DbSet<Designation> Designation { get; set; }
-        public DbSet<Role> Role { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
