@@ -40,12 +40,12 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
                 if(entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedDate = _dateTime.Now;
-                    entry.Entity.CreatedBy = _currentUserService.loggedInUser.UserId;
+                    entry.Entity.CreatedBy = _currentUserService.loggedInUser != null ? _currentUserService.loggedInUser.UserId : 0;
                 }
 
                 if(entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
-                    entry.Entity.ModifiedBy = _currentUserService.loggedInUser.UserId;
+                    entry.Entity.ModifiedBy = _currentUserService.loggedInUser != null ? _currentUserService.loggedInUser.UserId : 0;
                     entry.Entity.ModifiedDate = _dateTime.Now;
                 }
             }

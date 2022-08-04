@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using OfficeManager.Application.ApplicationUsers.Commands.RegisterApplicationUser;
+﻿using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Employees.Queries.GetAllEmployees;
 
 namespace OfficeManager.API.Controllers

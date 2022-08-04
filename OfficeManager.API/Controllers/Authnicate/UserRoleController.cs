@@ -32,7 +32,7 @@ namespace OfficeManager.API.Controllers.Identity
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("GetAll")]
         public async Task<ActionResult<List<RolesDto>>> GetAll()
