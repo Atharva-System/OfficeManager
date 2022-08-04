@@ -20,7 +20,7 @@ namespace OfficeManager.Infrastructure.Persistence
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             IMediator mediator, AuditableEntitySaveChangesInterceptor interceptor)
-            :base(options)
+            : base(options)
         {
             _mediator = mediator;
             _interceptor = interceptor;
@@ -30,6 +30,13 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<UserMaster> Users { get; set; }
         public DbSet<UserRoleMapping> UserRoleMapping { get; set; }
         public string GetConnectionString { get => this.Database.GetDbConnection().ConnectionString; }
+
+        public DbSet<Skill> Skill { get; set; }
+        public DbSet<SkillLevel> SkillLevel { get; set; }
+        public DbSet<SkillRate> SkillRate { get; set; }
+        public DbSet<DepartMent> DepartMent { get; set; }
+        public DbSet<Designation> Designation { get; set; }
+        public DbSet<Role> Role { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
