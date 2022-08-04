@@ -2,10 +2,10 @@
 {
     public class EmployeeRegisteredEvent : BaseEvent
     {
-        public EmployeeRegisteredEvent(ApplicationUser user)
+        public EmployeeRegisteredEvent(UserMaster user)
         {
             User = user;
         }
-        public ApplicationUser User { get; }
+        public UserMaster User { get; }
     }
 }

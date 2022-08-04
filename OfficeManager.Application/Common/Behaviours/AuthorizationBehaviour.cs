@@ -8,12 +8,12 @@ namespace OfficeManager.Application.Common.Behaviours
 {
     public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly ICurrentUserService currentUserService;
+        private readonly ICurrentUserServices _currentUserService;
         private readonly IApplicationDbContext _context;
 
-        public AuthorizationBehaviour(ICurrentUserService currentUserService,IApplicationDbContext context)
+        public AuthorizationBehaviour(ICurrentUserServices currentUserService, IApplicationDbContext context)
         {
-            this.currentUserService = currentUserService;
+            this._currentUserService = currentUserService;
             _context = context;
         }
 
@@ -23,7 +23,7 @@ namespace OfficeManager.Application.Common.Behaviours
 
             if(authorizationAttribute.Any())
             {
-                if (currentUserService.UserId == null)
+                if (_currentUserService.loggedInUser == null)
                 {
                     throw new UnauthorizedAccessException();
                 }

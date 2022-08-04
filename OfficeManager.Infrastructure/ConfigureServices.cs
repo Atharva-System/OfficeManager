@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Domain.Entities;
-using OfficeManager.Infrastructure.Identity;
 using OfficeManager.Infrastructure.Persistence;
 using OfficeManager.Infrastructure.Persistence.Interceptors;
 using OfficeManager.Infrastructure.Services;
@@ -20,17 +19,10 @@ namespace OfficeManager.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("Default"),
                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-            services.AddIdentity<ApplicationUser,IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<IContextServices>(provider => provider.GetRequiredService<ContextServices>());
-
             services.AddScoped<ApplicationDbContextInitializer>();
-
             services.AddTransient<IDateTime, DateTimeService>();
-            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddSingleton<ICurrentUserServices, CurrentUserService>();
 
             return services;
         }

@@ -8,10 +8,10 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
 {
     public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     {
-        private readonly ICurrentUserService _currentUserService;
+        private readonly ICurrentUserServices _currentUserService;
         private readonly IDateTime _dateTime;
 
-        public AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUserService, IDateTime dateTime)
+        public AuditableEntitySaveChangesInterceptor(ICurrentUserServices currentUserService, IDateTime dateTime)
         {
             _currentUserService = currentUserService;
             _dateTime = dateTime;
@@ -39,14 +39,14 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
             {
                 if(entry.State == EntityState.Added)
                 {
-                    entry.Entity.Created = _dateTime.Now;
-                    entry.Entity.CreatedBy = _currentUserService.GetUserId;
+                    entry.Entity.CreatedDate = _dateTime.Now;
+                    entry.Entity.CreatedBy = _currentUserService.loggedInUser.UserId;
                 }
 
                 if(entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
-                    entry.Entity.ModifiedBy = _currentUserService.UserId;
-                    entry.Entity.Modified = _dateTime.Now;
+                    entry.Entity.ModifiedBy = _currentUserService.loggedInUser.UserId;
+                    entry.Entity.ModifiedDate = _dateTime.Now;
                 }
             }
         }
