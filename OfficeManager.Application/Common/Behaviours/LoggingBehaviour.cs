@@ -9,30 +9,18 @@ namespace OfficeManager.Application.Common.Behaviours
     {
         private readonly ILogger _logger;
         
-        private readonly ICurrentUserService _currentUserService;
-        
-        private readonly IIdentityService _identityService;
+        private readonly ICurrentUserServices _currentUserService;
 
-        public LoggingBehaviour(ILogger logger, ICurrentUserService currentUserService, IIdentityService identityService)
+        public LoggingBehaviour(ILogger logger, ICurrentUserServices currentUserServices)
         {
             _logger = logger;
-            _currentUserService = currentUserService;
-            _identityService = identityService;
+            _currentUserService = currentUserServices;
         }
 
         public async Task Process(TRequest request, CancellationToken cancellationToken)
         {
-            var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId;
-            string userName = string.Empty;
-
-            if(userId != null)
-            {
-                userName = await _identityService.GetUserNameAsync(userId);
-            }
-
             _logger.LogInformation("Office Manager Request: {Name} {@UserId} {@UserName} {@Request}",
-                requestName, userId, userName, request);
+                typeof(TRequest).Name, _currentUserService.loggedInUser.UserId, _currentUserService.loggedInUser.EmployeeNo, request);
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OfficeManager.Domain.Common
 {
     public abstract class BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        [Key]
+        public int Id { get; set; }
         
         private readonly List<BaseEvent> _domainEvents = new();
 

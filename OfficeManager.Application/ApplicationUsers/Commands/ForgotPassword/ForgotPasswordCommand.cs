@@ -10,16 +10,16 @@ namespace OfficeManager.Application.ApplicationUsers.Commands.ForgotPassword
 
     public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordCommand, bool>
     {
-        private readonly IIdentityService _service;
+        private readonly IApplicationDbContext _context;
 
-        public ForgotPasswordCommandHandler(IIdentityService service)
+        public ForgotPasswordCommandHandler(IApplicationDbContext context)
         {
-            _service = service;
+            _context = context;
         }
 
         public async Task<bool> Handle(ForgotPasswordCommand request,CancellationToken cancellationToken)
         {
-            return await _service.ForgotPasswordAsync(request.Email, cancellationToken);
+            return true;
         }
     }
 }

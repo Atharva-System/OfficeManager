@@ -5,13 +5,14 @@ namespace OfficeManager.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
-        DbSet<DepartmentMaster> DepartmentMasters { get; set; }
-        DbSet<DesignationMaster> DesignationMasters { get; set; }
-        DbSet<ApplicationUserDepartment> ApplicationUserDepartments { get; set; }
-        DbSet<ProfileMaster> Profiles { get; set; }
-
+        public string GetConnectionString { get;}
+        DbSet<UserMaster> Users { get; set; }
+        DbSet<RoleMaster> Roles { get; set; }
+        DbSet<Employee> Employees { get; set; }
+        DbSet<UserRoleMapping> UserRoleMapping { get; set; }
         DbSet<Client> Client { get; set; }
-
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        void BeginTransaction();
+        void CommitTransaction();
     }
 }

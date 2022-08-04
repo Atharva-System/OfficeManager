@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficeManager.Infrastructure.Persistence;
 
@@ -11,9 +12,10 @@ using OfficeManager.Infrastructure.Persistence;
 namespace OfficeManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220803111630_20220803_InitialDatabase")]
+    partial class _20220803_InitialDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,7 +103,7 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("OfficeManager.Domain.Entities.DepartmentMaster", b =>
+            modelBuilder.Entity("OfficeManager.Domain.Entities.UserMaster", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
