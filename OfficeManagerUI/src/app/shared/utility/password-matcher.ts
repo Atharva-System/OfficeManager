@@ -8,11 +8,11 @@ export class PasswordMatcher {
         if (passwordControl?.pristine || confirmPasswordControl?.pristine) {
           return null;
         }
-    
+
         if (passwordControl?.value === confirmPasswordControl?.value) {
           return null;
         }
-    
+
         confirmPasswordControl?.setErrors({ match: true });
     }
 }

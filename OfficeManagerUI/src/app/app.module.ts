@@ -6,9 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MaterialImportsModule } from './shared/importsModules/materialimports.module';
-import { RouterRoutingModule } from './shared/router/router-routing.module';
-import { ToastrModule } from 'ngx-toastr';
+import { AuthenticationComponent } from './authentication/authentication.component';
+import { LayoutComponent } from './layout/layout.component';
 
 
 @NgModule({
@@ -21,10 +20,7 @@ import { ToastrModule } from 'ngx-toastr';
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule,
-    MaterialImportsModule,
-    RouterRoutingModule,
-    ToastrModule.forRoot()
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

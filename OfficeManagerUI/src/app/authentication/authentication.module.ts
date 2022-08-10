@@ -1,30 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthenticationComponent } from './authentication.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { ForgotpasswordComponent } from './forgotpassword/forgotpassword.component';
-import { ForgotpasswordconfirmationComponent } from './forgotpasswordconfirmation/forgotpasswordconfirmation.component';
-import { RouterModule, Routes } from '@angular/router';
-import { MaterialImportsModule } from '../shared/importsModules/materialimports.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Routes,RouterModule } from '@angular/router';
 
-const routes : Routes = [
+const routes:Routes = [
   {
     path:'',
     component: AuthenticationComponent,
     children:[
       {
-        path:'',
-        component:LoginComponent
-      },
-      {
-        path:'register',
-        component: RegisterComponent
-      },
-      {
-        path:'forgotpassword',
-        component: ForgotpasswordComponent
+        path:'login',
+        loadChildren: () => import('./login/login.module').then(m => m.LoginModule)
       }
     ]
   }
@@ -32,18 +18,11 @@ const routes : Routes = [
 
 @NgModule({
   declarations: [
-    AuthenticationComponent,
-    RegisterComponent,
-    LoginComponent,
-    ForgotpasswordComponent,
-    ForgotpasswordconfirmationComponent
+    AuthenticationComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes),
-    MaterialImportsModule,
-    FormsModule,
-    ReactiveFormsModule
+    RouterModule.forChild(routes)
   ]
 })
 export class AuthenticationModule { }

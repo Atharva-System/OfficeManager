@@ -22,7 +22,7 @@ namespace OfficeManager.Application.ApplicationRoles.Commands.DeleteUserRoles
             _context.UserRoleMapping.Remove(userRole);
             await _context.SaveChangesAsync(cancellationToken);
             _context.CommitTransaction();
-            return Result.Success("Role deleted Successfully");
+            return Result.Success("Role deleted Successfully",null);
         }
     }
 }

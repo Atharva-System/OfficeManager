@@ -1,26 +1,22 @@
-<div class="page">
-    <mat-card>
-        <mat-card-title>Office Manager</mat-card-title>
-        <mat-card-content>
-            
-            <form [formGroup]="loginForm" class="example-form" (ngSubmit)="loginUser()">
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Username</mat-label>
-                    <input type="text" matInput formControlName="username">
-                    <mat-error *ngIf="displayMessage['username']">{{displayMessage['username']}}</mat-error>
-                </mat-form-field>
-                <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Password</mat-label>
-                    <input type="password" matInput formControlName="password">
-                    <mat-error *ngIf="displayMessage['password']">{{displayMessage['password']}}</mat-error>
-                </mat-form-field>
-                <button type="submit" mat-raised-button color="primary" [disabled]="!loginForm.valid" class="fullwidth custom-btn" [ngClass]="{' bg-primary':loginForm.valid}">Login</button>
-                <div class="links-row">
-                    <a [routerLink]="['register']">SignUp here!</a> 
-                    <a [routerLink]="['forgotpassword']">Forgot Password?</a>
-                </div>
-
-            </form>
-        </mat-card-content>
-    </mat-card>
+<div class="fullwidth h-100">
+  <form [formGroup]="loginForm" class="card" (ngSubmit)="loginUser()">
+    <div class="card-header">
+      <h1 class="card-title">Sign In</h1>
+    </div>
+    <div class="card-body">
+      <div class="form-group mb-2">
+        <label>Employee No</label>
+        <input class="form-control" type="number" formControlName="employeeNo">
+        <span class="text-muted text-danger" *ngIf="displayMessage['employeeNo']">{{ displayMessage['employeeNo'] }}</span>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="password" formControlName="password">
+        <span class="text-muted text-danger" *ngIf="displayMessage['password']">{{ displayMessage['password'] }}</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button type="submit" class="btn bg-primary fullwidth">Sign In</button>
+    </div>
+  </form>
 </div>

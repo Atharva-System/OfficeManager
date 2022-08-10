@@ -21,9 +21,4 @@
     <ProjectReference Include="..\OfficeManager.Application\OfficeManager.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Persistence\Configurations\" />
-  </ItemGroup>
-
 </Project>

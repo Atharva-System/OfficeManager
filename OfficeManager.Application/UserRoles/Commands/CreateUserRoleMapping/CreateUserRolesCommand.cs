@@ -30,7 +30,7 @@ namespace OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationU
             });
             await _context.SaveChangesAsync(cancellationToken);
             _context.CommitTransaction();
-            return Result.Success("Role Added Successfully");
+            return Result.Success("Role Added Successfully",null);
         }
     }
 }

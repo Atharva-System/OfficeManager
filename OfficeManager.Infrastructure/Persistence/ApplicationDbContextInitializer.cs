@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OfficeManager.Application.Common.Interfaces;
@@ -37,7 +37,7 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                await TrySeedAsync();
+                await TrySeedAsync(new CancellationToken());
             }
             catch (Exception ex)
             {
@@ -46,7 +46,7 @@ namespace OfficeManager.Infrastructure.Persistence
             }
         }
 
-        public async Task TrySeedAsync()
+        public async Task TrySeedAsync(CancellationToken cancellationToken)
         {
             if (_context.Roles.All(r => !r.Name.Equals("Admin")))
             {
@@ -64,8 +64,8 @@ namespace OfficeManager.Infrastructure.Persistence
                 Employee employee = new Employee()
                 {
                     EmployeeNo = 1,
-                    DesignationId = 0,
-                    DepartmentId = 0,
+                    DesignationId = 1,
+                    DepartmentId = 1,
                     EmployeeName = "Akash Malaviya",
                     Email = "akash@atharvasystem.com",
                     DateOfBirth = DateTime.Now,
@@ -92,6 +92,8 @@ namespace OfficeManager.Infrastructure.Persistence
                     });
                     _context.SaveChanges();
                 }
+
+                
             }
         }
     }

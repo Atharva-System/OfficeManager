@@ -1,28 +1,25 @@
-.authPage{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    .left-section{
-        flex: 1;
-        height: 100%;
-        position: relative;
-        justify-content: center;
-        background: url('/assets/logoImage.webp');
-        background-size: contain;
-        background-repeat: no-repeat;
-        .app-name{
-            font-size: 48px;
-            bottom: 10%;
-            left: 22%;
-            position: absolute;
-            font-weight: 600;
-            letter-spacing: 5px;
-            color: #1F4690;
-        }
-    }
-    .right-section{
-        flex: 1;
-        background-color: #DFEFFF;
-        overflow: auto;
-    }
+
+@import url('https://fonts.googleapis.com/css2?family=Hind+Madurai&display=swap');
+.back-pick{
+  background: url("/assets/backgroundOffice.jpg") !important;
+}
+.left-section{
+  background-color: rgba(0,0,0,0.7);
+  height: 100%;
+}
+
+.right-section{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo-img{
+  width: 400px;
+  height: 100px;
+}
+.app-title{
+  font-size: 44px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  font-family: 'Hind Madurai', sans-serif;
 }

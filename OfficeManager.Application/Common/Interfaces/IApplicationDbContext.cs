@@ -11,6 +11,9 @@ namespace OfficeManager.Application.Common.Interfaces
         DbSet<Employee> Employees { get; set; }
         DbSet<UserRoleMapping> UserRoleMapping { get; set; }
         DbSet<Client> Client { get; set; }
+        DbSet<ProjectMaster> Projects { get; set; }
+        DbSet<DepartMent> DepartMent { get; set; }
+        DbSet<Designation> Designation { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         void BeginTransaction();
         void CommitTransaction();

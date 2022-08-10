@@ -1,0 +1,18 @@
+.content-list{
+  max-height: 80vh;
+  overflow: auto;
+  position: relative;
+  thead{
+    position: fixed;
+    width: 100%;
+    background-color: #FFF;
+  }
+}
+
+.tableFixHead          { overflow: auto; max-height: 80vh; padding: 0px; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
+
+/* Just common table stuff. Really. */
+table  { border-collapse: collapse; width: 100%; }
+th, td { padding: 8px 16px; }
+th     { background:#eee; }

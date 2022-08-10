@@ -35,15 +35,15 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
         {
             if (context == null) return;
 
-            foreach(var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
+            foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
             {
-                if(entry.State == EntityState.Added)
+                if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedDate = _dateTime.Now;
                     entry.Entity.CreatedBy = _currentUserService.loggedInUser != null ? _currentUserService.loggedInUser.UserId : 0;
                 }
 
-                if(entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
                     entry.Entity.ModifiedBy = _currentUserService.loggedInUser != null ? _currentUserService.loggedInUser.UserId : 0;
                     entry.Entity.ModifiedDate = _dateTime.Now;
