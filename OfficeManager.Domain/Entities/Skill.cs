@@ -2,13 +2,10 @@
 
 namespace OfficeManager.Domain.Entities
 {
-    public class Skill
+    public class Skill : BaseAuditableEntity
     {
-        [Key]
-        public int Id { get; set; }
 
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsActive { get; set; }
     }
 }
