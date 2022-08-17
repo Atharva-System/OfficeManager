@@ -2,25 +2,33 @@
   <div class="logo px-1">
     <h1 class="logo-title">Office Manager</h1>
   </div>
-  <div class="menu">
-    <ul class="menu-list">
-      <li class="menu-item">
-        <a class="menu-link" href="#">Dashboard</a>
+  <div class="custom-sidebar card bg-dark m-0 p-0 border-0">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Dashboard</a>
       </li>
-      <li class="menu-item">
-        <a class="menu-link" href="#">Employees</a>
+      <li class="nav-item">
+        <a class="nav-link text-white" [routerLink]="['/employees']">Employees</a>
       </li>
-      <li class="menu-item">
-        <a class="menu-link" href="#">Roles</a>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Master <i class="bi small bi-caret-down-fill"></i></a>
+        <ul class="submenu collapse">
+          <li><a class="nav-link" href="#">Roles </a></li>
+          <li><a class="nav-link" href="#">Departments </a></li>
+          <li><a class="nav-link" href="#">Designations</a> </li>
+        </ul>
       </li>
-      <li class="menu-item">
-        <a class="menu-link" href="#">Departments</a>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Roles</a>
       </li>
-      <li class="menu-item">
-        <a class="menu-link" href="#">Designations</a>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Departments</a>
       </li>
-      <li class="menu-item">
-        <a class="menu-link" href="#">Salary</a>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Designations</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Salary</a>
       </li>
     </ul>
   </div>

@@ -17,9 +17,22 @@ namespace OfficeManager.API.Controllers
 
         [HttpGet]
         [Route("GetAll")]
-        public async Task<ActionResult<List<EmployeeDto>>> GetAll()
+        public async Task<ActionResult<Response<EmployeeListResponse>>> GetAll(string? search, int? DepartmentId,int? DesignationId,int? RoleId,string? DOBFrom, string? DOBTo, string? DOJFrom, string? DOJTo
+            ,int PageNo,int PageSize)
+        
         {
-            return await Mediator.Send(new GetAllEmployeesQuery());
+            var DobFrom = DateTime.Parse(String.IsNullOrEmpty(DOBFrom)? "01/01/1753" : DOBFrom);
+            var DobTo = DateTime.Parse(String.IsNullOrEmpty(DOBTo)? "12/12/9999" : DOBTo);
+            var DojFrom = DateTime.Parse(String.IsNullOrEmpty(DOJFrom)? "01/01/1753" : DOJFrom);
+            var DojTo = DateTime.Parse(String.IsNullOrEmpty(DOJTo)? "12/12/9999" : DOJTo);
+            GetAllEmployeesQuery query = new GetAllEmployeesQuery(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
+            var response = await Mediator.Send(query);
+            if (response._StatusCode == "500")
+                return StatusCode(500, response);
+            else if (response._StatusCode == "404")
+                return NotFound(response);
+            else
+                return Ok(response);
         }
         private readonly IFilesServices _service;
         public EmployeeController(IFilesServices service, IConfiguration configuration)

@@ -25,6 +25,11 @@ body {
 .fullwidth{
     width: 100% !important;
 }
+
+.page-title{
+  font-size: 1.75rem;
+  font-weight: 500;
+}
 // .mb-1{
 //     margin-bottom: 5px !important;
 // }
@@ -97,6 +102,11 @@ body {
   color: $white !important;
 }
 
+.bg-dark{
+  background-color: #0A043C !important;
+  color: $white !important;
+}
+
 .text-primary{
   color: $primary-color !important;
 }
@@ -140,4 +150,32 @@ h1,h2,h3,h4,h5,h6{
 
 .btn-rounded{
   border-radius: 50px;
+}
+
+.btn-search{
+  height: fit-content !important;
+  font-size: 1rem !important;
+  padding: 0.375rem 0.75rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+.action-buttons{
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+}
+
+.btn-icon{
+  height: fit-content !important;
+  padding: 0.375rem 0.75rem !important;
+  line-height: 1.5 !important;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  i{
+    font-weight: 400 !important;
+    font-size: 1rem !important;
+  }
 }

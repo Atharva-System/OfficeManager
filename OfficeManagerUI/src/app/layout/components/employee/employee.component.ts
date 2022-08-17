@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { BIEmployeeResponseDto } from 'src/app/shared/DTOs/bi-employee-response-dto';
 import { DepartmentResponseDto } from 'src/app/shared/DTOs/department-response-dto';
 import { DesignationResponseDto } from 'src/app/shared/DTOs/designation-response-dto';
+import { EmployeeDto, EmployeeListResponseDto, IEmployeeListResponseDto } from 'src/app/shared/DTOs/employee-list-response-dto';
 import { DepartmentsService } from 'src/app/shared/services/department/departments.service';
 import { EmployeesService } from 'src/app/shared/services/employee/employees.service';
 
@@ -14,18 +16,51 @@ import { EmployeesService } from 'src/app/shared/services/employee/employees.ser
 export class EmployeeComponent implements OnInit {
 
   uploadForm: FormGroup = new FormGroup({});
-  loading: boolean = false;
   file:File = new File([],"");
   employees: BIEmployeeResponseDto[] = [];
   departments: DepartmentResponseDto[] = [];
   designations: DesignationResponseDto[] =[];
 
-  constructor(private builder:FormBuilder,private service:EmployeesService,private master: DepartmentsService) { }
+  Loading$:Observable<boolean> = new Observable<boolean>();
+  EmployeeListResponse$:Observable<EmployeeListResponseDto> = new Observable<EmployeeListResponseDto>();
+  EmployeeList$:Observable<EmployeeDto[]> = new Observable<EmployeeDto[]>();
+
+  //Search Properties
+  pageNo = 1;
+  pageSize = 10;
+  search = "";
+  department = 0;
+  designation = 0;
+  fromDate = "";
+  toDate = "";
+
+  constructor(private builder:FormBuilder,private service:EmployeesService,private master: DepartmentsService) {
+    this.Loading$ = this.service.Loading$;
+    this.EmployeeList$ = this.service.EmployeeList$;
+    this.EmployeeListResponse$ = this.service.EmployeeListResponse$;
+    this.pageNo = 1;
+  }
+
+
+
 
   ngOnInit(): void {
     this.uploadForm = this.builder.group({
       "EployeeSheet":[File,[Validators.required]]
     })
+    this.master.getDepartments();
+    this.master._DepartmentsList.subscribe(
+      (departments:DepartmentResponseDto[]) => {
+        this.departments = departments;
+      }
+    )
+    this.master.getDesignations();
+    this.master._DesignationsList.subscribe(
+      (designations:DesignationResponseDto[]) => {
+        this.designations = designations;
+      }
+    )
+    this.searchEmployee();
   }
 
   uploadFile(event:any): void{
@@ -34,6 +69,17 @@ export class EmployeeComponent implements OnInit {
     const file2:File[] = event.target.files;
     this.service.uploadEmployees(file2);
     this.setPreview();
+  }
+
+  searchEmployee(): void{
+    this.service.getAllEmployees(this.search,this.department,this.designation,0,this.fromDate,this.toDate,this.fromDate,this.toDate,this.pageNo,this.pageSize);
+
+  }
+
+  createRange(number:number){
+    // return new Array(number);
+    return new Array(number).fill(0)
+      .map((n, index) => index + 1);
   }
 
   setPreview(): void {
@@ -49,16 +95,18 @@ export class EmployeeComponent implements OnInit {
     )
     this.master.DesignationsList$.subscribe(
       (designations:DesignationResponseDto[])=>{
-        debugger
         this.designations = designations;
       }
     )
   }
 
+  paginate(pageNo:number): void {
+    this.pageNo = pageNo;
+    this.searchEmployee();
+  }
+
   saveAll(): void{
-    this.loading = true;
     this.service.saveEmployees(this.employees);
-    this.loading = false;
   }
 
 }

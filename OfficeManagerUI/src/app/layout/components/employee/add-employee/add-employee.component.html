@@ -1,0 +1,59 @@
+<div class="d-flex align-items-center mb-2">
+  <button class="btn-icon"><i class="fa fa-arrow-left"></i></button>
+  <h2 class="page-title">Add Employee</h2>
+</div>
+<form class="card">
+  <div class="card-body">
+      <div class="row mb-3">
+        <div class="form-group col-lg-6 col-md-12">
+          <label for="EmployeeNo">Employee No</label>
+          <input type="number" class="form-control" id="EmployeeNo">
+        </div>
+        <div class="form-group col-lg-6 col-md-12">
+          <label for="Role">Role</label>
+          <Select class="form-control" id="Role">
+            <option [value]="0">Select Role</option>
+          </Select>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="form-group col-lg-6 col-md-12">
+          <label for="Name">Name</label>
+          <input type="text" class="form-control" id="Name">
+        </div>
+        <div class="form-group col-lg-6 col-md-12">
+          <label for="Email">Email</label>
+          <input type="email" class="form-control" id="Email">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="form-group col-lg-6 col-md-12">
+          <label for="Department">Department</label>
+          <select class="form-control" id="Department">
+            <option [value]="0">Select Department</option>
+          </select>
+        </div>
+        <div class="form-group col-lg-6 col-md-12">
+          <label for="Designation">Designation</label>
+          <select class="form-control" id="Designation">
+            <option [value]="0">Select Designation</option>
+          </select>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="form-group col-lg-6 col-md-12">
+        <label for="Dob">Date Of Birth</label>
+        <input type="date" class="form-control" id="Dob">
+      </div>
+      <div class="form-group col-lg-6 col-md-12">
+        <label for="Doj">Date Of Joining</label>
+        <input type="date" class="form-control" id="Doj">
+      </div>
+  </div>
+  </div>
+  <div class="card-footer d-flex justify-content-center bg-white">
+    <button class="btn btn-rounded bg-primary mx-2 px-5">Save</button>
+    <button class="btn btn-rounded bg-warning px-5" [routerLink]="['/employees']">Cancel</button>
+  </div>
+</form>

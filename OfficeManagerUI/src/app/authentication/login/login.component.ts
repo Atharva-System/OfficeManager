@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit {
   }
 
   loginUser():void {
-    debugger
     if(this.loginForm.valid)
     {
       this.login.EmployeeNo = this.loginForm.value.employeeNo;

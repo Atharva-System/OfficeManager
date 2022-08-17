@@ -21,7 +21,6 @@ export class DepartmentsService {
   getDepartments(){
     this.http.get("https://localhost:7177/api/Masters/Departments").subscribe(
       (response)=>{
-        debugger
         let result = response as ResponseDto;
         this._DepartmentsList.next(result._Data as DepartmentResponseDto[]);
       }
@@ -31,7 +30,6 @@ export class DepartmentsService {
   getDesignations(){
     this.http.get("https://localhost:7177/api/Masters/Designations").subscribe(
       (response)=>{
-        debugger
         let result = response as ResponseDto;
         this._DesignationsList.next(result._Data as DesignationResponseDto[]);
       }

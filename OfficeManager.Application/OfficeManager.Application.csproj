@@ -35,6 +35,9 @@
     <Folder Include="Clients\Commands\" />
     <Folder Include="Clients\Queries\" />
     <Folder Include="Designations\Commands\CreateDesignation\" />
+    <Folder Include="Skills\Commands\DeactivateSkill\" />
+    <Folder Include="Skills\Commands\UpdateSkill\" />
+    <Folder Include="Skills\Queries\" />
   </ItemGroup>
 
 </Project>

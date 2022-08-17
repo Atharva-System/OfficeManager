@@ -31,9 +31,29 @@
         }
       }
       .menu-item:hover{
-        background-color: lighten($color: #1C3879, $amount: 15);
+        background-color: lighten($color: #0A043C, $amount: 15);
         cursor: pointer;
       }
+    }
+  }
+}
+
+
+.custom-sidebar{
+  li{
+    .submenu{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+  .nav-link{
+    font-weight: 500;
+    color: var(--bs-dark);
+    :hover{
+      color: var(--bs-primary);
     }
   }
 }

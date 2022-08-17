@@ -7,5 +7,6 @@
         public int CreatedBy { get; set; }
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
         public int ModifiedBy { get; set; }
+
     }
 }

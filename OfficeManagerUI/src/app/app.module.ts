@@ -6,8 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthenticationComponent } from './authentication/authentication.component';
-import { LayoutComponent } from './layout/layout.component';
+import { ReactiveComponentModule } from '@ngrx/component';
 
 
 @NgModule({
@@ -20,7 +19,8 @@ import { LayoutComponent } from './layout/layout.component';
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    ReactiveComponentModule
   ],
   providers: [],
   bootstrap: [AppComponent]
