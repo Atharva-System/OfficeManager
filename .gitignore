@@ -279,3 +279,4 @@ __pycache__/
 /OfficeManager.Application/obj
 /OfficeManager.Domain/obj
 /OfficeManager.Infrastructure/obj
+/OfficeManager.Application.UnitTests/obj
