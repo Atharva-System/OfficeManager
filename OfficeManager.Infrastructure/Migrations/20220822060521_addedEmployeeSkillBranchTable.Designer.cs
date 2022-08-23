@@ -12,8 +12,8 @@ using OfficeManager.Infrastructure.Persistence;
 namespace OfficeManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220817140144_20220817_SearchEmployeeSP")]
-    partial class _20220817_SearchEmployeeSP
+    [Migration("20220822060521_addedEmployeeSkillBranchTable")]
+    partial class addedEmployeeSkillBranchTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -165,6 +165,54 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.HasIndex("DesignationId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("OfficeManager.Domain.Entities.EmployeeSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("levelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("rateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("skillId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("levelId");
+
+                    b.HasIndex("rateId");
+
+                    b.HasIndex("skillId");
+
+                    b.ToTable("EmployeeSkills");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.ProjectMaster", b =>
@@ -412,6 +460,41 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Designation");
+                });
+
+            modelBuilder.Entity("OfficeManager.Domain.Entities.EmployeeSkill", b =>
+                {
+                    b.HasOne("OfficeManager.Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OfficeManager.Domain.Entities.SkillLevel", "SkillLevel")
+                        .WithMany()
+                        .HasForeignKey("levelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OfficeManager.Domain.Entities.SkillRate", "SkillRate")
+                        .WithMany()
+                        .HasForeignKey("rateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OfficeManager.Domain.Entities.Skill", "Skill")
+                        .WithMany()
+                        .HasForeignKey("skillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Skill");
+
+                    b.Navigation("SkillLevel");
+
+                    b.Navigation("SkillRate");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.UserMaster", b =>

@@ -45,7 +45,7 @@ namespace OfficeManager.API.Controllers.Identity
 
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult<LoggedInUserDto>> Login(LoginUserCommand command)
+        public async Task<ActionResult<LoggedInUserDto>> Login([FromBody] LoginUserCommand command)
         {
             try
             {

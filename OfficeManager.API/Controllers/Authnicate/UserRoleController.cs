@@ -8,7 +8,7 @@ using OfficeManager.Application.Common.Models;
 
 namespace OfficeManager.API.Controllers.Identity
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/UserRoles")]
 
     public class UserRoleController : ApiControllerBase

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { EmployeeComponent } from './employee.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
+import { ImportEmployeeComponent } from './import-employee/import-employee.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,10 @@ const routes: Routes = [
   {
     path:'add',
     component: AddEmployeeComponent
+  },
+  {
+    path:'edit/:id',
+    component: AddEmployeeComponent
   }
 ]
 
@@ -21,6 +26,7 @@ const routes: Routes = [
   declarations: [
     EmployeeComponent,
     AddEmployeeComponent,
+    ImportEmployeeComponent,
   ],
   imports: [
     CommonModule,
@@ -28,6 +34,9 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
+  ],
+  providers:[
+    DatePipe
   ]
 })
 export class EmployeeModule { }

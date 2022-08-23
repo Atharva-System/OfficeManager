@@ -1,4 +1,4 @@
-export class EmployeeListResponseDto {
+export class EmployeeListResponseDto implements IEmployeeListResponseDto {
   employees: EmployeeDto[];
   totalCount: number;
   pageSize: number;
@@ -40,7 +40,7 @@ export interface IEmployeeDto {
   dateOfBirth: Date;
 }
 
-export class EmployeeDto {
+export class EmployeeDto implements IEmployeeDto {
   employeeId: number;
   employeeNo: number;
   employeeName: string;
@@ -72,5 +72,74 @@ export class EmployeeDto {
     this.email = email;
     this.dateOfJoining = dateOfJoining;
     this.dateOfBirth = dateOfBirth;
+  }
+}
+
+
+export interface IEmployeeSkill{
+  employeeId: number;
+  skillName: string;
+  skillId: number;
+  levelId: number;
+  rateId: number;
+  checked: boolean;
+}
+
+export class EmployeeSkill implements IEmployeeSkill{
+  employeeId: number;
+  skillName: string;
+  skillId: number;
+  levelId: number;
+  rateId: number;
+  checked: boolean;
+
+  constructor(){
+    this.employeeId = 0;
+    this.levelId = 0;
+    this.skillId = 0;
+    this.rateId = 0;
+    this.skillName = '';
+    this.checked = true;
+  }
+}
+
+export interface IEmployeeDetailDto {
+  userId: number;
+  roleId: number;
+  employeeNo: number;
+  employeeId: number;
+  employeeName: string;
+  email: string;
+  designationId: number;
+  departmentId: number;
+  dateOfBirth: Date;
+  dateOfJoining: Date;
+  skills: IEmployeeSkill[];
+}
+
+export class EmployeeDetailDto implements IEmployeeDetailDto {
+  userId: number;
+  roleId: number;
+  employeeNo: number;
+  employeeId: number;
+  employeeName: string;
+  email: string;
+  designationId: number;
+  departmentId: number;
+  dateOfBirth: Date;
+  dateOfJoining: Date;
+  skills: IEmployeeSkill[];
+  constructor(){
+    this.userId = 0;
+    this.roleId = 0;
+    this.email = "";
+    this.employeeNo = 0;
+    this.employeeId = 0
+    this.employeeName = "";
+    this.departmentId = 0;
+    this.designationId = 0;
+    this.dateOfBirth = new Date();
+    this.dateOfJoining = new Date();
+    this.skills = [];
   }
 }

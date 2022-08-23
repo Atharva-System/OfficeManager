@@ -1,16 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
 using OfficeManager.Application.Designations.Queries.SearchDesignationsQuery;
 using OfficeManager.Application.Employees.Commands.AddBulkEmployees;
+using OfficeManager.Application.Employees.Commands.AddEmployee;
 using OfficeManager.Application.Employees.Commands.SaveBulkEmployees;
+using OfficeManager.Application.Employees.Commands.UpdateEmployee;
 using OfficeManager.Application.Employees.Queries.GetAllEmployees;
+using OfficeManager.Application.Employees.Queries.GetEmployeeById;
 using System.Net.Http.Headers;
 
 namespace OfficeManager.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class EmployeeController : ApiControllerBase
     {
         private readonly IConfiguration _configuration;
@@ -40,6 +45,26 @@ namespace OfficeManager.API.Controllers
             _service = service;
             _configuration = configuration;
         }
+
+
+
+        [HttpGet]
+        [Route("Detail/{id}")]
+        public async Task<ActionResult<Response<EmployeeDetailDto>>> GetEmployeeDetail(int id)
+        {
+            try
+            {
+                var result = await Mediator.Send(new GetEmployeeDetailQuery(id));
+                if (result._Data == null)
+                    NotFound(result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Search has some issue please check internet connection.");
+            }
+        }
+
         [HttpPost]
         [Route("Upload")]
         public async Task<ActionResult<Response<List<BIEmployeeDto>>>> ReadFile(List<IFormFile> file)
@@ -90,6 +115,62 @@ namespace OfficeManager.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "Some issue with data");
+            }
+        }
+
+        [HttpPut]
+        [Route("Edit")]
+        public async Task<ActionResult<Response<object>>> UpdateEmployee([FromBody] UpdateEmployeeCommand command)
+        {
+            Response<object> response = new Response<object>();
+            try
+            {
+                response = await Mediator.Send(command);
+                if (response._IsSuccess)
+                    return Ok(response);
+                return BadRequest(response);
+            }
+            catch(ValidationException ex)
+            {
+                response._Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
+                response._StatusCode = "400";
+                response._IsSuccess = false;
+                return BadRequest(response);
+            }
+            catch(Exception ex)
+            {
+                response._Errors.Add(ex.Message);
+                response._IsSuccess = false;
+                response._StatusCode = "500";
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public async Task<ActionResult<Response<object>>> AddEmployee([FromBody] AddEmployeeCommand command)
+        {
+            Response<object> response = new Response<object>();
+            try
+            {
+                response = await Mediator.Send(command);
+                if (response._IsSuccess)
+                    return Ok(response);
+                return BadRequest(response);
+            }
+            catch (ValidationException ex)
+            {
+                response._Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
+                response._StatusCode = "400";
+                response._IsSuccess = false;
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response._Errors.Add(ex.Message);
+                response._IsSuccess = false;
+                response._StatusCode = "500";
+                return StatusCode(500, response);
             }
         }
     }

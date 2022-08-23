@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BIEmployeeResponseDto } from '../../DTOs/bi-employee-response-dto';
-import { EmployeeDto, EmployeeListResponseDto, IEmployeeListResponseDto } from '../../DTOs/employee-list-response-dto';
+import { EmployeeDetailDto, EmployeeDto, EmployeeListResponseDto, IEmployeeDetailDto, IEmployeeListResponseDto } from '../../DTOs/employee-list-response-dto';
 import { AuthenticationService } from '../authentication.service';
 import { DepartmentsService } from '../department/departments.service';
 import { ResponseDto } from '../department/response-dto';
 import { filter, pairwise } from 'rxjs/operators';
 import { Router, RoutesRecognized } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,9 @@ export class EmployeesService {
 
   _Loading = new BehaviorSubject<boolean>(false);
   public Loading$ = this._Loading.asObservable();
+
+  _EmployeeDetail = new BehaviorSubject<IEmployeeDetailDto>({} as IEmployeeDetailDto);
+  EmployeeDetail$ = this._EmployeeDetail.asObservable();
 
   public get EmployeeList(): EmployeeDto[]{
     return this._EmployeeList.getValue();
@@ -80,12 +84,45 @@ export class EmployeesService {
 
   saveEmployees(employees:BIEmployeeResponseDto[])
   {
-    this.http.post("https://localhost:7177/api/Employee/BulkAdd",{"employees":employees},{headers:this.auth.getHeader()})
+    this._Loading.next(true);
+    this.http.post(environment.baseRoute+"/Employee/BulkAdd",{"employees":employees},{headers:this.auth.getHeader()})
     .subscribe(
       (response)=>{
+        this.getAllEmployees('',0,0,0,'','','','',1,10);
         console.log(response);
       }
     )
+  }
+
+  updateEmployee(employee:EmployeeDetailDto): void{
+    this.http.put(environment.baseRoute + '/Employee/Edit',employee,{headers:this.auth.getHeader()})
+    .subscribe(
+      (res)=>{
+        console.log(res);
+        this.router.navigateByUrl('/employees');
+      }
+    )
+  }
+
+  addEmployee(employee:EmployeeDetailDto): void{
+    this.http.post(environment.baseRoute + '/Employee/add',employee,{headers:this.auth.getHeader()})
+    .subscribe(
+      (res)=>{
+        console.log(res);
+        this.router.navigateByUrl('/employees');
+      }
+    )
+  }
+
+  getEmployeeDetail(id:number): void {
+    this.http.get("https://localhost:7177/api/Employee/Detail/"+id,{headers:this.auth.getHeader()})
+    .subscribe((res)=>{
+      let response = res as ResponseDto;
+      if(response._StatusCode == '200')
+      {
+        this._EmployeeDetail.next(response._Data as EmployeeDetailDto);
+      }
+    })
   }
 
   goBack(){

@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace OfficeManager.Infrastructure.Migrations
 {
-    public partial class _20220817_SearchEmployeeSP : Migration
+    public partial class SearchEmployeeSPCreated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,13 +60,11 @@ namespace OfficeManager.Infrastructure.Migrations
 				END";
 
 			migrationBuilder.Sql(createProcSql);
-
-
-			
 		}
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+
         }
     }
 }

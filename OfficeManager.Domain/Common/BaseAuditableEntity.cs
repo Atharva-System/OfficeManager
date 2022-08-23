@@ -7,6 +7,9 @@
         public int CreatedBy { get; set; }
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
         public int ModifiedBy { get; set; }
+        //public bool IsDeleted { get; set; } = false;
+        //public int DeletedBy { get; set; } = 0;
+        //public DateTime? DeletedOn { get; set; }
 
     }
 }

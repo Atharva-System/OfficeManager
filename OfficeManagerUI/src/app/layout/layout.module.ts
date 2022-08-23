@@ -4,6 +4,7 @@ import { LayoutComponent } from './layout.component';
 import { Routes,RouterModule } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
+import { AuthGuard } from '../shared/utility/auth-guard';
 
 const routes:Routes = [
   {
@@ -12,9 +13,16 @@ const routes:Routes = [
     children: [
       {
         path:'employees',
-        loadChildren: () => import('./components/employee/employee.module').then(m => m.EmployeeModule)
+        loadChildren: () => import('./components/employee/employee.module').then(m => m.EmployeeModule),
+        canActivate:[AuthGuard]
+      },
+      {
+        path: 'skills',
+        loadChildren: () => import('./components/skills/skills.module').then(m => m.SkillsModule),
+        canActivate: [AuthGuard]
       }
-    ]
+    ],
+    canActivate:[AuthGuard]
   }
 ]
 

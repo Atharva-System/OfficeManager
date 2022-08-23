@@ -18,7 +18,7 @@ namespace OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationU
         public async Task<bool> BeUniqueRole(UserRoleMapping role,CancellationToken cancellationToken)
         {
             var userRole = await _context.UserRoleMapping.FirstOrDefaultAsync(x => x.UserId == role.UserId && x.RoleId == role.RoleId);
-            return userRole is not null;
+            return userRole is null;
         }
     }
 }

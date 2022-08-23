@@ -20,6 +20,7 @@ export class EmployeeComponent implements OnInit {
   employees: BIEmployeeResponseDto[] = [];
   departments: DepartmentResponseDto[] = [];
   designations: DesignationResponseDto[] =[];
+  upload:boolean = false;
 
   Loading$:Observable<boolean> = new Observable<boolean>();
   EmployeeListResponse$:Observable<EmployeeListResponseDto> = new Observable<EmployeeListResponseDto>();
@@ -63,9 +64,15 @@ export class EmployeeComponent implements OnInit {
     this.searchEmployee();
   }
 
+  openBrowse(): void{
+    document.getElementById('fileUpload')?.click();
+  }
+
   uploadFile(event:any): void{
     // let path = "";
     // path = this.file;
+    debugger
+    this.upload = true;
     const file2:File[] = event.target.files;
     this.service.uploadEmployees(file2);
     this.setPreview();
@@ -107,6 +114,13 @@ export class EmployeeComponent implements OnInit {
 
   saveAll(): void{
     this.service.saveEmployees(this.employees);
+    this.upload = false;
+  }
+
+  cancelUpload():void {
+    this.employees = [];
+    this.upload = false;
+    document.getElementById('fileUpload')?.setAttribute('value','');
   }
 
 }

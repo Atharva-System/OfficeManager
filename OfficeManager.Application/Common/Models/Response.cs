@@ -8,6 +8,14 @@
         private string StatusCode;
         private bool IsSuccess;
 
+        public Response()
+        {
+            Message = "";
+            Errors = new List<string>();
+            StatusCode = "200";
+            IsSuccess = true;
+        }
+
         public string _Message
         {
             get => this.Message;

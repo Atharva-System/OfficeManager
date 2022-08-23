@@ -14,7 +14,12 @@ namespace OfficeManager.Application.Common.Interfaces
         DbSet<ProjectMaster> Projects { get; set; }
         DbSet<DepartMent> DepartMent { get; set; }
         DbSet<Designation> Designation { get; set; }
+        DbSet<Skill> Skill { get; set; }
+        DbSet<SkillLevel> SkillLevel { get; set; }
+        DbSet<SkillRate> SkillRate { get; set; }
+        DbSet<EmployeeSkill> EmployeeSkills { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        Task<int> SaveChangesWithoutLogAsync(CancellationToken cancellationToken);
         void BeginTransaction();
         void CommitTransaction();
     }

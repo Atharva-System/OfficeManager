@@ -38,6 +38,7 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<SkillRate> SkillRate { get; set; }
         public DbSet<DepartMent> DepartMent { get; set; }
         public DbSet<Designation> Designation { get; set; }
+        public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -52,6 +53,21 @@ namespace OfficeManager.Infrastructure.Persistence
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await _mediator.DispatchDomainEvents(this);
+
+                return await base.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _transaction.Rollback();
+                throw ex;
+            }
+        }
+
+        public async Task<int> SaveChangesWithoutLogAsync(CancellationToken cancellationToken =default)
         {
             try
             {
