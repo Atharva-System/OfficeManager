@@ -21,7 +21,7 @@ namespace OfficeManager.API.Controllers
         private readonly IConfiguration _configuration;
 
         [HttpGet]
-        [Route("GetAll")]
+        [Route("GetAllEmployee")]
         public async Task<ActionResult<Response<EmployeeListResponse>>> GetAll(string? search, int? DepartmentId,int? DesignationId,int? RoleId,string? DOBFrom, string? DOBTo, string? DOJFrom, string? DOJTo
             ,int PageNo,int PageSize)
         
@@ -49,7 +49,7 @@ namespace OfficeManager.API.Controllers
 
 
         [HttpGet]
-        [Route("Detail/{id}")]
+        [Route("GetEmployeeById/{id}")]
         public async Task<ActionResult<Response<EmployeeDetailDto>>> GetEmployeeDetail(int id)
         {
             try
@@ -66,7 +66,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("Upload")]
+        [Route("PreviewEmployeeData")]
         public async Task<ActionResult<Response<List<BIEmployeeDto>>>> ReadFile(List<IFormFile> file)
         {
             long size = file.Sum(f => f.Length);
@@ -100,7 +100,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("BulkAdd")]
+        [Route("UploadEmployeeData")]
         public async Task<ActionResult<Response<object>>> AddBulkEmployee([FromBody] SaveBulkEmployeesCommand command)
         {
             try
@@ -119,7 +119,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPut]
-        [Route("Edit")]
+        [Route("EditEmployee")]
         public async Task<ActionResult<Response<object>>> UpdateEmployee([FromBody] UpdateEmployeeCommand command)
         {
             Response<object> response = new Response<object>();
@@ -147,7 +147,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("add")]
+        [Route("AddEmployee")]
         public async Task<ActionResult<Response<object>>> AddEmployee([FromBody] AddEmployeeCommand command)
         {
             Response<object> response = new Response<object>();
