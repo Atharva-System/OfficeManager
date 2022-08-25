@@ -12,7 +12,7 @@ namespace OfficeManager.Application.UnitTests.Mocks
         {
             _mockContext = GetUserRoleDbContext();
         }
-        public Mock<IApplicationDbContext> GetUserRoleDbContext()
+        protected Mock<IApplicationDbContext> GetUserRoleDbContext()
         {
             var mockContext = new Mock<IApplicationDbContext>();
 
