@@ -4,7 +4,7 @@ using System.Data;
 namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
 {
     //BI stands for Bulk Insertion in BIEmployeeDto
-    public class BIEmployeeDto
+    public class BulkImportEmployeeDto
     {
         public int Id { get; set; }
         public int EmployeeNo { get; set; }
@@ -23,7 +23,7 @@ namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
         public List<string> ValidationErros { get; set; } = new List<string>();
     }
 
-    public class BIEmployee
+    public class BulkImportEmployee
     {
         public int EmployeeNo { get; set; }
         public string EmployeeName { get; set; }
@@ -34,7 +34,7 @@ namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
         public string PasswordHash { get; set; }
         public int RoleId { get; set; } = 0;
 
-        public static IEnumerable<SqlDataRecord> ToSqlDataRecord(List<BIEmployee> employees)
+        public static IEnumerable<SqlDataRecord> ToSqlDataRecord(List<BulkImportEmployee> employees)
         {
             var employeeNo = new SqlMetaData("EmployeeNo", SqlDbType.Int);
             var employeeName = new SqlMetaData("EmployeeName", SqlDbType.NVarChar,100);

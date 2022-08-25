@@ -57,7 +57,7 @@ export class EmployeesService {
     const formData = new FormData();
     formData.append("file",file[0],file[0].name);
 
-    this.http.post("https://localhost:7177/api/Employee/Upload",formData).subscribe(
+    this.http.post("https://localhost:7177/api/Employee/UploadBulkEmployeeImportData",formData).subscribe(
       (response)=>{
         let result = response as ResponseDto;
         this._BIEmployeeList.next(result._Data as BIEmployeeResponseDto[]);
@@ -94,11 +94,11 @@ export class EmployeesService {
   saveEmployees(employees:BIEmployeeResponseDto[])
   {
     this._Loading.next(true);
-    this.http.post(environment.baseRoute+"/Employee/BulkAdd",{"employees":employees},{headers:this.auth.getHeader()})
+    this.http.post(environment.baseRoute+"/Employee/SaveBulkEmployees",{"employees":employees},{headers:this.auth.getHeader()})
     .subscribe(
       (response)=>{
+        this._Loading.next(false);
         this.router.navigateByUrl('/Employees');
-        this.getAllEmployees('',0,0,0,'','','','',1,10);
       }
     )
   }

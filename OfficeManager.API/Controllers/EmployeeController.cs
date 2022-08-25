@@ -67,8 +67,8 @@ namespace OfficeManager.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("Upload")]
-        public async Task<ActionResult<Response<List<BIEmployeeDto>>>> ReadFile(List<IFormFile> file)
+        [Route("UploadBulkEmployeeImportData")]
+        public async Task<ActionResult<Response<List<BulkImportEmployeeDto>>>> UploadBulkEmployeeImportData(List<IFormFile> file)
         {
             long size = file.Sum(f => f.Length);
             var folderName = Path.Combine("Resources");
@@ -101,8 +101,8 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("BulkAdd")]
-        public async Task<ActionResult<Response<object>>> AddBulkEmployee([FromBody] SaveBulkEmployeesCommand command)
+        [Route("SaveBulkEmployees")]
+        public async Task<ActionResult<Response<object>>> SaveBulkEmployees([FromBody] SaveBulkEmployeesCommand command)
         {
             try
             {

@@ -56,7 +56,6 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
             };
 
             _context.Users.Add(user);
-            await _context.SaveChangesAsync(cancellationToken);
 
             foreach (EmployeeSkill skill in request.skills)
             {

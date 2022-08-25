@@ -6,9 +6,9 @@ namespace OfficeManager.API.Services
 {
     public class FilesServices : IFilesServices
     {
-        public async Task<List<BIEmployeeDto>> ReadEmployeeExcel(string path)
+        public async Task<List<BulkImportEmployeeDto>> ReadEmployeeExcel(string path)
         {
-            List<BIEmployeeDto> employees = new List<BIEmployeeDto>();
+            List<BulkImportEmployeeDto> employees = new List<BulkImportEmployeeDto>();
             using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Jul 2022"];
@@ -17,7 +17,7 @@ namespace OfficeManager.API.Services
                 for(int index=4; index < totalRows && worksheet.Cells[index,1].Value != null; index++)
                 {
 
-                    BIEmployeeDto employee = new BIEmployeeDto()
+                    BulkImportEmployeeDto employee = new BulkImportEmployeeDto()
                     {
                         EmployeeNo = Convert.ToInt32(worksheet.Cells[index, 1].Value),
                         EmployeeName = worksheet.Cells[index, 2].Value.ToString(),
