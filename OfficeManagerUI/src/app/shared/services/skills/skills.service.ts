@@ -36,6 +36,13 @@ export class SkillsService {
       (res)=>{
         let response = res as ResponseDto;
         this._SkillLevels.next(response._Data as ISkillLevel[]);
+      },
+      (err)=>{
+        var error = err.error as ResponseDto;
+        if(error._Errors && error._Errors.length > 0)
+          alert(error._Errors);
+        else
+          alert(error._Message);
       }
     )
   }
@@ -46,6 +53,13 @@ export class SkillsService {
       (res)=>{
         let response = res as ResponseDto;
         this._SkillRates.next(response._Data as ISkillRate[]);
+      },
+      (err)=>{
+        var error = err.error as ResponseDto;
+        if(error._Errors && error._Errors.length > 0)
+          alert(error._Errors);
+        else
+          alert(error._Message);
       }
     )
   }
@@ -64,6 +78,15 @@ export class SkillsService {
             this._Loading.next(false);
           }
         )
+      },
+      (err)=>{
+        var error = err.error as ResponseDto;
+        this._Loading.next(false);
+        if(error._Errors && error._Errors.length > 0)
+          alert(error._Errors);
+        else
+          alert(error._Message);
+        this._SkillList.next([]);
       }
     )
   }
@@ -76,6 +99,13 @@ export class SkillsService {
         if(response._StatusCode == '200'){
           this.router.navigateByUrl('/skills');
         }
+      },
+      (err)=>{
+        var error = err.error as ResponseDto;
+        if(error._Errors && error._Errors.length > 0)
+          alert(error._Errors);
+        else
+          alert(error._Message);
       }
     )
   }

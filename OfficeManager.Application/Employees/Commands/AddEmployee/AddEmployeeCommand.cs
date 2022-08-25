@@ -58,6 +58,23 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
 
+            foreach (EmployeeSkill skill in request.skills)
+            {
+                var existingSkill = _context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
+                if (existingSkill == null)
+                {
+                    skill.EmployeeId = employee.Id;
+                    _context.EmployeeSkills.Add(skill);
+                }
+                else
+                {
+                    existingSkill.skillId = skill.skillId;
+                    existingSkill.levelId = skill.levelId;
+                    existingSkill.rateId = skill.rateId;
+                }
+            }
+            await _context.SaveChangesAsync(cancellationToken);
+
             UserRoleMapping userRole = new UserRoleMapping
             {
                 UserId = user.Id,

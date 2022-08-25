@@ -3,6 +3,7 @@ using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
 using OfficeManager.Application.Designations.Queries.SearchDesignationsQuery;
+using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
 {
@@ -26,6 +27,7 @@ namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
             Response<List<BIEmployeeDto>> response = new Response<List<BIEmployeeDto>>();
             try
             {
+                RoleMaster role = _context.Roles.FirstOrDefault(r => r.Name == "Admin");
                 if (((request._departments != null && request._departments.Count > 0)
                    || (request._designations != null && request._designations.Count > 0)) && request._employees.Count > 0)
                 {
@@ -52,7 +54,7 @@ namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
                             emp.IsValid = false;
                             emp.ValidationErros.Add("Designtion is missing!");
                         }
-                        emp.RoleId = 1;
+                        emp.RoleId = role != null ? role.Id : _context.Roles.FirstOrDefault().Id;
                     });
                     response.Data = request._employees;
                     response._Message = "Employees bulk insertion set to verify!";

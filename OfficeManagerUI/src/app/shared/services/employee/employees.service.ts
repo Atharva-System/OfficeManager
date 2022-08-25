@@ -15,6 +15,16 @@ import { environment } from 'src/environments/environment';
 })
 export class EmployeesService {
 
+  private EmployeeId: number = 0;
+
+  public get employeeId(): number{
+    return this.EmployeeId;
+  }
+
+  public set employeeId(value:number){
+    this.EmployeeId = value;
+  }
+
   _BIEmployeeList = new BehaviorSubject<BIEmployeeResponseDto[]>([]);
   public BIEmployeeList$ = this._BIEmployeeList.asObservable();
 
@@ -62,23 +72,22 @@ export class EmployeesService {
       this._Loading.next(true);
       this.http.get(`https://localhost:7177/api/Employee/GetAll?search=${search}&departmentId=${departmentId}
         &designationId=${designationId}&roleId=${roleId}&dobFrom=${dobFrom}&dobTo=${dobTo}
-        &dojFrom=${dojFrom}&dojTo=${dojTo}&pageNo=${pageNo}&pageSize=${pageSize}`)
-      .subscribe((response)=>{
-        var res = response as ResponseDto;
-        var data = res._Data as EmployeeListResponseDto;
+        &dojFrom=${dojFrom}&dojTo=${dojTo}&pageNo=${pageNo}&pageSize=${pageSize}`,{headers:this.auth.getHeader()})
+      .subscribe((res)=>{
+        var response = res as ResponseDto;
+        var data = response._Data as EmployeeListResponseDto;
         this._EmployeeListResponse.next(data);
         this._EmployeeList.next(data.employees)
         this._Loading.next(false);
       },
       (err)=>{
-        console.log(err);
         var error = err.error as ResponseDto;
         this._Loading.next(false);
-        if(error._Errors != null)
+        if(error._Errors && error._Errors.length > 0)
           alert(error._Errors);
         else
           alert(error._Message);
-        this._EmployeeList.next([]);
+        this._EmployeeList.next([])
       })
   }
 
@@ -88,8 +97,8 @@ export class EmployeesService {
     this.http.post(environment.baseRoute+"/Employee/BulkAdd",{"employees":employees},{headers:this.auth.getHeader()})
     .subscribe(
       (response)=>{
+        this.router.navigateByUrl('/Employees');
         this.getAllEmployees('',0,0,0,'','','','',1,10);
-        console.log(response);
       }
     )
   }
@@ -98,7 +107,8 @@ export class EmployeesService {
     this.http.put(environment.baseRoute + '/Employee/Edit',employee,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
-        console.log(res);
+        var response = res as ResponseDto;
+        alert(response._Message)
         this.router.navigateByUrl('/employees');
       }
     )
@@ -108,14 +118,15 @@ export class EmployeesService {
     this.http.post(environment.baseRoute + '/Employee/add',employee,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
-        console.log(res);
+        var response = res as ResponseDto;
+        alert(response._Message)
         this.router.navigateByUrl('/employees');
       }
     )
   }
 
-  getEmployeeDetail(id:number): void {
-    this.http.get("https://localhost:7177/api/Employee/Detail/"+id,{headers:this.auth.getHeader()})
+  getEmployeeDetail(): void {
+    this.http.get("https://localhost:7177/api/Employee/Detail/"+this.EmployeeId,{headers:this.auth.getHeader()})
     .subscribe((res)=>{
       let response = res as ResponseDto;
       if(response._StatusCode == '200')

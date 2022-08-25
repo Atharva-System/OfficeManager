@@ -99,7 +99,7 @@ export class EmployeeSkill implements IEmployeeSkill{
     this.skillId = 0;
     this.rateId = 0;
     this.skillName = '';
-    this.checked = true;
+    this.checked = false;
   }
 }
 

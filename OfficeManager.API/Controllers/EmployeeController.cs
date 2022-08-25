@@ -66,6 +66,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("Upload")]
         public async Task<ActionResult<Response<List<BIEmployeeDto>>>> ReadFile(List<IFormFile> file)
         {
