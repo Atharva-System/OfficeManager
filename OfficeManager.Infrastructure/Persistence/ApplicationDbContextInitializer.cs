@@ -59,15 +59,15 @@ namespace OfficeManager.Infrastructure.Persistence
             //};
             //_context.DesignationMasters.Add(Designation);
 
-            if(!_context.Employees.Any(a => a.EmployeeNo == 1))
+            if(!_context.Employees.Any(a => a.EmployeeNo == 99999))
             {
                 Employee employee = new Employee()
                 {
-                    EmployeeNo = 1,
+                    EmployeeNo = 99999,
                     DesignationId = 1,
                     DepartmentId = 1,
-                    EmployeeName = "Akash Malaviya",
-                    Email = "akash@atharvasystem.com",
+                    EmployeeName = "Admin",
+                    Email = "admin@atharvasystem.com",
                     DateOfBirth = DateTime.Now,
                     DateOfJoining = DateTime.Now
                 };
@@ -76,7 +76,7 @@ namespace OfficeManager.Infrastructure.Persistence
 
                 // Default users
 
-                var administrator = new UserMaster { EmployeeID = employee.Id, Email = "akash@atharvasystem.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123") };
+                var administrator = new UserMaster { EmployeeID = employee.Id, Email = "admin@atharvasystem.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123") };
 
                 if (_context.Users.All(u => u.EmployeeID != administrator.EmployeeID))
                     _context.Users.Add(administrator);
