@@ -20,6 +20,13 @@ export class RolesService {
     this.http.get(environment.baseRoute+"/UserRoles/GetAll",{headers:this.auth.getHeader()})
     .subscribe((response)=>{
       this._rolesList.next(response as IRolesDto[]);
+    },
+    (err)=>{
+      var error = err.error as ResponseDto;
+      if(error._Errors && error._Errors.length > 0)
+        alert(error._Errors);
+      else
+        alert(error._Message);
     });
   }
 }

@@ -22,39 +22,41 @@ namespace OfficeManager.API.Controllers.Identity
             _config = config;
         }
 
-        [HttpPost]
-        [Route("Register")]
-        public async Task<ActionResult<Result>> Register(RegisterUserCommand command)
-        {
-            try
-            {
-                var result = await Mediator.Send(command);
-                if (result.Succeeded)
-                    return Ok(result);
-                return BadRequest(result);
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
-            }
-        }
+        //[HttpPost]
+        //[Route("Register")]
+        //public async Task<ActionResult<Result>> Register(RegisterUserCommand command)
+        //{
+        //    try
+        //    {
+        //        var result = await Mediator.Send(command);
+        //        if (result.Succeeded)
+        //            return Ok(result);
+        //        return BadRequest(result);
+        //    }
+        //    catch (ValidationException ex)
+        //    {
+        //        return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+        //    }
+        //}
 
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult<LoggedInUserDto>> Login([FromBody] LoginUserCommand command)
+        public async Task<ActionResult<Response<LoggedInUserDto>>> Login([FromBody] LoginUserCommand command)
         {
             try
             {
-                var user = await Mediator.Send(command);
+                Response<LoggedInUserDto> response = await Mediator.Send(command);
 
-                if (user == null)
-                    return BadRequest(Result.Failure(Enumerable.Empty<string>(), "Login Failed, Please check the credentials"));
-
-                return GenerateJWT(user);
+                if (response != null && !response._IsSuccess && response._Data == null)
+                {
+                    return BadRequest(response);
+                }
+                response._Data = GenerateJWT(response._Data);
+                return Ok(response);
             }
             catch (ValidationException ex)
             {
@@ -103,29 +105,29 @@ namespace OfficeManager.API.Controllers.Identity
         //    return await Mediator.Send(new GetUserProfileQuery(id));
         //}
 
-        [HttpPost]
-        [Route("ForgotPassword")]
-        public async Task<ActionResult<bool>> ForgotPassword(ForgotPasswordCommand command)
-        {
-            try
-            {
-                return await Mediator.Send(command);
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
-            }
-        }
+        //[HttpPost]
+        //[Route("ForgotPassword")]
+        //public async Task<ActionResult<bool>> ForgotPassword(ForgotPasswordCommand command)
+        //{
+        //    try
+        //    {
+        //        return await Mediator.Send(command);
+        //    }
+        //    catch (ValidationException ex)
+        //    {
+        //        return BadRequest(Result.Failure(ex.Errors.Select(x => x.ErrorMessage).ToList(), ex.Message));
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
+        //    }
+        //}
 
-        [HttpPost]
-        [Route("ForgotPassword/Confirmation")]
-        public async Task<ActionResult<bool>> ForgotPasswordConfirmation(ForgotPasswordConfirmationCommand command)
-        {
-            return await Mediator.Send(command);
-        }
+        //[HttpPost]
+        //[Route("ForgotPassword/Confirmation")]
+        //public async Task<ActionResult<bool>> ForgotPasswordConfirmation(ForgotPasswordConfirmationCommand command)
+        //{
+        //    return await Mediator.Send(command);
+        //}
     }
 }

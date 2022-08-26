@@ -9,14 +9,6 @@
         <i class="fa fa-search"></i>  Search
       </button>
 
-      <button class="btn btn-search btn-small bg-warning mx-2" (click)="searchSkill()">
-        <i class="fa fa-cloud-upload"></i>  Import
-      </button>
-
-      <button class="btn btn-search btn-small bg-warning" (click)="searchSkill()">
-        <i class="fa fa-cloud-download"></i>  Export
-      </button>
-
       <a class="btn btn-search btn-small bg-success mx-2" [routerLink]="['add']">
         <i class="fa fa-plus"></i>  Add New Skill
       </a>
@@ -42,23 +34,17 @@
       <table class="table" *ngrxLet="skills$ as skills">
         <thead>
           <tr>
-            <th>Id</th>
+            <th>Sr. no.</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody *ngIf="!loading && skills.length > 0">
-          <tr *ngFor="let skill of skills">
-            <td>{{ skill.id }}</td>
+          <tr *ngFor="let skill of skills;let i = index">
+            <td>{{ i + 1 }}</td>
             <td>{{ skill.name }}</td>
             <td>
               {{ skill.description }}
-            </td>
-            <td>
-              <button class="action-buttons bg-info" data-toggle="tooltip" data-placement="bottom" title="View"><i class="fa fa-eye" aria-hidden="true"></i></button>
-              <button class="action-buttons bg-warning mx-1" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fa fa-pencil-square" aria-hidden="true"></i></button>
-              <button class="action-buttons bg-danger" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
             </td>
           </tr>
         </tbody>

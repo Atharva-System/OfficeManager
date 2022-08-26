@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { debounceTime, fromEvent, merge, Observable } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { debounceTime, fromEvent, merge, Observable, timeout } from 'rxjs';
 import { DepartmentResponseDto } from 'src/app/shared/DTOs/department-response-dto';
 import { DesignationResponseDto } from 'src/app/shared/DTOs/designation-response-dto';
 import { EmployeeDetailDto, EmployeeSkill, IEmployeeDetailDto } from 'src/app/shared/DTOs/employee-list-response-dto';
@@ -17,10 +17,10 @@ import { VALIDATION_MESSAGE } from 'src/app/shared/utility/validation-messages';
 
 @Component({
   selector: 'app-add-employee',
-  templateUrl: './add-employee.component.html',
-  styleUrls: ['./add-employee.component.scss']
+  templateUrl: './add-edit-employee.component.html',
+  styleUrls: ['./add-edit-employee.component.scss']
 })
-export class AddEmployeeComponent implements OnInit {
+export class AddEditEmployeeComponent implements OnInit {
 
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[] = [];
   employeeForm: FormGroup = new FormGroup({});
@@ -45,27 +45,19 @@ export class AddEmployeeComponent implements OnInit {
   constructor(private service:EmployeesService,private route:ActivatedRoute,
     private masterService:DepartmentsService,private roleService:RolesService,
     private formBuilder:FormBuilder, private datePipe:DatePipe,
-    private skillService:SkillsService) {
+    private skillService:SkillsService,private router:Router) {
     this.employeeDetail$ = this.service.EmployeeDetail$;
     this.genericValidator = new GenericValidator(VALIDATION_MESSAGE);
     this.skillsList$ = this.skillService.skillList$;
     this.skillLevelsList$ = this.skillService.SkillLevels$;
     this.skillRatesList$ = this.skillService.SkillRates$;
-  }
-
-  ngOnInit(): void {
     this.departmentList$ = this.masterService.DepartmentsList$;
     this.designationList$ = this.masterService.DesignationsList$;
     this.rolesList$ = this.roleService.rolesList$;
+  }
+
+  ngOnInit(): void {
     this.skillService.getSkills('',1,1000);
-    this.skillService.getSkillLevels();
-    this.skillService.getSkillRates();
-
-
-    this.masterService.getDepartments();
-    this.masterService.getDesignations();
-    this.roleService.getRoles();
-
     this.skillsList$.subscribe(
       (result:SkillResponseDto[])=>{
         this.employeeSkills = [];
@@ -79,6 +71,21 @@ export class AddEmployeeComponent implements OnInit {
         }
       }
     )
+    timeout(2000);
+    this.skillService.getSkillLevels();
+    timeout(2000);
+    this.skillService.getSkillRates();
+    timeout(2000);
+
+
+    this.masterService.getDepartments();
+    timeout(2000);
+    this.masterService.getDesignations();
+    timeout(2000);
+    this.roleService.getRoles();
+    timeout(2000);
+
+
 
     this.employeeForm = this.formBuilder.group({
       employeeNo:[0,[Validators.required]],
@@ -91,10 +98,10 @@ export class AddEmployeeComponent implements OnInit {
       roleId: [0,[Validators.required]]
     })
 
-    this.route.paramMap.subscribe((params:ParamMap)=>{
-      this.employeeId = params.get('id')!= null ? Number(params.get('id')): 0;
+      this.employeeId = this.route.snapshot.paramMap.get('id')!= null ? Number(this.route.snapshot.paramMap.get('id')): 0;
       if(this.employeeId != 0){
-        this.service.getEmployeeDetail(this.employeeId);
+        this.service.employeeId = this.employeeId;
+        this.service.getEmployeeDetail();
         this.isEmployeeNoDisabled = true;
         this.service._EmployeeDetail.subscribe(
         (response:EmployeeDetailDto) => {
@@ -112,25 +119,27 @@ export class AddEmployeeComponent implements OnInit {
               roleId: response.roleId
             })
           }
+
           for(let skill of this.employeeSkills)
           {
-            debugger
             if(response.skills && response.skills.length > 0 && response.skills.filter((sk)=>sk.skillId == skill.skillId) && response.skills.filter((sk)=>sk.skillId == skill.skillId).length > 0)
             {
               skill.levelId = response.skills.filter((sk)=>sk.skillId == skill.skillId)[0].levelId;
               skill.rateId = response.skills.filter((sk)=>sk.skillId == skill.skillId)[0].rateId;
+              skill.checked = true;
 
+            }
+            if(response.skills && response.skills.length > 0 && (!response.skills.filter((sk)=>sk.skillId == skill.skillId) || response.skills.filter((sk)=>sk.skillId == skill.skillId).length == 0))
+            {
+              skill.checked = false;
             }
             skill.employeeId = response.employeeId;
           }
-
-          console.log(this.employeeSkills);
 
           this.employeeData = response;
         }
         )
       }
-    })
   }
 
   ngAfterViewInit(): void {
@@ -163,14 +172,23 @@ export class AddEmployeeComponent implements OnInit {
         if(skill.checked == true)
           this.employeeData.skills.push(skill);
       }
-    }
-    debugger
-    if(this.employeeData.employeeId == 0)
-    {
-      this.service.addEmployee(this.employeeData);
+      if(this.employeeData.employeeId == 0)
+      {
+        this.service.addEmployee(this.employeeData);
+      }
+      else{
+        this.service.updateEmployee(this.employeeData);
+      }
     }
     else{
-      this.service.updateEmployee(this.employeeData);
+      if(!this.employeeForm.controls["employeeNo"].valid || this.employeeForm.controls["employeeNo"].value == "0")
+      {
+        this.employeeForm.controls["employeeNo"].setErrors([Validators.nullValidator,"O is not valid value."]);
+      }
+      if(!this.employeeForm.controls["employeeName"].valid)
+      {
+        this.employeeForm.controls["employeeName"].setValidators([Validators.required]);
+      }
     }
   }
 

@@ -36,27 +36,17 @@
 
       </button>
 
-      <button class="btn btn-search btn-small bg-warning" (click)="searchEmployee()">
-        <i class="fa fa-cloud-download"></i>  Export
-      </button>
-
-      <a class="btn btn-search btn-small bg-success mx-2" [routerLink]="['add']">
+      <a class="btn btn-search btn-small bg-success" [routerLink]="['add']">
         <i class="fa fa-plus"></i>  Add New Employee
       </a>
-      <input type="file" class="d-none" id="fileUpload" name="file" (change)="uploadFile($event)" [(ngModel)]="file">
+      <input type="file" class="d-none" #fileUpload name="file" (change)="uploadFile($event)">
     </div>
   </div>
 </div>
 
-<div class="card mt-2" *ngIf="upload">
-  <div class="card-body">
-    <app-import-employee [employees]="employees" [departments]="departments" [designations]="designations" [Loading$]="Loading$"></app-import-employee>
-  </div>
-  <div class="card-footer">
-    <button class="btn bg-primary" (click)="saveAll()">Save</button>
-    <button class="btn btn-secondary" (click)="cancelUpload()">cancel</button>
-  </div>
-</div>
+<app-import-employee *ngIf="upload" [employees]="employees" [departments]="departments" [designations]="designations"
+ [Loading$]="Loading$" (save)="saveAll()" (cancel)="cancelUpload()"></app-import-employee>
+
 <ng-container *ngIf="!upload">
   <div class="card mt-2" *ngrxLet="EmployeeListResponse$ as employeeListResponse" >
     <div class="card-header bg-white d-flex justify-content-between align-items-center">
@@ -100,7 +90,7 @@
               <td>
                 <!-- <button class="action-buttons bg-info" data-toggle="tooltip" data-placement="bottom" title="View"><i class="fa fa-eye" aria-hidden="true"></i></button> -->
                 <button class="action-buttons bg-warning mx-1" data-toggle="tooltip" data-placement="bottom" title="Edit" [routerLink]="['edit',employee.employeeId]"><i class="fa fa-pencil-square" aria-hidden="true"></i></button>
-                <button class="action-buttons bg-danger" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
+                <!-- <button class="action-buttons bg-danger" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-minus-circle" aria-hidden="true"></i></button> -->
               </td>
             </tr>
           </tbody>

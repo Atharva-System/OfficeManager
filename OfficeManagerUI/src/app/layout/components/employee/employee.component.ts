@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BIEmployeeResponseDto } from 'src/app/shared/DTOs/bi-employee-response-dto';
@@ -16,7 +16,6 @@ import { EmployeesService } from 'src/app/shared/services/employee/employees.ser
 export class EmployeeComponent implements OnInit {
 
   uploadForm: FormGroup = new FormGroup({});
-  file:File = new File([],"");
   employees: BIEmployeeResponseDto[] = [];
   departments: DepartmentResponseDto[] = [];
   designations: DesignationResponseDto[] =[];
@@ -25,6 +24,8 @@ export class EmployeeComponent implements OnInit {
   Loading$:Observable<boolean> = new Observable<boolean>();
   EmployeeListResponse$:Observable<EmployeeListResponseDto> = new Observable<EmployeeListResponseDto>();
   EmployeeList$:Observable<EmployeeDto[]> = new Observable<EmployeeDto[]>();
+
+  @ViewChild('fileUpload') fileInput:any;
 
   //Search Properties
   pageNo = 1;
@@ -65,17 +66,17 @@ export class EmployeeComponent implements OnInit {
   }
 
   openBrowse(): void{
-    document.getElementById('fileUpload')?.click();
+    document.getElementsByName('file')[0].click();
   }
 
   uploadFile(event:any): void{
     // let path = "";
     // path = this.file;
-    debugger
     this.upload = true;
     const file2:File[] = event.target.files;
     this.service.uploadEmployees(file2);
     this.setPreview();
+    this.fileInput.nativeElement.value = '';
   }
 
   searchEmployee(): void{
@@ -120,7 +121,7 @@ export class EmployeeComponent implements OnInit {
   cancelUpload():void {
     this.employees = [];
     this.upload = false;
-    document.getElementById('fileUpload')?.setAttribute('value','');
+    this.fileInput.nativeElement.value = '';
   }
 
 }

@@ -15,6 +15,16 @@ import { environment } from 'src/environments/environment';
 })
 export class EmployeesService {
 
+  private EmployeeId: number = 0;
+
+  public get employeeId(): number{
+    return this.EmployeeId;
+  }
+
+  public set employeeId(value:number){
+    this.EmployeeId = value;
+  }
+
   _BIEmployeeList = new BehaviorSubject<BIEmployeeResponseDto[]>([]);
   public BIEmployeeList$ = this._BIEmployeeList.asObservable();
 
@@ -47,7 +57,7 @@ export class EmployeesService {
     const formData = new FormData();
     formData.append("file",file[0],file[0].name);
 
-    this.http.post("https://localhost:7177/api/Employee/Upload",formData).subscribe(
+    this.http.post("https://localhost:7177/api/Employee/UploadBulkEmployeeImportData",formData).subscribe(
       (response)=>{
         let result = response as ResponseDto;
         this._BIEmployeeList.next(result._Data as BIEmployeeResponseDto[]);
@@ -62,34 +72,33 @@ export class EmployeesService {
       this._Loading.next(true);
       this.http.get(`https://localhost:7177/api/Employee/GetAll?search=${search}&departmentId=${departmentId}
         &designationId=${designationId}&roleId=${roleId}&dobFrom=${dobFrom}&dobTo=${dobTo}
-        &dojFrom=${dojFrom}&dojTo=${dojTo}&pageNo=${pageNo}&pageSize=${pageSize}`)
-      .subscribe((response)=>{
-        var res = response as ResponseDto;
-        var data = res._Data as EmployeeListResponseDto;
+        &dojFrom=${dojFrom}&dojTo=${dojTo}&pageNo=${pageNo}&pageSize=${pageSize}`,{headers:this.auth.getHeader()})
+      .subscribe((res)=>{
+        var response = res as ResponseDto;
+        var data = response._Data as EmployeeListResponseDto;
         this._EmployeeListResponse.next(data);
         this._EmployeeList.next(data.employees)
         this._Loading.next(false);
       },
       (err)=>{
-        console.log(err);
         var error = err.error as ResponseDto;
         this._Loading.next(false);
-        if(error._Errors != null)
+        if(error._Errors && error._Errors.length > 0)
           alert(error._Errors);
         else
           alert(error._Message);
-        this._EmployeeList.next([]);
+        this._EmployeeList.next([])
       })
   }
 
   saveEmployees(employees:BIEmployeeResponseDto[])
   {
     this._Loading.next(true);
-    this.http.post(environment.baseRoute+"/Employee/BulkAdd",{"employees":employees},{headers:this.auth.getHeader()})
+    this.http.post(environment.baseRoute+"/Employee/SaveBulkEmployees",{"employees":employees},{headers:this.auth.getHeader()})
     .subscribe(
       (response)=>{
-        this.getAllEmployees('',0,0,0,'','','','',1,10);
-        console.log(response);
+        this._Loading.next(false);
+        this.router.navigateByUrl('/Employees');
       }
     )
   }
@@ -98,7 +107,8 @@ export class EmployeesService {
     this.http.put(environment.baseRoute + '/Employee/Edit',employee,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
-        console.log(res);
+        var response = res as ResponseDto;
+        alert(response._Message)
         this.router.navigateByUrl('/employees');
       }
     )
@@ -108,14 +118,15 @@ export class EmployeesService {
     this.http.post(environment.baseRoute + '/Employee/add',employee,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
-        console.log(res);
+        var response = res as ResponseDto;
+        alert(response._Message)
         this.router.navigateByUrl('/employees');
       }
     )
   }
 
-  getEmployeeDetail(id:number): void {
-    this.http.get("https://localhost:7177/api/Employee/Detail/"+id,{headers:this.auth.getHeader()})
+  getEmployeeDetail(): void {
+    this.http.get("https://localhost:7177/api/Employee/Detail/"+this.EmployeeId,{headers:this.auth.getHeader()})
     .subscribe((res)=>{
       let response = res as ResponseDto;
       if(response._StatusCode == '200')

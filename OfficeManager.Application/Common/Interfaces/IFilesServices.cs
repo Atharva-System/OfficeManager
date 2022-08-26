@@ -4,6 +4,6 @@ namespace OfficeManager.Application.Common.Interfaces
 {
     public interface IFilesServices
     {
-        Task<List<BIEmployeeDto>> ReadEmployeeExcel(string path);
+        Task<List<BulkImportEmployeeDto>> ReadEmployeeExcel(string path);
     }
 }
