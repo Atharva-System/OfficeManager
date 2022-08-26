@@ -2,7 +2,7 @@
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
-using OfficeManager.Application.Designations.Queries.SearchDesignationsQuery;
+using OfficeManager.Application.Designations.Queries.SearchDesignations;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees

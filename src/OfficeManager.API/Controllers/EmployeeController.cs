@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
-using OfficeManager.Application.Designations.Queries.SearchDesignationsQuery;
+using OfficeManager.Application.Designations.Queries.SearchDesignations;
 using OfficeManager.Application.Employees.Commands.AddBulkEmployees;
 using OfficeManager.Application.Employees.Commands.AddEmployee;
 using OfficeManager.Application.Employees.Commands.SaveBulkEmployees;

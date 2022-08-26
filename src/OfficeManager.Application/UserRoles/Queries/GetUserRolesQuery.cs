@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.ApplicationRoles.Queries
 {

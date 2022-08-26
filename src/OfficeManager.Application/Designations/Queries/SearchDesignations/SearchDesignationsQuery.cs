@@ -5,7 +5,7 @@ using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 
-namespace OfficeManager.Application.Designations.Queries.SearchDesignationsQuery
+namespace OfficeManager.Application.Designations.Queries.SearchDesignations
 {
     public record SearchDesignationsQuery(string search):IRequest<Response<List<DesignationDto>>>;
 
@@ -28,21 +28,16 @@ namespace OfficeManager.Application.Designations.Queries.SearchDesignationsQuery
                 {
                     response.Data = await _context.Designation.Where(d => d.Name.Contains(request.search))
                         .ProjectToListAsync<DesignationDto>(_mapper.ConfigurationProvider);
-                    
-                    //return Result.Success("Designations found",await _context.Designation.Where(d => d.Name.Contains(request.search))
-                    //    .ProjectToListAsync<DesignationDto>(_mapper.ConfigurationProvider));
                 }
                 else
                 {
                     response.Data = await _context.Designation
                         .ProjectToListAsync<DesignationDto>(_mapper.ConfigurationProvider);
                 }
-                response._Message = "Designations found";
+                response._Message = response.Data.Count > 0 ? "Data found!" : "No Data found!";
                 response._StatusCode = "200";
                 response._IsSuccess = true;
                 return response;
-                //return Result.Success("Designations found", await _context.Designation
-                //        .ProjectToListAsync<DesignationDto>(_mapper.ConfigurationProvider));
             }
             catch(ValidationException exception)
             {
