@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Departments.Queries.SearchDepartments
 {
@@ -43,7 +42,7 @@ namespace OfficeManager.Application.Departments.Queries.SearchDepartments
                 response.Data = departments;
                 response._StatusCode = "200";
                 response._IsSuccess = true;
-                response._Message = "Data found!";
+                response._Message = departments.Count > 0 ? "Data found!" : "No Data found!";
                 
                 //return Result.Success("Department found",departments);
                 return response;
@@ -52,7 +51,7 @@ namespace OfficeManager.Application.Departments.Queries.SearchDepartments
             {
                 //return Result.Failure(Array.Empty<string>(),"Data has some issue please check");
                 response.Data = null;
-                response._Message = "There is some error in data";
+                response._Message = "There is some issue with the data!";
                 response._Errors.Add(ex.Message);
                 response._IsSuccess = false;
                 response._StatusCode = "500";

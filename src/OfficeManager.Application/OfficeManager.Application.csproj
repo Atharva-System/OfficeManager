@@ -8,8 +8,20 @@
 
   <ItemGroup>
     <Compile Remove="ApplicationUsers\Queries\**" />
+    <Compile Remove="Clients\**" />
+    <Compile Remove="Designations\Commands\**" />
+    <Compile Remove="Skills\Commands\DeactivateSkill\**" />
+    <Compile Remove="Skills\Commands\UpdateSkill\**" />
     <EmbeddedResource Remove="ApplicationUsers\Queries\**" />
+    <EmbeddedResource Remove="Clients\**" />
+    <EmbeddedResource Remove="Designations\Commands\**" />
+    <EmbeddedResource Remove="Skills\Commands\DeactivateSkill\**" />
+    <EmbeddedResource Remove="Skills\Commands\UpdateSkill\**" />
     <None Remove="ApplicationUsers\Queries\**" />
+    <None Remove="Clients\**" />
+    <None Remove="Designations\Commands\**" />
+    <None Remove="Skills\Commands\DeactivateSkill\**" />
+    <None Remove="Skills\Commands\UpdateSkill\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,14 +41,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OfficeManager.Domain\OfficeManager.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Clients\Commands\" />
-    <Folder Include="Clients\Queries\" />
-    <Folder Include="Designations\Commands\CreateDesignation\" />
-    <Folder Include="Skills\Commands\DeactivateSkill\" />
-    <Folder Include="Skills\Commands\UpdateSkill\" />
   </ItemGroup>
 
 </Project>

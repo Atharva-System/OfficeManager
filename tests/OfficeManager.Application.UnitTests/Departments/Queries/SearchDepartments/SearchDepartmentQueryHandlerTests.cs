@@ -56,7 +56,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
 
             result._IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("Data found!");
+            result._Message.ShouldBe("No Data found!");
 
             result.Data.Count.ShouldBe(0);
         }
@@ -75,7 +75,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
 
             result._IsSuccess.ShouldBe(false);
 
-            result._Message.ShouldBe("There is some error in data");
+            result._Message.ShouldBe("There is some issue with the data!");
 
             result._Errors.Count.ShouldBeGreaterThan(0);
 
