@@ -31,7 +31,7 @@ export class SkillsService {
   constructor(private http:HttpClient,private auth:AuthenticationService,private router:Router) { }
 
   getSkillLevels(): void{
-    this.http.get(environment.baseRoute + "/Masters/SkillLevels",{headers:this.auth.getHeader()})
+    this.http.get(environment.baseRoute + "/SkillLevel/GetAllSkillLevel",{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
         let response = res as ResponseDto;
@@ -48,7 +48,7 @@ export class SkillsService {
   }
 
   getSkillRates(): void {
-    this.http.get(environment.baseRoute + "/Masters/SkillRates",{headers:this.auth.getHeader()})
+    this.http.get(environment.baseRoute + "/SkillRate/GetAllSkillRate",{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
         let response = res as ResponseDto;
@@ -66,7 +66,7 @@ export class SkillsService {
 
   getSkills(search:string,pageNo:number,pageSize:number): void {
     this._Loading.next(true);
-    this.http.get(environment.baseRoute + "/Masters/Skill?Search="+search+"&PageNo="
+    this.http.get(environment.baseRoute + "/Skill/GetAllSkill?Search="+search+"&PageNo="
     +pageNo+"&PageSize="+pageSize,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
@@ -92,7 +92,7 @@ export class SkillsService {
   }
 
   saveSkill(skill:SkillResponseDto){
-    this.http.post("https://localhost:7177/api/Masters/Skill/Add",skill,{headers:this.auth.getHeader()})
+    this.http.post(environment.baseRoute + "/Skill/AddSkill",skill,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
         var response = res as ResponseDto;

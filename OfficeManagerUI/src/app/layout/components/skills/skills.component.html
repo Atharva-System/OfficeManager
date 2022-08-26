@@ -41,7 +41,7 @@
         </thead>
         <tbody *ngIf="!loading && skills.length > 0">
           <tr *ngFor="let skill of skills;let i = index">
-            <td>{{ i + 1 }}</td>
+            <td>{{ ((pageNo - 1) * 10) + i + 1 }}</td>
             <td>{{ skill.name }}</td>
             <td>
               {{ skill.description }}

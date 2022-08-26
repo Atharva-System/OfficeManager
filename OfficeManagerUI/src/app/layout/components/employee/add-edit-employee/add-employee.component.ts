@@ -105,7 +105,6 @@ export class AddEditEmployeeComponent implements OnInit {
         this.isEmployeeNoDisabled = true;
         this.service._EmployeeDetail.subscribe(
         (response:EmployeeDetailDto) => {
-          debugger
           if(response && response.employeeNo != undefined)
           {
             this.employeeForm.setValue({

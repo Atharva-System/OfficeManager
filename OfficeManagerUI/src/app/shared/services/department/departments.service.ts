@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { DepartmentResponseDto } from '../../DTOs/department-response-dto';
 import { DesignationResponseDto } from '../../DTOs/designation-response-dto';
 import { AuthenticationService } from '../authentication.service';
@@ -19,7 +20,7 @@ export class DepartmentsService {
   constructor(private http:HttpClient,private auth:AuthenticationService) { }
 
   getDepartments(){
-    this.http.get("https://localhost:7177/api/Masters/Departments",{headers:this.auth.getHeader()}).subscribe(
+    this.http.get(environment.baseRoute + "/Department/GetAllDepartment",{headers:this.auth.getHeader()}).subscribe(
       (response)=>{
         let result = response as ResponseDto;
         this._DepartmentsList.next(result._Data as DepartmentResponseDto[]);
@@ -35,7 +36,7 @@ export class DepartmentsService {
   }
 
   getDesignations(){
-    this.http.get("https://localhost:7177/api/Masters/Designations",{headers:this.auth.getHeader()}).subscribe(
+    this.http.get(environment.baseRoute + "/Designation/GetAllDesignation",{headers:this.auth.getHeader()}).subscribe(
       (response)=>{
         let result = response as ResponseDto;
         this._DesignationsList.next(result._Data as DesignationResponseDto[]);
