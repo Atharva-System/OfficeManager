@@ -70,7 +70,7 @@ export class EmployeesService {
   getAllEmployees(search:string,departmentId:number,designationId:number,roleId:number,dobFrom:string,dobTo:string
     ,dojFrom:string,dojTo:string,pageNo:number,pageSize:number): void{
       this._Loading.next(true);
-      this.http.get(`https://localhost:7177/api/Employee/GetAll?search=${search}&departmentId=${departmentId}
+      this.http.get(`${environment.baseRoute}/Employee/GetAllEmployee?search=${search}&departmentId=${departmentId}
         &designationId=${designationId}&roleId=${roleId}&dobFrom=${dobFrom}&dobTo=${dobTo}
         &dojFrom=${dojFrom}&dojTo=${dojTo}&pageNo=${pageNo}&pageSize=${pageSize}`,{headers:this.auth.getHeader()})
       .subscribe((res)=>{
@@ -104,7 +104,7 @@ export class EmployeesService {
   }
 
   updateEmployee(employee:EmployeeDetailDto): void{
-    this.http.put(environment.baseRoute + '/Employee/Edit',employee,{headers:this.auth.getHeader()})
+    this.http.put(environment.baseRoute + '/Employee/EditEmployee',employee,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
         var response = res as ResponseDto;
@@ -115,7 +115,7 @@ export class EmployeesService {
   }
 
   addEmployee(employee:EmployeeDetailDto): void{
-    this.http.post(environment.baseRoute + '/Employee/add',employee,{headers:this.auth.getHeader()})
+    this.http.post(environment.baseRoute + '/Employee/AddEmployee',employee,{headers:this.auth.getHeader()})
     .subscribe(
       (res)=>{
         var response = res as ResponseDto;
@@ -126,7 +126,7 @@ export class EmployeesService {
   }
 
   getEmployeeDetail(): void {
-    this.http.get("https://localhost:7177/api/Employee/Detail/"+this.EmployeeId,{headers:this.auth.getHeader()})
+    this.http.get(environment.baseRoute + "/Employee/GetEmployeeById/"+this.EmployeeId,{headers:this.auth.getHeader()})
     .subscribe((res)=>{
       let response = res as ResponseDto;
       if(response._StatusCode == '200')
