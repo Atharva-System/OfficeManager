@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginResponseDto } from '../DTOs/login-response-dto';
 import { LoginModel } from '../Models/login-model';
+import { ResponseDto } from './department/response-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -42,10 +43,18 @@ export class AuthenticationService {
   constructor(private http:HttpClient,private router:Router) { }
 
   login(data:LoginModel):void {
-    this.http.post("https://localhost:7177/api/User/Login",data).subscribe((response)=>{
-      let loginResponse = response as LoginResponseDto;
+    this.http.post("https://localhost:7177/api/User/Login",data).subscribe((res)=>{
+      let response = res as ResponseDto;
+      let loginResponse = response._Data as LoginResponseDto
       localStorage.setItem("token",loginResponse.token);
       this.router.navigateByUrl("/employees");
+    },
+    (err)=>{
+      var error = err.error as ResponseDto;
+      if(error._Errors && error._Errors.length > 0)
+        alert(error._Errors);
+      else
+        alert(error._Message);
     });
   }
 }

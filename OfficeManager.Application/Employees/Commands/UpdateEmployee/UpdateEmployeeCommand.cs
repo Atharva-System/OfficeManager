@@ -58,9 +58,15 @@ namespace OfficeManager.Application.Employees.Commands.UpdateEmployee
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
-            //List<EmployeeSkill> skillList = _context.EmployeeSkills.Where(empSk => empSk.EmployeeId == request.EmployeeId).ToList();
+            List<EmployeeSkill> skillList = _context.EmployeeSkills.Where(empSk => empSk.EmployeeId == employee.Id).ToList();
+            skillList.ForEach(sk =>
+            {
+                sk.IsActive = false;
+            });
 
-            foreach(EmployeeSkill skill in request.skills)
+            await _context.SaveChangesAsync(cancellationToken);
+
+            foreach (EmployeeSkill skill in request.skills)
             {
                 var existingSkill = _context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
                 if(existingSkill == null)
@@ -73,8 +79,10 @@ namespace OfficeManager.Application.Employees.Commands.UpdateEmployee
                     existingSkill.skillId = skill.skillId;
                     existingSkill.levelId = skill.levelId;
                     existingSkill.rateId = skill.rateId;
+                    existingSkill.IsActive = true;
                 }
             }
+
 
             await _context.SaveChangesAsync(cancellationToken);
 

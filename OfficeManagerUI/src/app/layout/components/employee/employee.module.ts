@@ -4,7 +4,7 @@ import { EmployeeComponent } from './employee.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
-import { AddEmployeeComponent } from './add-employee/add-employee.component';
+import { AddEditEmployeeComponent } from './add-edit-employee/add-employee.component';
 import { ImportEmployeeComponent } from './import-employee/import-employee.component';
 
 const routes: Routes = [
@@ -14,18 +14,18 @@ const routes: Routes = [
   },
   {
     path:'add',
-    component: AddEmployeeComponent
+    component: AddEditEmployeeComponent
   },
   {
     path:'edit/:id',
-    component: AddEmployeeComponent
+    component: AddEditEmployeeComponent
   }
 ]
 
 @NgModule({
   declarations: [
     EmployeeComponent,
-    AddEmployeeComponent,
+    AddEditEmployeeComponent,
     ImportEmployeeComponent,
   ],
   imports: [

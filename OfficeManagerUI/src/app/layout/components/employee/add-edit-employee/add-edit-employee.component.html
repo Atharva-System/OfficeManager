@@ -1,58 +1,66 @@
 
 <form class="card" (ngSubmit)="saveEmployee()">
   <div class="card-header d-flex align-items-center mb-2 bg-white">
-    <button class="btn-icon"><i class="fa fa-arrow-left"></i></button>
+    <button class="btn-icon" [routerLink]="['/employees']"><i class="fa fa-arrow-left"></i></button>
     <h2 class="page-title mb-0"><ng-container *ngIf="employeeId == 0">Add</ng-container><ng-container *ngIf="employeeId != 0">Edit</ng-container> Employee</h2>
   </div>
   <div class="card-body" [formGroup]="employeeForm">
       <div class="row mb-3">
         <div class="form-group col-lg-6 col-md-12">
-          <label for="EmployeeNo">Employee No</label>
+          <label for="EmployeeNo">Employee No<span class="mx-2 text-danger">*</span></label>
           <input type="number" class="form-control"  formControlName="employeeNo">
+          <span class="text-muted text-danger" *ngIf="displayMessage['employeeNo']">{{ displayMessage['employeeNo'] }}</span>
         </div>
         <div class="form-group col-lg-6 col-md-12" *ngrxLet="rolesList$ as rolesList">
-          <label for="Role">Role</label>
+          <label for="Role">Role<span class="mx-2 text-danger">*</span></label>
           <select class="form-control" id="Role" formControlName="roleId">
             <option [value]="0">Select Role</option>
             <option *ngFor="let role of rolesList" [value]="role.id">{{ role.name }}</option>
+            <span class="text-muted text-danger" *ngIf="displayMessage['roleId']">{{ displayMessage['roleId'] }}</span>
           </select>
         </div>
       </div>
       <div class="row mb-3">
         <div class="form-group col-lg-6 col-md-12">
-          <label for="Name">Name</label>
+          <label for="Name">Name<span class="mx-2 text-danger">*</span></label>
           <input type="text" class="form-control" id="Name" formControlName="employeeName">
+          <span class="text-muted text-danger" *ngIf="displayMessage['employeeName']">{{ displayMessage['employeeName'] }}</span>
         </div>
         <div class="form-group col-lg-6 col-md-12">
-          <label for="Email">Email</label>
+          <label for="Email">Email<span class="mx-2 text-danger">*</span></label>
           <input type="email" class="form-control" id="Email" formControlName="email">
+          <span class="text-muted text-danger" *ngIf="displayMessage['email']">{{ displayMessage['email'] }}</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="form-group col-lg-6 col-md-12" *ngrxLet="departmentList$ as departmentList">
-          <label for="Department">Department</label>
+          <label for="Department">Department<span class="mx-2 text-danger">*</span></label>
           <select class="form-control" id="Department" formControlName="departmentId">
             <option [value]="0">Select Department</option>
             <option *ngFor="let department of departmentList" [value]="department.id">{{ department.name }}</option>
           </select>
+          <span class="text-muted text-danger" *ngIf="displayMessage['departmentId']">{{ displayMessage['departmentId'] }}</span>
         </div>
         <div class="form-group col-lg-6 col-md-12" *ngrxLet="designationList$ as designationList">
-          <label for="Designation">Designation</label>
+          <label for="Designation">Designation<span class="mx-2 text-danger">*</span></label>
           <select class="form-control" id="Designation" formControlName="designationId">
             <option [value]="0">Select Designation</option>
             <option *ngFor="let designation of  designationList" [value]="designation.id">{{ designation.name }}</option>
           </select>
+          <span class="text-muted text-danger" *ngIf="displayMessage['designationId']">{{ displayMessage['designationId'] }}</span>
         </div>
     </div>
 
     <div class="row mb-3">
       <div class="form-group col-lg-6 col-md-12">
-        <label for="Dob">Date Of Birth</label>
+        <label for="Dob">Date Of Birth<span class="mx-2 text-danger">*</span></label>
         <input type="date" class="form-control" id="Dob"  formControlName="dateOfBirth">
+        <span class="text-muted text-danger" *ngIf="displayMessage['dateOfBirth']">{{ displayMessage['dateOfBirth'] }}</span>
       </div>
       <div class="form-group col-lg-6 col-md-12">
-        <label for="Doj">Date Of Joining</label>
+        <label for="Doj">Date Of Joining<span class="mx-2 text-danger">*</span></label>
         <input type="date" class="form-control" id="Doj" formControlName="dateOfJoining">
+        <span class="text-muted text-danger" *ngIf="displayMessage['dateOfJoining']">{{ displayMessage['dateOfJoining'] }}</span>
       </div>
   </div>
   </div>
@@ -90,7 +98,7 @@
     </table>
   </div>
   <div class="card-footer d-flex justify-content-center bg-white">
-    <button class="btn btn-rounded bg-primary mx-2 px-5">Save</button>
+    <button class="btn btn-rounded bg-primary mx-2 px-5" [disabled]="!employeeForm.valid">Save</button>
     <button class="btn btn-rounded bg-warning px-5" [routerLink]="['/employees']">Cancel</button>
   </div>
 </form>
