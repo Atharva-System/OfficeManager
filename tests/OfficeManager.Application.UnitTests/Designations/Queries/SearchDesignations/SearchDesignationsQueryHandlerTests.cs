@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Designations.Queries.SearchDesignations;
 using OfficeManager.Application.UnitTests.Mocks;
@@ -18,7 +19,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         {
             var result = await handler.Handle(new SearchDesignationsQuery(String.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
             result._StatusCode.ShouldBe("200");
 
@@ -34,7 +35,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         {
             var result = await handler.Handle(new SearchDesignationsQuery("Software"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
             result._StatusCode.ShouldBe("200");
 
@@ -50,7 +51,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         {
             var result = await handler.Handle(new SearchDesignationsQuery("Sales Head"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
             result._StatusCode.ShouldBe("200");
 
@@ -69,7 +70,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
 
             var result = await handler.Handle(new SearchDesignationsQuery(String.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
             result._StatusCode.ShouldBe("500");
 

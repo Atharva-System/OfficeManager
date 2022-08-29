@@ -131,8 +131,10 @@ app.Run();
 
 void InitializeDatabase(IApplicationBuilder app)
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
     using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
     {
         serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
     }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
 
@@ -10,7 +11,7 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllDepartment")]
-        public async Task<ActionResult<Response<List<DepartmentDto>>>> SearchDepartment(string? search)
+        public async Task<ActionResult<Response<List<DepartmentDTO>>>> SearchDepartment(string? search)
         {
             try
             {

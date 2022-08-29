@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
 using OfficeManager.Application.UnitTests.Mocks;
@@ -18,7 +19,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         {
             var result = await handler.Handle(new SearchDepartmentsQuery(String.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
             result._StatusCode.ShouldBe("200");
 
@@ -34,7 +35,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         {
             var result = await handler.Handle(new SearchDepartmentsQuery("Anal"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
             result._StatusCode.ShouldBe("200");
 
@@ -50,7 +51,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         {
             var result = await handler.Handle(new SearchDepartmentsQuery("HR"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
             result._StatusCode.ShouldBe("200");
 
@@ -69,7 +70,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
 
             var result = await handler.Handle(new SearchDepartmentsQuery(String.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
             result._StatusCode.ShouldBe("500");
 

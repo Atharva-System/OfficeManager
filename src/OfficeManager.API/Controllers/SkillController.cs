@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Skills.Commands.CreateSkill;
 using OfficeManager.Application.Skills.Queries.SearchSkillsQuery;
@@ -12,9 +13,9 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllSkill")]
-        public async Task<ActionResult<Response<PaginatedList<SkillDto>>>> GetSkills([FromQuery] SearchSkillsQuery query)
+        public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> GetSkills([FromQuery] SearchSkillsQuery query)
         {
-            Response<PaginatedList<SkillDto>> response = new Response<PaginatedList<SkillDto>>();
+            Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
             try
             {
                 response = await Mediator.Send(query);

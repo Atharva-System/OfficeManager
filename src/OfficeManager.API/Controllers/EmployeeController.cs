@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
@@ -50,7 +51,7 @@ namespace OfficeManager.API.Controllers
 
         [HttpGet]
         [Route("GetEmployeeById/{id}")]
-        public async Task<ActionResult<Response<EmployeeDetailDto>>> GetEmployeeDetail(int id)
+        public async Task<ActionResult<Response<EmployeeDetailDTO>>> GetEmployeeDetail(int id)
         {
             try
             {
@@ -68,7 +69,7 @@ namespace OfficeManager.API.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("UploadBulkEmployeeImportData")]
-        public async Task<ActionResult<Response<List<BulkImportEmployeeDto>>>> UploadBulkEmployeeImportData(List<IFormFile> file)
+        public async Task<ActionResult<Response<List<BulkImportEmployeeDTO>>>> UploadBulkEmployeeImportData(List<IFormFile> file)
         {
             long size = file.Sum(f => f.Length);
             var folderName = Path.Combine("Resources");
@@ -93,9 +94,9 @@ namespace OfficeManager.API.Controllers
             var departments = await Mediator.Send(new SearchDepartmentsQuery(null));
             var designations = await Mediator.Send(new SearchDesignationsQuery(null));
             AddBulkEmployeesCommand command = new AddBulkEmployeesCommand();
-            command._employees = employees;
-            command._departments = departments.Data;
-            command._designations = designations.Data;
+            command.employees = employees;
+            command.departments = departments.Data;
+            command.designations = designations.Data;
             var response = await Mediator.Send(command);
             return Ok(response);
         }
