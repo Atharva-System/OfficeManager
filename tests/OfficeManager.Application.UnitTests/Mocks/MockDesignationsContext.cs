@@ -4,11 +4,11 @@ namespace OfficeManager.Application.UnitTests.Mocks
 {
     public class MockDesignationsContext : BaseMockContext
     {
-        protected readonly Mock<IApplicationDbContext> _mockContext;
+        protected readonly Mock<IApplicationDbContext> mockContext;
 
         public MockDesignationsContext()
         {
-            _mockContext = GetDesignationsDbContext();
+            mockContext = GetDesignationsDbContext();
         }
 
         protected Mock<IApplicationDbContext> GetDesignationsDbContext()

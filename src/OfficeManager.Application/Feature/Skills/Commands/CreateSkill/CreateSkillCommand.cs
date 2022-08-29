@@ -12,10 +12,10 @@ namespace OfficeManager.Application.Skills.Commands.CreateSkill
     }
     public class CreateSkillCommandHandler : IRequestHandler<CreateSkillCommand,Response<object>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
         public CreateSkillCommandHandler(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<Response<object>> Handle(CreateSkillCommand request, CancellationToken cancellationToken)
@@ -25,15 +25,15 @@ namespace OfficeManager.Application.Skills.Commands.CreateSkill
             skill.Description = request.Description;
             skill.IsActive = true;
 
-            await _context.Skill.AddAsync(skill);
-            await _context.SaveChangesAsync(cancellationToken);
-            _context.CommitTransaction();
+            await context.Skill.AddAsync(skill);
+            await context.SaveChangesAsync(cancellationToken);
+            context.CommitTransaction();
 
             Response<object> response = new Response<object>();
-            response._Data = skill;
-            response._IsSuccess = true;
-            response._Message = "Skill is added";
-            response._StatusCode = "200";
+            response.Data = skill;
+            response.IsSuccess = true;
+            response.Message = "Skill is added";
+            response.StatusCode = "200";
 
             return response;
         }

@@ -16,7 +16,7 @@ namespace OfficeManager.API.Controllers
             try
             {
                 var result = await Mediator.Send(new GetAllSkillLevelsQuery());
-                if (result._StatusCode == "404")
+                if (result.StatusCode == "404")
                     return NotFound(result);
                 return Ok(result);
             }

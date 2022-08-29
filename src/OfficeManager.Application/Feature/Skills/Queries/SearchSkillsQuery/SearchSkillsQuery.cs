@@ -17,40 +17,40 @@ namespace OfficeManager.Application.Skills.Queries.SearchSkillsQuery
 
     public class SearchSkillQueryHandler : IRequestHandler<SearchSkillsQuery, Response<PaginatedList<SkillDTO>>>
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IApplicationDbContext context;
+        private readonly IMapper mapper;
         public SearchSkillQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            _context = context;
-            _mapper = mapper;
+            this.context = context;
+            this.mapper = mapper;
         }
 
         public async Task<Response<PaginatedList<SkillDTO>>> Handle(SearchSkillsQuery request, CancellationToken cancellationToken)
         {
             Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
-            response._Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
+            response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
             if (string.IsNullOrEmpty(request.Search))
-                response._Data = await _context.Skill
+                response.Data = await context.Skill
                     .OrderBy(x => x.Name)
-                    .ProjectTo<SkillDTO>(_mapper.ConfigurationProvider)
+                    .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNo, request.PageSize);
             else
-                response._Data = await _context.Skill
+                response.Data = await context.Skill
                     .Where(x => x.Name.Contains(request.Search))
                     .OrderBy(x => x.Name)
-                    .ProjectTo<SkillDTO>(_mapper.ConfigurationProvider)
+                    .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNo, request.PageSize);
-            if (response._Data.TotalCount > 0)
+            if (response.Data.TotalCount > 0)
             {
-                response._Message = "Records found!";
-                response._IsSuccess = true;
-                response._StatusCode = "200";
+                response.Message = "Records found!";
+                response.IsSuccess = true;
+                response.StatusCode = "200";
             }
             else
             {
-                response._Message = "No Records found!";
-                response._IsSuccess = true;
-                response._StatusCode = "200";
+                response.Message = "No Records found!";
+                response.IsSuccess = true;
+                response.StatusCode = "200";
             }
             return response;
         }

@@ -9,30 +9,30 @@ namespace OfficeManager.Application.Skills.Queries.GetAllSkillRates
 
     public class GetAllSkillRatesQueryHandler : IRequestHandler<GetAllSkillRatesQuery,Response<List<SkillRate>>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
 
         public GetAllSkillRatesQueryHandler(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<Response<List<SkillRate>>> Handle(GetAllSkillRatesQuery request, CancellationToken cancellationToken)
         {
             Response<List<SkillRate>> response = new Response<List<SkillRate>>();
-            response._Data = new List<SkillRate>();
+            response.Data = new List<SkillRate>();
 
-            response._Data = _context.SkillRate.Where(sk => sk.IsActive == true).ToList();
-            if (response._Data.Count == 0)
+            response.Data = context.SkillRate.Where(sk => sk.IsActive == true).ToList();
+            if (response.Data.Count == 0)
             {
-                response._Errors.Add("No records found");
-                response._StatusCode = "404";
-                response._IsSuccess = false;
+                response.Errors.Add("No records found");
+                response.StatusCode = "404";
+                response.IsSuccess = false;
             }
             else
             {
-                response._Message = "All records found";
-                response._StatusCode = "200";
-                response._IsSuccess = true;
+                response.Message = "All records found";
+                response.StatusCode = "200";
+                response.IsSuccess = true;
             }
             return response;
         }

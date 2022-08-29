@@ -16,23 +16,23 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
         public int designationId { get; init; }
         public DateTime dateOfBirth { get; init; }
         public DateTime dateOfJoining { get; init; }
-        public List<EmployeeSkill> skills { get; init; }
+        public List<EmployeeSkill> skills { get; init; } = new List<EmployeeSkill>();
     }
 
     public class AddEmployeeCommandHandler : IRequestHandler<AddEmployeeCommand, Response<object>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
 
         public AddEmployeeCommandHandler(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<Response<object>> Handle(AddEmployeeCommand request,CancellationToken cancellationToken)
         {
             Response<object> response = new Response<object>();
 
-            _context.BeginTransaction();
+            context.BeginTransaction();
 
             Employee employee = new Employee
             {
@@ -45,8 +45,8 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
                 DesignationId = request.designationId
             };
 
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.Employees.Add(employee);
+            await context.SaveChangesAsync(cancellationToken);
 
             UserMaster user = new UserMaster
             {
@@ -55,15 +55,15 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123")
             };
 
-            _context.Users.Add(user);
+            context.Users.Add(user);
 
             foreach (EmployeeSkill skill in request.skills)
             {
-                var existingSkill = _context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
+                var existingSkill = context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
                 if (existingSkill == null)
                 {
                     skill.EmployeeId = employee.Id;
-                    _context.EmployeeSkills.Add(skill);
+                    context.EmployeeSkills.Add(skill);
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
                     existingSkill.rateId = skill.rateId;
                 }
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
 
             UserRoleMapping userRole = new UserRoleMapping
             {
@@ -80,14 +80,14 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
                 RoleId = request.roleId
             };
 
-            _context.UserRoleMapping.Add(userRole);
-            await _context.SaveChangesAsync(cancellationToken);
+            context.UserRoleMapping.Add(userRole);
+            await context.SaveChangesAsync(cancellationToken);
 
-            _context.CommitTransaction();
+            context.CommitTransaction();
 
-            response._Message = "Employee added successfully";
-            response._StatusCode = "200";
-            response._Data = null;
+            response.Message = "Employee added successfully";
+            response.StatusCode = "200";
+            response.Data = string.Empty;
 
             return response;
         }

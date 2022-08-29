@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Departments.Queries.SearchDepartments;
 using OfficeManager.Application.Designations.Queries.SearchDesignations;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Employees.Commands.AddBulkEmployees;
 using OfficeManager.Application.Employees.Commands.AddEmployee;
 using OfficeManager.Application.Employees.Commands.SaveBulkEmployees;
@@ -19,7 +19,7 @@ namespace OfficeManager.API.Controllers
     [Authorize]
     public class EmployeeController : ApiControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration configuration;
 
         [HttpGet]
         [Route("GetAllEmployee")]
@@ -33,18 +33,18 @@ namespace OfficeManager.API.Controllers
             var DojTo = DateTime.Parse(String.IsNullOrEmpty(DOJTo)? "12/12/9999" : DOJTo);
             GetAllEmployeesQuery query = new GetAllEmployeesQuery(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
             var response = await Mediator.Send(query);
-            if (response._StatusCode == "500")
+            if (response.StatusCode == "500")
                 return StatusCode(500, response);
-            else if (response._StatusCode == "404")
+            else if (response.StatusCode == "404")
                 return NotFound(response);
             else
                 return Ok(response);
         }
-        private readonly IFilesServices _service;
+        private readonly IFilesServices service;
         public EmployeeController(IFilesServices service, IConfiguration configuration)
         {
-            _service = service;
-            _configuration = configuration;
+            this.service = service;
+            this.configuration = configuration;
         }
 
 
@@ -56,7 +56,7 @@ namespace OfficeManager.API.Controllers
             try
             {
                 var result = await Mediator.Send(new GetEmployeeDetailQuery(id));
-                if (result._Data == null)
+                if (result.Data == null)
                     NotFound(result);
                 return result;
             }
@@ -89,8 +89,8 @@ namespace OfficeManager.API.Controllers
                 }
             }
             if (string.IsNullOrEmpty(path))
-                path = _configuration.GetValue<string>("ImportFile");
-            var employees = await _service.ReadEmployeeExcel(path);
+                path = configuration.GetValue<string>("ImportFile");
+            var employees = await service.ReadEmployeeExcel(path);
             var departments = await Mediator.Send(new SearchDepartmentsQuery(null));
             var designations = await Mediator.Send(new SearchDesignationsQuery(null));
             AddBulkEmployeesCommand command = new AddBulkEmployeesCommand();
@@ -108,7 +108,7 @@ namespace OfficeManager.API.Controllers
             try
             {
                 var response = await Mediator.Send(command);
-                if (response._IsSuccess)
+                if (response.IsSuccess)
                 {
                     return Ok(response);
                 }
@@ -128,22 +128,22 @@ namespace OfficeManager.API.Controllers
             try
             {
                 response = await Mediator.Send(command);
-                if (response._IsSuccess)
+                if (response.IsSuccess)
                     return Ok(response);
                 return BadRequest(response);
             }
             catch(ValidationException ex)
             {
-                response._Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
-                response._StatusCode = "400";
-                response._IsSuccess = false;
+                response.Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
+                response.StatusCode = "400";
+                response.IsSuccess = false;
                 return BadRequest(response);
             }
             catch(Exception ex)
             {
-                response._Errors.Add(ex.Message);
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Errors.Add(ex.Message);
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return StatusCode(500, response);
             }
         }
@@ -156,22 +156,22 @@ namespace OfficeManager.API.Controllers
             try
             {
                 response = await Mediator.Send(command);
-                if (response._IsSuccess)
+                if (response.IsSuccess)
                     return Ok(response);
                 return BadRequest(response);
             }
             catch (ValidationException ex)
             {
-                response._Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
-                response._StatusCode = "400";
-                response._IsSuccess = false;
+                response.Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
+                response.StatusCode = "400";
+                response.IsSuccess = false;
                 return BadRequest(response);
             }
             catch (Exception ex)
             {
-                response._Errors.Add(ex.Message);
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Errors.Add(ex.Message);
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return StatusCode(500, response);
             }
         }

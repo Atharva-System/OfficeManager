@@ -5,7 +5,7 @@ namespace OfficeManager.Application.UnitTests.Mocks
 {
     public class BaseMockContext
     {
-        protected readonly IMapper _mapper;
+        protected readonly IMapper mapper;
         public BaseMockContext()
         {
             var mapperConfig = new MapperConfiguration(c =>
@@ -13,7 +13,7 @@ namespace OfficeManager.Application.UnitTests.Mocks
                 c.AddProfile<MappingProfile>();
             });
 
-            _mapper = mapperConfig.CreateMapper();
+            mapper = mapperConfig.CreateMapper();
         }
        
     }

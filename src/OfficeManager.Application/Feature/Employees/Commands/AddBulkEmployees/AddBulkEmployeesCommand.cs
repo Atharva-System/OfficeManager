@@ -66,25 +66,25 @@ namespace OfficeManager.Application.Employees.Commands.AddBulkEmployees
                         emp.RoleId = role != null ? role.Id : context.Roles.FirstOrDefault().Id;
                     });
                     response.Data = request.employees;
-                    response._Message = "Employees bulk insertion set to verify!";
-                    response._IsSuccess = true;
-                    response._StatusCode = "200";
+                    response.Message = "Employees bulk insertion set to verify!";
+                    response.IsSuccess = true;
+                    response.StatusCode = "200";
                 }
                 else
                 {
-                    response._Message = "Data not found";
-                    response._IsSuccess = false;
-                    response._StatusCode = "404";
+                    response.Message = "Data not found";
+                    response.IsSuccess = false;
+                    response.StatusCode = "404";
                 }
                 return response;
             }
             catch(Exception ex)
             {
                 response.Data = new List<BulkImportEmployeeDTO>();
-                response._Message = "There is some error in data";
-                response._Errors.Add(ex.Message);
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Message = "There is some error in data";
+                response.Errors.Add(ex.Message);
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return response;
             }
         }

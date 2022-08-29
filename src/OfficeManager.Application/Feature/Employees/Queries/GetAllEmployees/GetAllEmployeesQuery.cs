@@ -23,11 +23,11 @@ namespace OfficeManager.Application.Employees.Queries.GetAllEmployees
 
     public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployeesQuery, Response<EmployeeListResponse>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
 
         public GetAllEmployeeQueryHandler(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<Response<EmployeeListResponse>> Handle(GetAllEmployeesQuery request,CancellationToken cancellationToken)
@@ -45,42 +45,42 @@ namespace OfficeManager.Application.Employees.Queries.GetAllEmployees
                 parameters.Add("@@DOJToDate", request.DateOfJoiningTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfJoiningTo.Value);
                 //parameters.Add("@PageNumber", request.PageNo);
                 //parameters.Add("@PageSize", request.PageSize);
-                using (var connection = new SqlConnection(_context.GetConnectionString))
+                using (var connection = new SqlConnection(context.GetConnectionString))
                 {
-                    response._Data = new EmployeeListResponse();
-                    response._Data.Employees = new List<EmployeeDTO>();
-                    response._Data.Employees = (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
+                    response.Data = new EmployeeListResponse();
+                    response.Data.Employees = new List<EmployeeDTO>();
+                    response.Data.Employees = (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
                         , commandType: CommandType.StoredProcedure)).ToList();
-                    response._Data.TotalPages = (response._Data.Employees.Count / request.PageSize);
-                    response._Data.TotalCount = response._Data.Employees.Count;
+                    response.Data.TotalPages = (response.Data.Employees.Count / request.PageSize);
+                    response.Data.TotalCount = response.Data.Employees.Count;
 
-                    if (response._Data.TotalPages * request.PageSize < response._Data.TotalCount)
+                    if (response.Data.TotalPages * request.PageSize < response.Data.TotalCount)
                     {
-                        response._Data.TotalPages += 1;
+                        response.Data.TotalPages += 1;
                     }
-                    response._Data.Employees = response._Data.Employees.Skip((request.PageNo - 1) * request.PageSize).Take(request.PageSize).ToList();
-                    response._Data.PageNumber = request.PageNo;
-                    response._Data.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
-                    if (response._Data.Employees.Count > 0 && response._Data.TotalCount > 0)
+                    response.Data.Employees = response.Data.Employees.Skip((request.PageNo - 1) * request.PageSize).Take(request.PageSize).ToList();
+                    response.Data.PageNumber = request.PageNo;
+                    response.Data.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+                    if (response.Data.Employees.Count > 0 && response.Data.TotalCount > 0)
                     {
-                        response._IsSuccess = true;
-                        response._StatusCode = "200";
-                        response._Message = "All the data found";
+                        response.IsSuccess = true;
+                        response.StatusCode = "200";
+                        response.Message = "All the data found";
                     }
                     else
                     {
-                        response._Message = "No records found";
-                        response._IsSuccess = false;
-                        response._StatusCode = "404";
+                        response.Message = "No records found";
+                        response.IsSuccess = false;
+                        response.StatusCode = "404";
                     }
                 }
                 return response;
             }
             catch(Exception ex)
             {
-                response._Errors.Add("Data or connection issue, please check internet or contact administrator.");
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Errors.Add("Data or connection issue, please check internet or contact administrator.");
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return response;
             }
 

@@ -2,9 +2,9 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Dtos;
 
 namespace OfficeManager.Application.Departments.Queries.SearchDepartments
 {
@@ -12,12 +12,12 @@ namespace OfficeManager.Application.Departments.Queries.SearchDepartments
 
     public class SearchDepartmentQueryHandler : IRequestHandler<SearchDepartmentsQuery, Response<List<DepartmentDTO>>>
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly IApplicationDbContext context;
+        private readonly IMapper mapper;
         public SearchDepartmentQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            _context = context;
-            _mapper = mapper;
+            this.context = context;
+            this.mapper = mapper;
         }
 
         public async Task<Response<List<DepartmentDTO>>> Handle(SearchDepartmentsQuery request,CancellationToken cancellationToken)
@@ -29,21 +29,21 @@ namespace OfficeManager.Application.Departments.Queries.SearchDepartments
                 List<DepartmentDTO> departments = new List<DepartmentDTO>();
                 if (!string.IsNullOrEmpty(request.search))
                 {
-                    departments = await _context.DepartMent
+                    departments = await context.DepartMent
                         .AsNoTracking()
-                        .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                        .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
                         .Where(x => x.Name.Contains(request.search)).ToListAsync(cancellationToken);
                 }
                 else
                 {
-                    departments = await _context.DepartMent
-                        .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                    departments = await context.DepartMent
+                        .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
                         .ToListAsync();
                 }
                 response.Data = departments;
-                response._StatusCode = "200";
-                response._IsSuccess = true;
-                response._Message = departments.Count > 0 ? "Data found!" : "No Data found!";
+                response.StatusCode = "200";
+                response.IsSuccess = true;
+                response.Message = departments.Count > 0 ? "Data found!" : "No Data found!";
                 
                 //return Result.Success("Department found",departments);
                 return response;
@@ -52,10 +52,10 @@ namespace OfficeManager.Application.Departments.Queries.SearchDepartments
             {
                 //return Result.Failure(Array.Empty<string>(),"Data has some issue please check");
                 response.Data = new List<DepartmentDTO>();
-                response._Message = "There is some issue with the data!";
-                response._Errors.Add(ex.Message);
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Message = "There is some issue with the data!";
+                response.Errors.Add(ex.Message);
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return response;
             }
 

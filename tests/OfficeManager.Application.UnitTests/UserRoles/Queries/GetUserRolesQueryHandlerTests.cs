@@ -9,7 +9,7 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         [Fact]
         public async Task GetUserRolesListTest()
         {
-            var handler = new GetUserRolesQueryHandler(_mockContext.Object, _mapper);
+            var handler = new GetUserRolesQueryHandler(mockContext.Object, mapper);
 
             var result = await handler.Handle(new GetUserRolesQuery(), CancellationToken.None);
 
