@@ -9,8 +9,8 @@ namespace OfficeManager.Application.Employees.Commands.AddEmployee
     {
         public int employeeId { get; init; }
         public int employeeNo { get; init; }
-        public string employeeName { get; init; }
-        public string email { get; init; }
+        public string employeeName { get; init; } = string.Empty;
+        public string email { get; init; } = string.Empty;
         public int roleId { get; init; }
         public int departmentId { get; init; }
         public int designationId { get; init; }

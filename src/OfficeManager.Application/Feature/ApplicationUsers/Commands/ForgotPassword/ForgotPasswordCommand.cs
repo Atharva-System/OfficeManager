@@ -19,7 +19,7 @@ namespace OfficeManager.Application.ApplicationUsers.Commands.ForgotPassword
 
         public async Task<bool> Handle(ForgotPasswordCommand request,CancellationToken cancellationToken)
         {
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }

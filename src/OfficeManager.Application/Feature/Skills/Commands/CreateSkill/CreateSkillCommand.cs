@@ -7,8 +7,8 @@ namespace OfficeManager.Application.Skills.Commands.CreateSkill
 {
     public record CreateSkillCommand : IRequest<Response<object>>
     {
-        public string Name { get; init; }
-        public string Description { get; init; }
+        public string Name { get; init; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
     }
     public class CreateSkillCommandHandler : IRequestHandler<CreateSkillCommand,Response<object>>
     {
