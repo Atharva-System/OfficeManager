@@ -1,10 +1,13 @@
 <div class="card mt-2">
+  <div class="card-header">
+    <h2 class="card-title">Import Employees Preview</h2>
+  </div>
   <div class="card-body">
-    <div class="card card-body tableFixHead mt-2" *ngrxLet="Loading$ as loading">
-      <div class="spinner-border m-5" role="status" *ngIf="loading">
-        <span class="sr-only">Loading...</span>
+    <div class="card card-body tableFixHead mt-2">
+      <div class="alert alert-warning" role="alert" *ngIf="invalidMessageVisible">
+        * Please check the high lighted records it can't be saved.
       </div>
-      <table class="table" *ngIf="!loading">
+      <table class="table">
         <thead>
           <tr>
             <th>EmployeeNo</th>
@@ -20,16 +23,10 @@
             <td>{{ employee.employeeNo }}</td>
             <td>{{ employee.employeeName }}</td>
             <td>
-              <select class="form-control fullwidth" [disabled]="employee.isValid" [(ngModel)]="employee.departmentId">
-                <option value="0">Select Department</option>
-                <option *ngFor="let department of departments" [selected]="employee.departmentId == department.id" [ngValue]="department.id">{{ department.name }}</option>
-              </select>
+              {{ employee.department }}
             </td>
             <td>
-              <select class="form-control fullwidth" [disabled]="employee.isValid" [(ngModel)]="employee.designationId">
-                <option value="0">Select Designation</option>
-                <option *ngFor="let designation of designations" [selected]="employee.designationId == designation.id" [ngValue]="designation.id">{{ designation.name }}</option>
-              </select>
+              {{ employee.designation }}
             </td>
             <td>{{ employee.dateOfBirth | date }}</td>
             <td>{{ employee.dateOfJoining | date }}</td>

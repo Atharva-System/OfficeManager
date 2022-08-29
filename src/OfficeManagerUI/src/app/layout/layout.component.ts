@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthenticationService } from '../shared/services/authentication.service';
 
 @Component({
   selector: 'app-layout',
@@ -7,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor() { }
+  Loading$ = new Observable<boolean>();
+
+  constructor(private auth:AuthenticationService) {
+    this.Loading$ = this.auth.Loading$;
+  }
 
   ngOnInit(): void {
   }

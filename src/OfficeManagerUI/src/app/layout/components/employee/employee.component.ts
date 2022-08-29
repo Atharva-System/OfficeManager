@@ -5,6 +5,7 @@ import { BIEmployeeResponseDto } from 'src/app/shared/DTOs/bi-employee-response-
 import { DepartmentResponseDto } from 'src/app/shared/DTOs/department-response-dto';
 import { DesignationResponseDto } from 'src/app/shared/DTOs/designation-response-dto';
 import { EmployeeDto, EmployeeListResponseDto, IEmployeeListResponseDto } from 'src/app/shared/DTOs/employee-list-response-dto';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { DepartmentsService } from 'src/app/shared/services/department/departments.service';
 import { EmployeesService } from 'src/app/shared/services/employee/employees.service';
 
@@ -20,6 +21,7 @@ export class EmployeeComponent implements OnInit {
   departments: DepartmentResponseDto[] = [];
   designations: DesignationResponseDto[] =[];
   upload:boolean = false;
+  invalidMessageVisible = false;
 
   Loading$:Observable<boolean> = new Observable<boolean>();
   EmployeeListResponse$:Observable<EmployeeListResponseDto> = new Observable<EmployeeListResponseDto>();
@@ -36,7 +38,7 @@ export class EmployeeComponent implements OnInit {
   fromDate = "";
   toDate = "";
 
-  constructor(private builder:FormBuilder,private service:EmployeesService,private master: DepartmentsService) {
+  constructor(private builder:FormBuilder,private service:EmployeesService,private master: DepartmentsService,private auth:AuthenticationService) {
     this.Loading$ = this.service.Loading$;
     this.EmployeeList$ = this.service.EmployeeList$;
     this.EmployeeListResponse$ = this.service.EmployeeListResponse$;
@@ -63,6 +65,8 @@ export class EmployeeComponent implements OnInit {
       }
     )
     this.searchEmployee();
+    this.auth.Header = "Employee";
+    this.service.Loading = true;
   }
 
   openBrowse(): void{
@@ -95,17 +99,23 @@ export class EmployeeComponent implements OnInit {
     this.service.BIEmployeeList$.subscribe(
       (employee:BIEmployeeResponseDto[])=>{
         this.employees = employee;
+        for(let employee of this.employees)
+        {
+          if(!employee.isValid){
+            this.invalidMessageVisible = true;
+          }
+        }
       })
-    this.master.DepartmentsList$.subscribe(
-      (departments:DepartmentResponseDto[])=>{
-        this.departments = departments;
-      }
-    )
-    this.master.DesignationsList$.subscribe(
-      (designations:DesignationResponseDto[])=>{
-        this.designations = designations;
-      }
-    )
+      this.master.DepartmentsList$.subscribe(
+        (departments:DepartmentResponseDto[])=>{
+          this.departments = departments;
+        }
+      )
+      this.master.DesignationsList$.subscribe(
+        (designations:DesignationResponseDto[])=>{
+          this.designations = designations;
+        }
+      )
   }
 
   paginate(pageNo:number): void {
@@ -114,7 +124,15 @@ export class EmployeeComponent implements OnInit {
   }
 
   saveAll(): void{
-    this.service.saveEmployees(this.employees);
+    let validEmployees:BIEmployeeResponseDto[] = [];
+    for(let employee of this.employees)
+    {
+      if(employee.isValid)
+      {
+        validEmployees.push(employee);
+      }
+    }
+    this.service.saveEmployees(validEmployees);
     this.upload = false;
   }
 
