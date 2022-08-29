@@ -103,10 +103,16 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 
+var resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), @"Resources");
+if (!Directory.Exists(resourcesPath))
+{
+    Directory.CreateDirectory(resourcesPath);
+}
+
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-    RequestPath = new PathString("/Resources")
+    FileProvider = new PhysicalFileProvider(resourcesPath),
+    RequestPath = new PathString("/Resources")    
 });
 
 app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());

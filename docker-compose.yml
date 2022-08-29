@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  officemanager.api:
+    image: ${DOCKER_REGISTRY-}officemanagerapi
+    build:
+      context: .
+      dockerfile: src\OfficeManager.API\Dockerfile
+  portainer:
+    image: portainer/portainer-ce
+  
+volumes:
+  portainer_data:
