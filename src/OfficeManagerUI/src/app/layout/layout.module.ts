@@ -5,6 +5,7 @@ import { Routes,RouterModule } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
 import { AuthGuard } from '../shared/utility/auth-guard';
+import { ReactiveComponentModule } from '@ngrx/component';
 
 const routes:Routes = [
   {
@@ -34,6 +35,7 @@ const routes:Routes = [
   ],
   imports: [
     CommonModule,
+    ReactiveComponentModule,
     RouterModule.forChild(routes)
   ]
 })

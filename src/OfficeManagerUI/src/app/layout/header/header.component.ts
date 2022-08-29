@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-header',
@@ -8,7 +10,11 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private router:Router) { }
+  current_page$:Observable<string> = new Observable<string>();
+
+  constructor(private router:Router,private auth:AuthenticationService) {
+    this.current_page$ = this.auth.Header$;
+  }
 
   ngOnInit(): void {
   }

@@ -1,36 +1,42 @@
-<div class="card card-body">
-  <div class="form-inline d-flex flex-wrap">
-    <div class="form-group d-flex align-items-center mb-2">
-      <label for="search" class="mx-2">Search:</label>
-      <input type="text" class="form-control control-size" id="search" name="search" [(ngModel)]="search">
-    </div>
-    <div class="form-group d-flex align-items-center mb-2">
-      <label for="fromDate" class="mx-2">From:</label>
-      <input type="date" class="form-control control-size" id="fromDate" name="fromDate" [(ngModel)]="fromDate">
-    </div>
-    <div class="form-group d-flex align-items-center mb-2">
-      <label for="toDate" class="mx-2">To:</label>
-      <input type="date" class="form-control control-size" id="toDate" name="toDate" [(ngModel)]="toDate">
-    </div>
-    <div class="form-group d-flex align-items-center mb-2">
-      <label for="department" class="mx-2">Deparment:</label>
-      <select class="form-control control-size" id="department" name="department" [(ngModel)]="department">
-        <option [value]="0">Select...</option>
-        <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
-      </select>
-    </div>
-    <div class="form-group d-flex align-items-center mb-2">
-      <label for="designation" class="mx-2">Designation:</label>
-      <select class="form-control control-size" id="designation" name="designation" [(ngModel)]="designation">
-        <option [value]="0">Select...</option>
-        <option *ngFor="let des of designations" [value]="des.id">{{ des.name }}</option>
-      </select>
-    </div>
-    <div class="form-group mx-sm-3 mb-2">
-      <button class="btn btn-search btn-small bg-primary" (click)="searchEmployee()">
-        <i class="fa fa-search"></i>  Search
-      </button>
 
+<ng-container *ngrxLet="Loading$ as loading">
+
+<div class="card card-body" *ngIf="!upload">
+  <div class="row">
+    <div class="col-8">
+      <div class="form-inline d-flex flex-wrap">
+        <div class="form-group d-flex align-items-center mb-2">
+          <input type="text" placeholder="Search Name" class="form-control control-size" id="search" name="search" [(ngModel)]="search">
+        </div>
+        <div class="form-group d-flex align-items-center mb-2 mx-2">
+          <select class="form-control control-size" id="department" name="department" [(ngModel)]="department">
+            <option [value]="0">Select Department</option>
+            <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+          </select>
+        </div>
+        <div class="form-group d-flex align-items-center mb-2">
+          <select class="form-control control-size" id="designation" name="designation" [(ngModel)]="designation">
+            <option [value]="0">Select Designation</option>
+            <option *ngFor="let des of designations" [value]="des.id">{{ des.name }}</option>
+          </select>
+        </div>
+        <div class="form-group d-flex align-items-center mb-2">
+          <input type="text" placeholder="From date" class="form-control control-size" onfocus="(this.type='date')" onblur="(this.type='text')" id="fromDate" name="fromDate" [(ngModel)]="fromDate">
+        </div>
+        <div class="form-group d-flex align-items-center mb-2 mx-2">
+          <input type="text" placeholder="To date" class="form-control control-size" onfocus="(this.type='date')" onblur="(this.type='text')" id="toDate" name="toDate" [(ngModel)]="toDate">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <button class="btn btn-search btn-small bg-primary" (click)="searchEmployee()">
+            <i class="fa fa-search"></i>  Search
+          </button>
+
+
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="d-flex justify-content-end align-items-center">
       <button class="btn btn-search btn-small bg-warning mx-2" (click)="openBrowse()">
         <i class="fa fa-cloud-upload"></i>  Import
 
@@ -40,12 +46,14 @@
         <i class="fa fa-plus"></i>  Add New Employee
       </a>
       <input type="file" class="d-none" #fileUpload name="file" (change)="uploadFile($event)">
+      </div>
     </div>
   </div>
+
 </div>
 
 <app-import-employee *ngIf="upload" [employees]="employees" [departments]="departments" [designations]="designations"
- [Loading$]="Loading$" (save)="saveAll()" (cancel)="cancelUpload()"></app-import-employee>
+ [Loading$]="Loading$" (save)="saveAll()" (cancel)="cancelUpload()" [invalidMessageVisible]="invalidMessageVisible"></app-import-employee>
 
 <ng-container *ngIf="!upload">
   <div class="card mt-2" *ngrxLet="EmployeeListResponse$ as employeeListResponse" >
@@ -61,7 +69,6 @@
         </nav>
     </div>
     <div class="card-body tableFixHead">
-      <ng-container *ngrxLet="Loading$ as loading">
 
         <table class="table" *ngrxLet="EmployeeList$ as employees">
           <thead>
@@ -75,7 +82,7 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody *ngIf="!loading && employees.length > 0">
+          <tbody *ngIf="employees.length">
             <tr *ngFor="let employee of employees">
               <td>{{ employee.employeeNo }}</td>
               <td>{{ employee.employeeName }}</td>
@@ -99,17 +106,7 @@
               <td colspan="6">No Records Found</td>
             </tr>
           </tbody>
-          <tbody class="fullwidth d-flex justify-content-center"  *ngIf="loading">
-            <tr>
-              <td colspan="6" class="fullwidth d-flex justify-content-center">
-                <div class="spinner-border m-5" role="status">
-                  <span class="sr-only"></span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
         </table>
-      </ng-container>
     </div>
     <div class="card-footer bg-white d-flex justify-content-between align-items-center">
       <span>Page No. {{employeeListResponse.pageNumber}} Of {{ employeeListResponse.totalPages }} pages</span>
@@ -132,4 +129,5 @@
       </div>
     </div>
   </div>
+</ng-container>
 </ng-container>

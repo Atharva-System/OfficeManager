@@ -3,10 +3,15 @@
     <app-sidebar></app-sidebar>
   </div>
   <div class="content d-flex flex-column">
-    <div class="header bg-white px-2">
+    <div class="header">
       <app-header></app-header>
     </div>
-    <div class="container py-2 body">
+    <div class="container py-2 body" *ngrxLet="Loading$ as loading">
+      <div class="spinner-section" *ngIf="loading">
+        <div class="spinner-border m-5" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
       <router-outlet></router-outlet>
     </div>
   </div>

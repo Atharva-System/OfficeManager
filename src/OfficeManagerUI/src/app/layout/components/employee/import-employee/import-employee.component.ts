@@ -21,6 +21,8 @@ export class ImportEmployeeComponent implements OnInit {
   @Output() save:EventEmitter<boolean> = new EventEmitter<boolean>(false);
   @Output() cancel:EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
+  @Input() invalidMessageVisible:boolean = false;
+
 
   constructor(private service:EmployeesService) { }
 
@@ -28,7 +30,6 @@ export class ImportEmployeeComponent implements OnInit {
   }
 
   saveAll(): void{
-    this.service.saveEmployees(this.employees);
     this.save.emit(false);
   }
 
@@ -36,17 +37,17 @@ export class ImportEmployeeComponent implements OnInit {
     this.cancel.emit(false);
   }
 
-  setDesignationId(isValid:boolean,employeeId:number,designationId:any): void{
-    if(!isValid)
-    {
-      this.employees.filter((emp:BIEmployeeResponseDto)=>emp.id == employeeId)[0].designationId = Number(designationId.target.value);
-    }
-  }
+  // setDesignationId(isValid:boolean,employeeId:number,designationId:any): void{
+  //   if(!isValid)
+  //   {
+  //     this.employees.filter((emp:BIEmployeeResponseDto)=>emp.id == employeeId)[0].designationId = Number(designationId.target.value);
+  //   }
+  // }
 
-  setDepartment(isValid:boolean,employeeId:number,departmentId:any): void {
-    if(!isValid){
-      this.employees.filter((emp:BIEmployeeResponseDto)=>emp.id == employeeId)[0].departmentId = Number(departmentId.target.value);
-    }
-  }
+  // setDepartment(isValid:boolean,employeeId:number,departmentId:any): void {
+  //   if(!isValid){
+  //     this.employees.filter((emp:BIEmployeeResponseDto)=>emp.id == employeeId)[0].departmentId = Number(departmentId.target.value);
+  //   }
+  // }
 
 }
