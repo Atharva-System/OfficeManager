@@ -6,10 +6,10 @@ namespace OfficeManager.Application.Feature.Employees.Commands.Validator
 {
     public class AddEmployeeValidator : AbstractValidator<AddEmployee>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
         public AddEmployeeValidator(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
 
             RuleFor(p => p.employeeName)
                 .NotEmpty().WithMessage("Employee Name is required")
@@ -35,7 +35,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands.Validator
 
         public async Task<bool> BeUniqueEmail(string email, CancellationToken cancellationToken)
         {
-            return !await _context.Employees.AnyAsync(emp => emp.Email == email);
+            return !await context.Employees.AnyAsync(emp => emp.Email == email);
         }
     }
 }

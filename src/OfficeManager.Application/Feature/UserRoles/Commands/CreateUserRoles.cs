@@ -13,23 +13,23 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
 
     public class CreateUserRolesCommandHandler : IRequestHandler<CreateUserRoles, Result>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
 
         public CreateUserRolesCommandHandler(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<Result> Handle(CreateUserRoles request, CancellationToken cancellationToken)
         {
-            _context.BeginTransaction();
-            _context.UserRoleMapping.Add(new UserRoleMapping()
+            context.BeginTransaction();
+            context.UserRoleMapping.Add(new UserRoleMapping()
             {
                 UserId = request.UserId,
                 RoleId = request.RoleId
             });
-            await _context.SaveChangesAsync(cancellationToken);
-            _context.CommitTransaction();
+            await context.SaveChangesAsync(cancellationToken);
+            context.CommitTransaction();
             return Result.Success("Role Added Successfully", string.Empty);
         }
     }

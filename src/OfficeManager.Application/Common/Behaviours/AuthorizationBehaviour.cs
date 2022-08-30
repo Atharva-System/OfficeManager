@@ -8,13 +8,13 @@ namespace OfficeManager.Application.Common.Behaviours
 {
     public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly ICurrentUserServices _currentUserService;
-        private readonly IApplicationDbContext _context;
+        private readonly ICurrentUserServices currentUserService;
+        private readonly IApplicationDbContext context;
 
         public AuthorizationBehaviour(ICurrentUserServices currentUserService, IApplicationDbContext context)
         {
-            this._currentUserService = currentUserService;
-            _context = context;
+            this.currentUserService = currentUserService;
+            this.context = context;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -23,7 +23,7 @@ namespace OfficeManager.Application.Common.Behaviours
 
             if(authorizationAttribute.Any())
             {
-                if (_currentUserService.loggedInUser == null)
+                if (currentUserService.loggedInUser == null)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -38,8 +38,8 @@ namespace OfficeManager.Application.Common.Behaviours
                     {
                         foreach (var role in roles)
                         {
-                            //var userRole = _context.UserRole.FirstOrDefault(r => r.Title == role);
-                            //var user = _context.UserMaster.Where(u => u.Id == currentUserService.UserId && u.RoleId == userRole.Id);
+                            //var userRole = context.UserRole.FirstOrDefault(r => r.Title == role);
+                            //var user = context.UserMaster.Where(u => u.Id == currentUserService.UserId && u.RoleId == userRole.Id);
                             //if (user.Any())
                             //{
                             //    authorized = true;

@@ -5,10 +5,10 @@ namespace OfficeManager.Application.Feature.Employees.Commands.Validator
 {
     public class UpdateEmployeeValidator : AbstractValidator<UpdateEmployee>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
         public UpdateEmployeeValidator(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
 
             RuleFor(p => p.employeeName)
                 .NotEmpty().WithMessage("Employee Name is required")

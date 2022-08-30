@@ -7,17 +7,17 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
 {
     public class CreateUserRolesValidator : AbstractValidator<CreateUserRoles>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext context;
         public CreateUserRolesValidator(IApplicationDbContext context)
         {
-            _context = context;
+            this.context = context;
             RuleFor(v => new UserRoleMapping { UserId = v.UserId, RoleId = v.RoleId })
                 .MustAsync(BeUniqueRole).WithMessage("The specified role for this user already exists.");
         }
 
         public async Task<bool> BeUniqueRole(UserRoleMapping role, CancellationToken cancellationToken)
         {
-            var userRole = await _context.UserRoleMapping.FirstOrDefaultAsync(x => x.UserId == role.UserId && x.RoleId == role.RoleId);
+            var userRole = await context.UserRoleMapping.FirstOrDefaultAsync(x => x.UserId == role.UserId && x.RoleId == role.RoleId);
             return userRole is null;
         }
     }

@@ -6,27 +6,27 @@ namespace OfficeManager.Infrastructure.Persistence
 {
     public class ApplicationDbContextInitializer
     {
-        private readonly ILogger<ApplicationDbContext> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly ILogger<ApplicationDbContext> logger;
+        private readonly ApplicationDbContext context;
 
         public ApplicationDbContextInitializer(ILogger<ApplicationDbContext> logger, ApplicationDbContext context)
         {
-            _logger = logger;
-            _context = context;
+            this.logger = logger;
+            this.context = context;
         }
 
         public async Task InitializeAsync()
         {
             try
             {
-                if (_context.Database.IsSqlServer())
+                if (context.Database.IsSqlServer())
                 {
-                    await _context.Database.MigrateAsync();
+                    await context.Database.MigrateAsync();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occured while initializing the database.");
+                logger.LogError(ex, "An error occured while initializing the database.");
                 throw;
             }
         }
@@ -39,25 +39,25 @@ namespace OfficeManager.Infrastructure.Persistence
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occured while seeding the database.");
+                logger.LogError(ex, "An error occured while seeding the database.");
                 throw;
             }
         }
 
         public async Task TrySeedAsync(CancellationToken cancellationToken)
         {
-            if (_context.Roles.All(r => !r.Name.Equals("Admin")))
+            if (context.Roles.All(r => !r.Name.Equals("Admin")))
             {
-                _context.Roles.Add(new RoleMaster() { Name = "Admin", Description = "Manage All Application" });
+                context.Roles.Add(new RoleMaster() { Name = "Admin", Description = "Manage All Application" });
             }
 
             //var Designation = new DesignationMaster
             //{
             //    Name = "Admin",
             //};
-            //_context.DesignationMasters.Add(Designation);
+            //context.DesignationMasters.Add(Designation);
 
-            if(!_context.Employees.Any(a => a.EmployeeNo == 99999))
+            if(!context.Employees.Any(a => a.EmployeeNo == 99999))
             {
                 Employee employee = new Employee()
                 {
@@ -69,26 +69,26 @@ namespace OfficeManager.Infrastructure.Persistence
                     DateOfBirth = DateTime.Now,
                     DateOfJoining = DateTime.Now
                 };
-                _context.Employees.Add(employee);
-                _context.SaveChanges();
+                context.Employees.Add(employee);
+                context.SaveChanges();
 
                 // Default users
 
                 var administrator = new UserMaster { EmployeeID = employee.Id, Email = "admin@atharvasystem.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123") };
 
-                if (_context.Users.All(u => u.EmployeeID != administrator.EmployeeID))
-                    _context.Users.Add(administrator);
+                if (context.Users.All(u => u.EmployeeID != administrator.EmployeeID))
+                    context.Users.Add(administrator);
 
-                _context.SaveChanges();
+                context.SaveChanges();
 
-                if (_context.UserRoleMapping.All(u => u.UserId != administrator.Id && u.RoleId != _context.Roles.First().Id))
+                if (context.UserRoleMapping.All(u => u.UserId != administrator.Id && u.RoleId != context.Roles.First().Id))
                 {
-                    _context.UserRoleMapping.Add(new UserRoleMapping()
+                    context.UserRoleMapping.Add(new UserRoleMapping()
                     {
                         UserId = administrator.Id,
-                        RoleId = _context.Roles.First().Id
+                        RoleId = context.Roles.First().Id
                     });
-                    _context.SaveChanges();
+                    context.SaveChanges();
                 }
 
                 
