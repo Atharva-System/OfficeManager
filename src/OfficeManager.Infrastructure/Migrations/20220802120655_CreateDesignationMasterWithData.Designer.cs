@@ -266,7 +266,7 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.ToTable("ApplicationUserDepartments");
                 });
 
-            modelBuilder.Entity("OfficeManager.Domain.Entities.DepartMent", b =>
+            modelBuilder.Entity("OfficeManager.Domain.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -287,7 +287,7 @@ namespace OfficeManager.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DepartMent");
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.DepartmentMaster", b =>

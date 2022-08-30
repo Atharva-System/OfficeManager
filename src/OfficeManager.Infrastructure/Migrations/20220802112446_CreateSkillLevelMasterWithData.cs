@@ -27,9 +27,9 @@ namespace OfficeManager.Infrastructure.Migrations
                 table: "SkillLevel",
                 columns: new[] { "Name", "Description", "IsActive" },
                 values: new object[,] {
-                    {"Primary","Primary", true },
-                    {"Secondary","Secondary",true },
-                    {"Tertiary","Tertiary",true }
+                    {"Beginner","Beginner", true },
+                    {"Intermediate","Intermediate",true },
+                    {"Expert","Expert",true }
                 });
 
         }

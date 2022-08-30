@@ -60,7 +60,7 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.ToTable("Client");
                 });
 
-            modelBuilder.Entity("OfficeManager.Domain.Entities.DepartMent", b =>
+            modelBuilder.Entity("OfficeManager.Domain.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,7 +81,7 @@ namespace OfficeManager.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DepartMent");
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.Designation", b =>
@@ -443,7 +443,7 @@ namespace OfficeManager.Infrastructure.Migrations
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("OfficeManager.Domain.Entities.DepartMent", "Department")
+                    b.HasOne("OfficeManager.Domain.Entities.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -525,7 +525,7 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("OfficeManager.Domain.Entities.DepartMent", b =>
+            modelBuilder.Entity("OfficeManager.Domain.Entities.Department", b =>
                 {
                     b.Navigation("Employees");
                 });

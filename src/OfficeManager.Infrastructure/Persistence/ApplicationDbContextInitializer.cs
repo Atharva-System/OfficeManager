@@ -1,7 +1,5 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Infrastructure.Persistence

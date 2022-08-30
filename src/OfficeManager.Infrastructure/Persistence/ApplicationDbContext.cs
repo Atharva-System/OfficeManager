@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Options;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Domain.Entities;
 using OfficeManager.Infrastructure.Common;
@@ -36,7 +34,7 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<Skill> Skill { get; set; }
         public DbSet<SkillLevel> SkillLevel { get; set; }
         public DbSet<SkillRate> SkillRate { get; set; }
-        public DbSet<DepartMent> DepartMent { get; set; }
+        public DbSet<Department> Department { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
 

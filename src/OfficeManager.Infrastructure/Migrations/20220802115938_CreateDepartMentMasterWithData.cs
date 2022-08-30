@@ -4,12 +4,12 @@
 
 namespace OfficeManager.Infrastructure.Migrations
 {
-    public partial class CreateDepartMentMasterWithData : Migration
+    public partial class CreateDepartmentMasterWithData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "DepartMent",
+                name: "Department",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -20,11 +20,11 @@ namespace OfficeManager.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DepartMent", x => x.Id);
+                    table.PrimaryKey("PK_Department", x => x.Id);
                 });
 
             migrationBuilder.InsertData(
-            table: "DepartMent",
+            table: "Department",
             columns: new[] { "Name", "Description", "IsActive" },
             values: new object[,] {
                     {".Net",".Net", true },
@@ -51,7 +51,7 @@ namespace OfficeManager.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DepartMent");
+                name: "Department");
         }
     }
 }

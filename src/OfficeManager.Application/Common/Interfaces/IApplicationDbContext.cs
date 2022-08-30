@@ -12,7 +12,7 @@ namespace OfficeManager.Application.Common.Interfaces
         DbSet<UserRoleMapping> UserRoleMapping { get; set; }
         DbSet<Client> Client { get; set; }
         DbSet<ProjectMaster> Projects { get; set; }
-        DbSet<DepartMent> DepartMent { get; set; }
+        DbSet<Department> Department { get; set; }
         DbSet<Designation> Designation { get; set; }
         DbSet<Skill> Skill { get; set; }
         DbSet<SkillLevel> SkillLevel { get; set; }

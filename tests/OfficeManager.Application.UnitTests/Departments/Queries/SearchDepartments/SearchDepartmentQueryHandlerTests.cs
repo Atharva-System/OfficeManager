@@ -65,8 +65,8 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentListExceptionThrown()
         {
-            var DepartmentMockSet = new Mock<DbSet<DepartMent>>();
-            mockContext.Setup(r => r.DepartMent).Returns(DepartmentMockSet.Object);
+            var DepartmentMockSet = new Mock<DbSet<Department>>();
+            mockContext.Setup(r => r.Department).Returns(DepartmentMockSet.Object);
 
             var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
 

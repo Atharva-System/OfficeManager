@@ -29,14 +29,14 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                 List<DepartmentDTO> departments = new List<DepartmentDTO>();
                 if (!string.IsNullOrEmpty(request.search))
                 {
-                    departments = await context.DepartMent
+                    departments = await context.Department
                         .AsNoTracking()
                         .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
                         .Where(x => x.Name.Contains(request.search)).ToListAsync(cancellationToken);
                 }
                 else
                 {
-                    departments = await context.DepartMent
+                    departments = await context.Department
                         .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
                         .ToListAsync();
                 }

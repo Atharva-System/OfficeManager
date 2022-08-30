@@ -3,7 +3,7 @@ using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Dtos
 {
-    public class DepartmentDTO : IMapFrom<DepartMent>
+    public class DepartmentDTO : IMapFrom<Department>
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

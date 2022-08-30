@@ -15,22 +15,22 @@ namespace OfficeManager.Application.UnitTests.Mocks
         {
             var mockContext = new Mock<IApplicationDbContext>();
 
-            //DepartMent
-            mockContext.Setup(r => r.DepartMent).Returns(GetDepartments().AsQueryable().BuildMockDbSet().Object);
+            //Department
+            mockContext.Setup(r => r.Department).Returns(GetDepartments().AsQueryable().BuildMockDbSet().Object);
 
             return mockContext;
         }
 
-        protected List<DepartMent> GetDepartments()
+        protected List<Department> GetDepartments()
         {
-            return new List<DepartMent>{
-             new DepartMent{
+            return new List<Department>{
+             new Department{
                  Id = 1,
                  Name = ".Net",
                  Description=".Net",
                  IsActive = true
              },
-             new DepartMent{
+             new Department{
                  Id = 1,
                  Name = "Analytics",
                  Description="Analytics",
