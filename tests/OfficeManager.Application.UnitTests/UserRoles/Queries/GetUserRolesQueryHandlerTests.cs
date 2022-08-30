@@ -11,7 +11,7 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         {
             var handler = new GetUserRolesQueryHandler(mockContext.Object, mapper);
 
-            var result = await handler.Handle(new GetUserRolesQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetUserRoles(), CancellationToken.None);
 
             result.ShouldBeOfType<List<RolesDTO>>();
 

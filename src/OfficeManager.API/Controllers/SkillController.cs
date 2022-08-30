@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
-using OfficeManager.Application.Skills.Commands.CreateSkill;
-using OfficeManager.Application.Skills.Queries.SearchSkillsQuery;
+using OfficeManager.Application.Feature.Skills.Commands;
+using OfficeManager.Application.Feature.Skills.Queries;
 
 namespace OfficeManager.API.Controllers
 {
@@ -13,7 +13,7 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllSkill")]
-        public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> GetSkills([FromQuery] SearchSkillsQuery query)
+        public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> GetSkills([FromQuery] SearchSkills query)
         {
             Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
             try
@@ -43,7 +43,7 @@ namespace OfficeManager.API.Controllers
 
         [HttpPost]
         [Route("AddSkill")]
-        public async Task<ActionResult<Response<object>>> AddSkill(CreateSkillCommand command)
+        public async Task<ActionResult<Response<object>>> AddSkill(CreateSkill command)
         {
             Response<object> response = new Response<object>();
             try

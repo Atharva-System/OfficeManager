@@ -3,15 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Departments.Queries.SearchDepartments;
-using OfficeManager.Application.Designations.Queries.SearchDesignations;
 using OfficeManager.Application.Dtos;
-using OfficeManager.Application.Employees.Commands.AddBulkEmployees;
-using OfficeManager.Application.Employees.Commands.AddEmployee;
-using OfficeManager.Application.Employees.Commands.SaveBulkEmployees;
-using OfficeManager.Application.Employees.Commands.UpdateEmployee;
-using OfficeManager.Application.Employees.Queries.GetAllEmployees;
-using OfficeManager.Application.Employees.Queries.GetEmployeeById;
+using OfficeManager.Application.Feature.Departments.Queries;
+using OfficeManager.Application.Feature.Designations.Queries;
+using OfficeManager.Application.Feature.Employees.Commands;
+using OfficeManager.Application.Feature.Employees.Queries;
 using System.Net.Http.Headers;
 
 namespace OfficeManager.API.Controllers
@@ -31,7 +27,7 @@ namespace OfficeManager.API.Controllers
             var DobTo = DateTime.Parse(String.IsNullOrEmpty(DOBTo)? "12/12/9999" : DOBTo);
             var DojFrom = DateTime.Parse(String.IsNullOrEmpty(DOJFrom)? "01/01/1753" : DOJFrom);
             var DojTo = DateTime.Parse(String.IsNullOrEmpty(DOJTo)? "12/12/9999" : DOJTo);
-            GetAllEmployeesQuery query = new GetAllEmployeesQuery(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
+            GetAllEmployees query = new GetAllEmployees(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
             var response = await Mediator.Send(query);
             if (response.StatusCode == "500")
                 return StatusCode(500, response);
@@ -55,7 +51,7 @@ namespace OfficeManager.API.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new GetEmployeeDetailQuery(id));
+                var result = await Mediator.Send(new GetEmployeeDetail(id));
                 if (result.Data == null)
                     NotFound(result);
                 return result;
@@ -91,9 +87,9 @@ namespace OfficeManager.API.Controllers
             if (string.IsNullOrEmpty(path))
                 path = configuration.GetValue<string>("ImportFile");
             var employees = await service.ReadEmployeeExcel(path);
-            var departments = await Mediator.Send(new SearchDepartmentsQuery(null));
-            var designations = await Mediator.Send(new SearchDesignationsQuery(null));
-            AddBulkEmployeesCommand command = new AddBulkEmployeesCommand();
+            var departments = await Mediator.Send(new SearchDepartments(null));
+            var designations = await Mediator.Send(new SearchDesignations(null));
+            AddBulkEmployees command = new AddBulkEmployees();
             command.employees = employees;
             command.departments = departments.Data;
             command.designations = designations.Data;
@@ -103,7 +99,7 @@ namespace OfficeManager.API.Controllers
 
         [HttpPost]
         [Route("SaveBulkEmployees")]
-        public async Task<ActionResult<Response<object>>> SaveBulkEmployees([FromBody] SaveBulkEmployeesCommand command)
+        public async Task<ActionResult<Response<object>>> SaveBulkEmployees([FromBody] SaveBulkEmployees command)
         {
             try
             {
@@ -122,7 +118,7 @@ namespace OfficeManager.API.Controllers
 
         [HttpPut]
         [Route("EditEmployee")]
-        public async Task<ActionResult<Response<object>>> UpdateEmployee([FromBody] UpdateEmployeeCommand command)
+        public async Task<ActionResult<Response<object>>> UpdateEmployee([FromBody] UpdateEmployee command)
         {
             Response<object> response = new Response<object>();
             try
@@ -150,7 +146,7 @@ namespace OfficeManager.API.Controllers
 
         [HttpPost]
         [Route("AddEmployee")]
-        public async Task<ActionResult<Response<object>>> AddEmployee([FromBody] AddEmployeeCommand command)
+        public async Task<ActionResult<Response<object>>> AddEmployee([FromBody] AddEmployee command)
         {
             Response<object> response = new Response<object>();
             try

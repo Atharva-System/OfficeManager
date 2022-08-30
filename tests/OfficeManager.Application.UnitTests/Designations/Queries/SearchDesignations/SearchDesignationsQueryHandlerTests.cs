@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Designations.Queries.SearchDesignations;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Feature.Designations.Queries;
 
 namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesignations
 {
@@ -17,7 +17,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         [Fact]
         public async Task GetAllDesignationList()
         {
-            var result = await handler.Handle(new SearchDesignationsQuery(String.Empty), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
@@ -33,7 +33,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         [Fact]
         public async Task GetAllDesignationListBySearchParam()
         {
-            var result = await handler.Handle(new SearchDesignationsQuery("Software"), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations("Software"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
@@ -49,7 +49,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         [Fact]
         public async Task GetAllDesignationListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new SearchDesignationsQuery("Sales Head"), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations("Sales Head"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
@@ -68,7 +68,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
             var DesignationMockSet = new Mock<DbSet<Designation>>();
             mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
 
-            var result = await handler.Handle(new SearchDesignationsQuery(String.Empty), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
