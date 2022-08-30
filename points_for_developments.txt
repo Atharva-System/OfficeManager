@@ -1,0 +1,18 @@
+notes
+1. Add title for import preview
+2. Disable button and show highlighted data are not going to inserted and save all the valid data only
+3. make backgound disable on load time and loader will active and all other will be disabled
+put prefix for all search or placeholder
+
+button align to right for import and add
+add heading of page in header
+Add skill with chips with default level and rate
+and let it edited at update time
+
+
+Explain Office Manager With high level overview
+Tools and Technology used
+List out all the features
+demo
+	frontend demo
+	Api demo

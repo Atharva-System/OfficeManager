@@ -1,19 +1,29 @@
 <div class="card card-body">
-  <div class="form-inline d-flex flex-wrap">
-    <div class="form-group d-flex align-items-center mb-2">
-      <label for="search" class="mx-2">Search:</label>
-      <input type="text" class="form-control control-size" id="search" name="search" [(ngModel)]="search">
-    </div>
-    <div class="form-group mx-sm-3 mb-2">
-      <button class="btn btn-search btn-small bg-primary" (click)="searchSkill()">
-        <i class="fa fa-search"></i>  Search
-      </button>
+  <div class="row">
+    <div class="col-8">
+      <div class="form-inline d-flex flex-wrap">
+        <div class="form-group d-flex align-items-center mb-2">
+          <input type="text" placeholder="Search Name" class="form-control control-size" id="search" name="search" [(ngModel)]="search">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <button class="btn btn-search btn-small bg-primary" (click)="searchSkill()">
+            <i class="fa fa-search"></i>  Search
+          </button>
 
-      <a class="btn btn-search btn-small bg-success mx-2" [routerLink]="['add']">
-        <i class="fa fa-plus"></i>  Add New Skill
-      </a>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="d-flex justify-content-end">
+        <a class="btn btn-search btn-small bg-success" [routerLink]="['add']">
+          <i class="fa fa-plus"></i>  Add New Skill
+        </a>
+      </div>
+
     </div>
   </div>
+
 </div>
 
 <div class="card mt-2" *ngrxLet="skillPage$ as skillPage">

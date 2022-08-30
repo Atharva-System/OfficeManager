@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IPaginatedResponse } from 'src/app/shared/DTOs/paginated-response-dto';
 import { ISkillResponseDto, SkillResponseDto } from 'src/app/shared/DTOs/skill-response-dto';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { SkillsService } from 'src/app/shared/services/skills/skills.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class SkillsComponent implements OnInit {
   skillPage$:Observable<IPaginatedResponse<ISkillResponseDto>> = new Observable<IPaginatedResponse<ISkillResponseDto>>();
   skills$: Observable<Array<ISkillResponseDto>> = new Observable<Array<ISkillResponseDto>>();
 
-  constructor(private service:SkillsService) {
+  constructor(private service:SkillsService,private auth:AuthenticationService) {
     this.loading$ = this.service.Loading$;
     this.skillPage$ = this.service.PaginatedList$;
     this.skills$ = this.service.skillList$;
@@ -28,6 +29,7 @@ export class SkillsComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.getSkills('',1,10);
+    this.auth.Header = "Skill";
   }
 
   searchSkill(): void {

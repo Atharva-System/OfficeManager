@@ -40,6 +40,10 @@ export class EmployeesService {
   _EmployeeDetail = new BehaviorSubject<IEmployeeDetailDto>({} as IEmployeeDetailDto);
   EmployeeDetail$ = this._EmployeeDetail.asObservable();
 
+  public set Loading(value:boolean){
+    this._Loading.next(value);
+  }
+
   public get EmployeeList(): EmployeeDto[]{
     return this._EmployeeList.getValue();
   }
@@ -57,19 +61,21 @@ export class EmployeesService {
     const formData = new FormData();
     formData.append("file",file[0],file[0].name);
 
+    this.auth.Loading = true;
     this.http.post("https://localhost:7177/api/Employee/UploadBulkEmployeeImportData",formData).subscribe(
       (response)=>{
         let result = response as ResponseDto;
         this._BIEmployeeList.next(result._Data as BIEmployeeResponseDto[]);
         this.master.getDepartments();
         this.master.getDesignations();
+      this.auth.Loading = false;
       }
     )
   }
 
   getAllEmployees(search:string,departmentId:number,designationId:number,roleId:number,dobFrom:string,dobTo:string
     ,dojFrom:string,dojTo:string,pageNo:number,pageSize:number): void{
-      this._Loading.next(true);
+      this.auth.Loading = true;
       this.http.get(`${environment.baseRoute}/Employee/GetAllEmployee?search=${search}&departmentId=${departmentId}
         &designationId=${designationId}&roleId=${roleId}&dobFrom=${dobFrom}&dobTo=${dobTo}
         &dojFrom=${dojFrom}&dojTo=${dojTo}&pageNo=${pageNo}&pageSize=${pageSize}`,{headers:this.auth.getHeader()})
@@ -78,11 +84,12 @@ export class EmployeesService {
         var data = response._Data as EmployeeListResponseDto;
         this._EmployeeListResponse.next(data);
         this._EmployeeList.next(data.employees)
-        this._Loading.next(false);
+        this.auth.Loading = false;
+        //this._Loading.next(false);
       },
       (err)=>{
         var error = err.error as ResponseDto;
-        this._Loading.next(false);
+        //this._Loading.next(false);
         if(error._Errors && error._Errors.length > 0)
           alert(error._Errors);
         else
@@ -93,11 +100,12 @@ export class EmployeesService {
 
   saveEmployees(employees:BIEmployeeResponseDto[])
   {
-    this._Loading.next(true);
+    this.auth.Loading = true;
     this.http.post(environment.baseRoute+"/Employee/SaveBulkEmployees",{"employees":employees},{headers:this.auth.getHeader()})
     .subscribe(
       (response)=>{
-        this._Loading.next(false);
+
+        this.auth.Loading = false;
         this.router.navigateByUrl('/Employees');
       }
     )

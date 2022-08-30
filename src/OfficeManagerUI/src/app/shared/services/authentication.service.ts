@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { LoginResponseDto } from '../DTOs/login-response-dto';
 import { LoginModel } from '../Models/login-model';
 import { ResponseDto } from './department/response-dto';
@@ -9,6 +10,24 @@ import { ResponseDto } from './department/response-dto';
   providedIn: 'root'
 })
 export class AuthenticationService {
+
+  _Header:BehaviorSubject<string> = new BehaviorSubject<string>('');
+  Header$ = this._Header.asObservable();
+
+  _Loading = new BehaviorSubject<boolean>(false);
+  public Loading$ = this._Loading.asObservable();
+
+  public set Loading(value:boolean){
+    this._Loading.next(value);
+  }
+
+  public set Header(value:string){
+    this._Header.next(value);
+  }
+
+  public get Header(): string{
+    return this._Header.getValue();
+  }
 
   getHeader() : HttpHeaders {
     if(localStorage.getItem('token'))
