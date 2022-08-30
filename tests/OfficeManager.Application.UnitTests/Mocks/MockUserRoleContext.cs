@@ -1,16 +1,15 @@
-﻿using OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationUserRoles;
-using OfficeManager.Application.ApplicationRoles.Commands.DeleteUserRoles;
-using OfficeManager.Application.Common.Interfaces;
+﻿using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Application.Feature.UserRoles.Commands;
 
 namespace OfficeManager.Application.UnitTests.Mocks
 {
     public class MockUserRoleContext : BaseMockContext
     {
-        protected readonly Mock<IApplicationDbContext> _mockContext;
+        protected readonly Mock<IApplicationDbContext> mockContext;
 
         public MockUserRoleContext()
         {
-            _mockContext = GetUserRoleDbContext();
+            mockContext = GetUserRoleDbContext();
         }
         protected Mock<IApplicationDbContext> GetUserRoleDbContext()
         {
@@ -70,18 +69,18 @@ namespace OfficeManager.Application.UnitTests.Mocks
          };
         }
 
-        protected CreateUserRolesCommand AddUserRoleCommand()
+        protected CreateUserRoles AddUserRoleCommand()
         {
-            return new CreateUserRolesCommand
+            return new CreateUserRoles
             {
                 UserId = 1,
                 RoleId = 2,
             };
         }
 
-        protected DeleteUserRoleCommand DeleteUserRoleCommand()
+        protected DeleteUserRole DeleteUserRoleCommand()
         {
-            return new DeleteUserRoleCommand(1);
+            return new DeleteUserRole(1);
         }
     }
 }

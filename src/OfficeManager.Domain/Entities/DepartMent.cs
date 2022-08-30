@@ -2,7 +2,7 @@
 
 namespace OfficeManager.Domain.Entities
 {
-    public class DepartMent
+    public class Department
     {
         [Key]
         public int Id { get; set; }

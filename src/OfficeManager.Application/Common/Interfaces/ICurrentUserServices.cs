@@ -1,12 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUser;
-using OfficeManager.Application.Employees.Queries.GetAllEmployees;
-using OfficeManager.Domain.Entities;
+﻿using OfficeManager.Application.Dtos;
 
 namespace OfficeManager.Application.Common.Interfaces
 {
     public interface ICurrentUserServices
     {
-        LoggedInUserDto loggedInUser { get; set; }
+        LoggedInUserDTO loggedInUser { get; set; }
     }
 }

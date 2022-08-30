@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Departments.Queries.SearchDepartments;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Feature.Departments.Queries;
 
 namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartments
 {
@@ -10,76 +11,74 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         private readonly SearchDepartmentQueryHandler handler;
         public SearchDepartmentQueryHandlerTests()
         {
-            handler = new SearchDepartmentQueryHandler(_mockContext.Object, _mapper);
+            handler = new SearchDepartmentQueryHandler(mockContext.Object, mapper);
         }
 
         [Fact]
         public async Task GetAllDepartmentList()
         {
-            var result = await handler.Handle(new SearchDepartmentsQuery(String.Empty), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result._StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe("200");
 
-            result._IsSuccess.ShouldBe(true);
+            result.IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("Data found!");
+            result.Message.ShouldBe("Data found!");
 
             result.Data.Count.ShouldBe(2);
         }
 
         [Fact]
-        public async Task GetAllDepartmentList_By_SearchParam()
+        public async Task GetAllDepartmentListBySearchParam()
         {
-            var result = await handler.Handle(new SearchDepartmentsQuery("Anal"), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments("Anal"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result._StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe("200");
 
-            result._IsSuccess.ShouldBe(true);
+            result.IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("Data found!");
+            result.Message.ShouldBe("Data found!");
 
             result.Data.Count.ShouldBe(1);
         }
 
         [Fact]
-        public async Task GetAllDepartmentListBy_SearchParam_NoRecordFound()
+        public async Task GetAllDepartmentListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new SearchDepartmentsQuery("HR"), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments("HR"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result._StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe("200");
 
-            result._IsSuccess.ShouldBe(true);
+            result.IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("No Data found!");
+            result.Message.ShouldBe("No Data found!");
 
             result.Data.Count.ShouldBe(0);
         }
 
         [Fact]
-        public async Task GetAllDepartmentList_ExceptionThrown()
+        public async Task GetAllDepartmentListExceptionThrown()
         {
-            var DepartmentMockSet = new Mock<DbSet<DepartMent>>();
-            _mockContext.Setup(r => r.DepartMent).Returns(DepartmentMockSet.Object);
+            var DepartmentMockSet = new Mock<DbSet<Department>>();
+            mockContext.Setup(r => r.Department).Returns(DepartmentMockSet.Object);
 
-            var result = await handler.Handle(new SearchDepartmentsQuery(String.Empty), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDto>>>();
+            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result._StatusCode.ShouldBe("500");
+            result.StatusCode.ShouldBe("500");
 
-            result._IsSuccess.ShouldBe(false);
+            result.IsSuccess.ShouldBe(false);
 
-            result._Message.ShouldBe("There is some issue with the data!");
+            result.Message.ShouldBe("There is some issue with the data!");
 
-            result._Errors.Count.ShouldBeGreaterThan(0);
-
-            result.Data.ShouldBeNull();
+            result.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }

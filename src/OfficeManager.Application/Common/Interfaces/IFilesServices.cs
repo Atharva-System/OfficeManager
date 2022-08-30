@@ -1,9 +1,9 @@
-﻿using OfficeManager.Application.Employees.Commands.AddBulkEmployees;
+﻿using OfficeManager.Application.Dtos;
 
 namespace OfficeManager.Application.Common.Interfaces
 {
     public interface IFilesServices
     {
-        Task<List<BulkImportEmployeeDto>> ReadEmployeeExcel(string path);
+        Task<List<BulkImportEmployeeDTO>> ReadEmployeeExcel(string path);
     }
 }

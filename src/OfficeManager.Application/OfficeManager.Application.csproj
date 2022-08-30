@@ -7,21 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ApplicationUsers\Queries\**" />
+    <Compile Remove="Feature\ApplicationUsers\Queries\**" />
     <Compile Remove="Clients\**" />
-    <Compile Remove="Designations\Commands\**" />
-    <Compile Remove="Skills\Commands\DeactivateSkill\**" />
-    <Compile Remove="Skills\Commands\UpdateSkill\**" />
-    <EmbeddedResource Remove="ApplicationUsers\Queries\**" />
+    <Compile Remove="Feature\Designations\Commands\**" />
+    <Compile Remove="Feature\Skills\Commands\DeactivateSkill\**" />
+    <Compile Remove="Feature\Skills\Commands\UpdateSkill\**" />
+    <EmbeddedResource Remove="Feature\ApplicationUsers\Queries\**" />
     <EmbeddedResource Remove="Clients\**" />
-    <EmbeddedResource Remove="Designations\Commands\**" />
-    <EmbeddedResource Remove="Skills\Commands\DeactivateSkill\**" />
-    <EmbeddedResource Remove="Skills\Commands\UpdateSkill\**" />
-    <None Remove="ApplicationUsers\Queries\**" />
+    <EmbeddedResource Remove="Feature\Designations\Commands\**" />
+    <EmbeddedResource Remove="Feature\Skills\Commands\DeactivateSkill\**" />
+    <EmbeddedResource Remove="Feature\Skills\Commands\UpdateSkill\**" />
+    <None Remove="Feature\ApplicationUsers\Queries\**" />
     <None Remove="Clients\**" />
-    <None Remove="Designations\Commands\**" />
-    <None Remove="Skills\Commands\DeactivateSkill\**" />
-    <None Remove="Skills\Commands\UpdateSkill\**" />
+    <None Remove="Feature\Designations\Commands\**" />
+    <None Remove="Feature\Skills\Commands\DeactivateSkill\**" />
+    <None Remove="Feature\Skills\Commands\UpdateSkill\**" />
   </ItemGroup>
 
   <ItemGroup>

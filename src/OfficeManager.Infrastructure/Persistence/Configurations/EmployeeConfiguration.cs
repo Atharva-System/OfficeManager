@@ -14,7 +14,7 @@ namespace OfficeManager.Infrastructure.Persistence.Configurations
             builder.Property(p => p.DesignationId)
                 .IsRequired(false);
 
-            builder.HasOne<DepartMent>(d => d.Department).WithMany(e => e.Employees).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne<Department>(d => d.Department).WithMany(e => e.Employees).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne<Designation>(d => d.Designation).WithMany(e => e.Employees).OnDelete(DeleteBehavior.Cascade);
         }
     }

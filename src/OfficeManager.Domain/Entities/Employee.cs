@@ -16,7 +16,7 @@ namespace OfficeManager.Domain.Entities
         public Nullable<DateTime> DateOfBirth { get; set; }
         public DateTime DateOfJoining { get; set; }
         [ForeignKey("DepartmentId")]
-        public DepartMent Department { get; set; }
+        public Department Department { get; set; }
         [ForeignKey("DesignationId")]
         public Designation Designation { get; set; }
     }

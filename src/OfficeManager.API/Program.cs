@@ -103,10 +103,16 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 
+var resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), @"Resources");
+if (!Directory.Exists(resourcesPath))
+{
+    Directory.CreateDirectory(resourcesPath);
+}
+
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-    RequestPath = new PathString("/Resources")
+    FileProvider = new PhysicalFileProvider(resourcesPath),
+    RequestPath = new PathString("/Resources")    
 });
 
 app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
@@ -131,8 +137,10 @@ app.Run();
 
 void InitializeDatabase(IApplicationBuilder app)
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
     using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
     {
         serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
     }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 }

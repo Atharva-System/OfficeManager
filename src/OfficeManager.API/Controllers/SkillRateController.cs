@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Skills.Queries.GetAllSkillRates;
+using OfficeManager.Application.Feature.Skills.Queries;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.API.Controllers
@@ -15,8 +15,8 @@ namespace OfficeManager.API.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new GetAllSkillRatesQuery());
-                if (result._StatusCode == "404")
+                var result = await Mediator.Send(new GetAllSkillRates());
+                if (result.StatusCode == "404")
                     return NotFound(result);
                 return Ok(result);
             }

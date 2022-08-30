@@ -1,5 +1,5 @@
-﻿using OfficeManager.Application.ApplicationRoles.Commands.DeleteUserRoles;
-using OfficeManager.Application.Common.Models;
+﻿using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Feature.UserRoles.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
 
 namespace OfficeManager.Application.UnitTests.UserRoles.Commands.DeleteUserRoles
@@ -9,7 +9,7 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Commands.DeleteUserRoles
         [Fact]
         public async Task When_UserRole_Deleted()
         {
-            var handler = new DeleteUserRoleCommandHandler(_mockContext.Object);
+            var handler = new DeleteUserRoleCommandHandler(mockContext.Object);
 
             var result = await handler.Handle(DeleteUserRoleCommand(), CancellationToken.None);
 
@@ -17,7 +17,7 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Commands.DeleteUserRoles
 
             result.Message.Equals("Role deleted Successfully");
 
-            var userRoleMappings = _mockContext.Object.UserRoleMapping;
+            var userRoleMappings = mockContext.Object.UserRoleMapping;
 
             userRoleMappings.Count().ShouldBe(0);
         }

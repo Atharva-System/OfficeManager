@@ -1,14 +1,14 @@
-﻿using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Employees.Commands.AddBulkEmployees;
+﻿using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Common.Interfaces;
 using OfficeOpenXml;
 
 namespace OfficeManager.API.Services
 {
     public class FilesServices : IFilesServices
     {
-        public async Task<List<BulkImportEmployeeDto>> ReadEmployeeExcel(string path)
+        public Task<List<BulkImportEmployeeDTO>> ReadEmployeeExcel(string path)
         {
-            List<BulkImportEmployeeDto> employees = new List<BulkImportEmployeeDto>();
+            List<BulkImportEmployeeDTO> employees = new List<BulkImportEmployeeDTO>();
             using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Jul 2022"];
@@ -17,7 +17,7 @@ namespace OfficeManager.API.Services
                 for(int index=4; index < totalRows && worksheet.Cells[index,1].Value != null; index++)
                 {
 
-                    BulkImportEmployeeDto employee = new BulkImportEmployeeDto()
+                    BulkImportEmployeeDTO employee = new BulkImportEmployeeDTO()
                     {
                         EmployeeNo = Convert.ToInt32(worksheet.Cells[index, 1].Value),
                         EmployeeName = worksheet.Cells[index, 2].Value.ToString(),
@@ -29,7 +29,7 @@ namespace OfficeManager.API.Services
                     employees.Add(employee);
                 }
             }
-            return employees;
+            return Task.FromResult(employees);
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Designations.Queries.SearchDesignations;
+using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Feature.Designations.Queries;
 
 namespace OfficeManager.API.Controllers
 {
@@ -10,11 +11,11 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllDesignation")]
-        public async Task<ActionResult<Response<List<DesignationDto>>>> SearchDesignation(string? search)
+        public async Task<ActionResult<Response<List<DesignationDTO>>>> SearchDesignation(string? search)
         {
             try
             {
-                var result = await Mediator.Send(new SearchDesignationsQuery(search));
+                var result = await Mediator.Send(new SearchDesignations(search));
                 if (result.Data == null)
                     NotFound("No records found");
                 return result;

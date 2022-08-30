@@ -7,17 +7,17 @@ namespace OfficeManager.Application.Common.EmailService
 {
     public class EmailSender : IEmailSender
     {
-        private readonly EmailConfiguration _emailConfiguration;
+        private readonly EmailConfiguration emailConfiguration;
 
         public EmailSender(EmailConfiguration emailConfiguration)
         {
-            _emailConfiguration = emailConfiguration;
+            this.emailConfiguration = emailConfiguration;
         }
 
-        public void SendEmail(Message message,CancellationToken cancellationToken)
+        public void SendEmail(Message message, CancellationToken cancellationToken)
         {
             var emailMessage = CreateEmailMessage(message);
-            Send(emailMessage,cancellationToken);
+            Send(emailMessage, cancellationToken);
         }
 
         public async Task SendEmailAsync(Message message, CancellationToken cancellationToken)
@@ -29,16 +29,16 @@ namespace OfficeManager.Application.Common.EmailService
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(_emailConfiguration.From, _emailConfiguration.From));
+            emailMessage.From.Add(new MailboxAddress(emailConfiguration.From, emailConfiguration.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            var bodybuilder = new BodyBuilder { HtmlBody = String.Format("<h2 style='color:red;'>{0}</h1>",message.Content)};
-            if(message.Attachements != null && message.Attachements.Any())
+            var bodybuilder = new BodyBuilder { HtmlBody = String.Format("<h2 style='color:red;'>{0}</h1>", message.Content) };
+            if (message.Attachements != null && message.Attachements.Any())
             {
                 byte[] fileBytes;
-                foreach(var attachement in message.Attachements)
+                foreach (var attachement in message.Attachements)
                 {
-                    using(var ms = new MemoryStream())
+                    using (var ms = new MemoryStream())
                     {
                         attachement.CopyTo(ms);
                         fileBytes = ms.ToArray();
@@ -58,11 +58,10 @@ namespace OfficeManager.Application.Common.EmailService
             {
                 try
                 {
-                    client.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.Port, true);
+                    await client.ConnectAsync(emailConfiguration.SmtpServer, emailConfiguration.Port, true, cancellationToken);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate(_emailConfiguration.Username,_emailConfiguration.Password);
-
-                    client.Send(mailMessage);
+                    await client.AuthenticateAsync(emailConfiguration.Username, emailConfiguration.Password,cancellationToken);
+                    await client.SendAsync(mailMessage);
                 }
                 catch
                 {
@@ -70,34 +69,31 @@ namespace OfficeManager.Application.Common.EmailService
                 }
                 finally
                 {
-                    client.Disconnect(true,cancellationToken);
+                    client.Disconnect(true, cancellationToken);
                     client.Dispose();
                 }
             };
         }
 
-        private async Task SendAsync(MimeMessage mailMessage,CancellationToken cancellationToken)
+        private async Task SendAsync(MimeMessage mailMessage, CancellationToken cancellationToken)
         {
-            using (var client = new SmtpClient())
+            using var client = new SmtpClient();
+            try
             {
-                try
-                {
-                    await client.ConnectAsync(_emailConfiguration.SmtpServer, _emailConfiguration.Port, true);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await client.AuthenticateAsync(_emailConfiguration.Username, _emailConfiguration.Password);
-
-                    await client.SendAsync(mailMessage);
-                }
-                catch
-                {
-                    //log an error message or throw an exception, or both.
-                    throw;
-                }
-                finally
-                {
-                    await client.DisconnectAsync(true);
-                    client.Dispose();
-                }
+                await client.ConnectAsync(emailConfiguration.SmtpServer, emailConfiguration.Port, true, cancellationToken);
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
+                await client.AuthenticateAsync(emailConfiguration.Username, emailConfiguration.Password, cancellationToken);
+                await client.SendAsync(mailMessage);
+            }
+            catch
+            {
+                //log an error message or throw an exception, or both.
+                throw;
+            }
+            finally
+            {
+                await client.DisconnectAsync(true,cancellationToken);
+                client.Dispose();
             }
         }
     }

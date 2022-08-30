@@ -2,48 +2,50 @@
 {
     public class Response<T>
     {
-        private string Message;
-        public T Data;
-        private List<string> Errors;
-        private string StatusCode;
-        private bool IsSuccess;
+        private string _Message;
+        public T _Data;
+        private List<string> _Errors;
+        private string _StatusCode;
+        private bool _IsSuccess;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Response()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            Message = "";
-            Errors = new List<string>();
-            StatusCode = "200";
-            IsSuccess = true;
+            _Message = "";
+            _Errors = new List<string>();
+            _StatusCode = "200";
+            _IsSuccess = true;
         }
 
-        public string _Message
+        public string Message
         {
-            get => this.Message;
-            set => this.Message = value;
+            get => this._Message;
+            set => this._Message = value;
         }
 
-        public T _Data
+        public T Data
         {
-            get { return this.Data; }
-            set { this.Data = value; }
+            get { return this._Data; }
+            set { this._Data = value; }
         }
 
-        public string _StatusCode
+        public string StatusCode
         {
-            get { return this.StatusCode;  }
-            set { this.StatusCode = value; }
+            get { return this._StatusCode;  }
+            set { this._StatusCode = value; }
         }
 
-        public List<string> _Errors
+        public List<string> Errors
         {
-            get { return this.Errors; }
+            get { return this._Errors; }
             set { this._Errors = value; }
         }
 
-        public bool _IsSuccess
+        public bool IsSuccess
         {
-            get => this.IsSuccess;
-            set { this.IsSuccess = value; }
+            get => this._IsSuccess;
+            set { this._IsSuccess = value; }
         }
     }
 }

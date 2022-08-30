@@ -39,7 +39,7 @@ namespace OfficeManager.Infrastructure.Migrations
 							ON U.Id = URM.UserId
 						LEFT JOIN Roles R
 							ON URM.RoleId = R.Id
-						LEFT JOIN DepartMent Dep
+						LEFT JOIN Department Dep
 							ON emp.DepartmentId = Dep.Id
 						LEFT JOIN Designation Des
 							ON emp.DesignationId = Des.Id

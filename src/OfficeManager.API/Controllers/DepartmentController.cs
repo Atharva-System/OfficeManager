@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Departments.Queries.SearchDepartments;
+using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Feature.Departments.Queries;
 
 namespace OfficeManager.API.Controllers
 {
@@ -10,11 +11,11 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllDepartment")]
-        public async Task<ActionResult<Response<List<DepartmentDto>>>> SearchDepartment(string? search)
+        public async Task<ActionResult<Response<List<DepartmentDTO>>>> SearchDepartment(string? search)
         {
             try
             {
-                var result = await Mediator.Send(new SearchDepartmentsQuery(search));
+                var result = await Mediator.Send(new SearchDepartments(search));
                 if (result.Data == null)
                     NotFound("No records found");
                 return result;

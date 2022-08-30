@@ -1,4 +1,5 @@
 ﻿using OfficeManager.Application.ApplicationRoles.Queries;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.UnitTests.Mocks;
 
 namespace OfficeManager.Application.UnitTests.UserRoles.Queries
@@ -8,11 +9,11 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         [Fact]
         public async Task GetUserRolesListTest()
         {
-            var handler = new GetUserRolesQueryHandler(_mockContext.Object, _mapper);
+            var handler = new GetUserRolesQueryHandler(mockContext.Object, mapper);
 
-            var result = await handler.Handle(new GetUserRolesQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetUserRoles(), CancellationToken.None);
 
-            result.ShouldBeOfType<List<RolesDto>>();
+            result.ShouldBeOfType<List<RolesDTO>>();
 
             result.Count.ShouldBe(2);
         }

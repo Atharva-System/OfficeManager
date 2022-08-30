@@ -2,10 +2,10 @@
 {
     public class RegisterDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string Contact { get; set; }
-        public string PersonalEmail { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Contact { get; set; } = string.Empty;
+        public string PersonalEmail { get; set; } = string.Empty;
         public DateTime DateOfJoining { get; set; } = DateTime.Now;
     }
 }
