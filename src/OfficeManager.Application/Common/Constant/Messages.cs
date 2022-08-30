@@ -1,12 +1,16 @@
-﻿namespace OfficeManager.Application.Common.Constant
+﻿using System.Net;
+
+namespace OfficeManager.Application.Common.Constant
 {
     public static class Messages
     {
+        public static string RegisteredSuccesfully => "Registered Successfully";
         public static string AddedSuccesfully => "Added Successfully";
         public static string UpdatedSuccessfully => "Updated Successfully";
         public static string DeletedSuccessfully => "Deleted Successfully";
         public static string NotFound => "Entity not found";
-
+        public static string NoDataFound => "No Data found";
+        public static string CheckCredentials => "Please check login credentials";
         public static string UserNameOrPasswordIsIncorrect => "Username or password is incorrect";
         public static string ConfirmYourEmail => "Please confirm your email";
         public static string EmailIsAlreadyExist => "Email is already exist";
@@ -27,5 +31,13 @@
         public static string PasswordSuccessfullyReset => "Your password has been successfully reset.Your new password has been sent to your email address.We recommend that you change your password.";
         public static string ResetPasswordCodeInvalid => "Your Reset Password Code is invalid";
         public static string EmailSuccessfullyChangedConfirmYourEmail => "Email Successfully Changed.Please confirm your email";
+    }
+
+    public static class StausCodes
+    {
+        public static string Accepted => HttpStatusCode.Accepted.ToString();
+        public static string BadRequest => HttpStatusCode.BadRequest.ToString();
+        public static string NotFound => HttpStatusCode.NotFound.ToString();
+        public static string InternalServerError => HttpStatusCode.InternalServerError.ToString();
     }
 }

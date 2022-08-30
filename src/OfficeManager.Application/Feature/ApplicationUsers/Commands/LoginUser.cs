@@ -36,8 +36,8 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 response.IsSuccess = false;
-                response.Message = "Please check login credentials";
-                response.StatusCode = "400";
+                response.Message = Messages.CheckCredentials;
+                response.StatusCode = StausCodes.BadRequest;
                 return response;
             }
 
