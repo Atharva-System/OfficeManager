@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Skills.Commands.CreateSkill;
 using OfficeManager.Application.Skills.Queries.SearchSkillsQuery;
 
@@ -12,30 +13,30 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllSkill")]
-        public async Task<ActionResult<Response<PaginatedList<SkillDto>>>> GetSkills([FromQuery] SearchSkillsQuery query)
+        public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> GetSkills([FromQuery] SearchSkillsQuery query)
         {
-            Response<PaginatedList<SkillDto>> response = new Response<PaginatedList<SkillDto>>();
+            Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
             try
             {
                 response = await Mediator.Send(query);
-                if (response._IsSuccess)
+                if (response.IsSuccess)
                     return Ok(response);
                 return NotFound(response);
             }
             catch (ValidationException ex)
             {
-                response._Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
-                response._Message = "Validation Failed";
-                response._IsSuccess = false;
-                response._StatusCode = "400";
+                response.Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
+                response.Message = "Validation Failed";
+                response.IsSuccess = false;
+                response.StatusCode = "400";
                 return BadRequest(response);
             }
             catch (Exception ex)
             {
-                response._Errors.Add(ex.Message);
-                response._Message = "Internal Server Error";
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Errors.Add(ex.Message);
+                response.Message = "Internal Server Error";
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return StatusCode(500, response);
             }
         }
@@ -52,18 +53,18 @@ namespace OfficeManager.API.Controllers
             }
             catch (ValidationException ex)
             {
-                response._Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
-                response._Message = "Validation Failed";
-                response._IsSuccess = false;
-                response._StatusCode = "400";
+                response.Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
+                response.Message = "Validation Failed";
+                response.IsSuccess = false;
+                response.StatusCode = "400";
                 return BadRequest(response);
             }
             catch (Exception ex)
             {
-                response._Errors.Add(ex.Message);
-                response._Message = "Internal Server Error";
-                response._IsSuccess = false;
-                response._StatusCode = "500";
+                response.Errors.Add(ex.Message);
+                response.Message = "Internal Server Error";
+                response.IsSuccess = false;
+                response.StatusCode = "500";
                 return StatusCode(500, response);
             }
         }

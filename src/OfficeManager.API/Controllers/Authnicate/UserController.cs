@@ -1,13 +1,8 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using OfficeManager.Application.ApplicationUsers.Commands.ForgotPassword;
-using OfficeManager.Application.ApplicationUsers.Commands.ForgotPasswordConfirmation;
 using OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUser;
-using OfficeManager.Application.ApplicationUsers.Commands.RegisterApplicationUser;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Employees.Queries.GetAllEmployees;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,10 +11,10 @@ namespace OfficeManager.API.Controllers.Identity
 {
     public class UserController : ApiControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration config;
         public UserController(IConfiguration config)
         {
-            _config = config;
+            this.config = config;
         }
 
         //[HttpPost]
@@ -51,11 +46,11 @@ namespace OfficeManager.API.Controllers.Identity
             {
                 Response<LoggedInUserDto> response = await Mediator.Send(command);
 
-                if (response != null && !response._IsSuccess && response._Data == null)
+                if (response != null && !response.IsSuccess && response.Data == null)
                 {
                     return BadRequest(response);
                 }
-                response._Data = GenerateJWT(response._Data);
+                response.Data = GenerateJWT(response.Data);
                 return Ok(response);
             }
             catch (ValidationException ex)
@@ -70,7 +65,7 @@ namespace OfficeManager.API.Controllers.Identity
 
         private LoggedInUserDto GenerateJWT(LoggedInUserDto user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]));
             var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             IEnumerable<Claim> claims = new Claim[]
@@ -81,12 +76,12 @@ namespace OfficeManager.API.Controllers.Identity
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddDays(30).ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Aud, _config["JWT:ValidAudience"]),
-                new Claim(JwtRegisteredClaimNames.Iss, _config["JWT:ValidIssuer"])
+                new Claim(JwtRegisteredClaimNames.Aud, config["JWT:ValidAudience"]),
+                new Claim(JwtRegisteredClaimNames.Iss, config["JWT:ValidIssuer"])
             };
 
             var token = new JwtSecurityToken(
-                _config["Jwt:Issuer"],
+                config["Jwt:Issuer"],
                 null,
                 claims: claims,
                 expires: DateTime.Now.AddDays(30),

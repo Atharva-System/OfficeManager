@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  officemanager.api:
+   container_name: officemanager.api
+   environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:Default=Data Source=192.168.31.90,1433;Initial Catalog=OfficeManager_DB;User Id=sa;Password=Admin#123"
+   ports:
+      - "10000:80"
+
+  portainer:
+    container_name: portainer
+    restart: always    
+    ports:
+        - "10080:8000"
+        - "11000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data

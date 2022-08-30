@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Designations.Queries.SearchDesignations;
 
@@ -10,7 +11,7 @@ namespace OfficeManager.API.Controllers
     {
         [HttpGet]
         [Route("GetAllDesignation")]
-        public async Task<ActionResult<Response<List<DesignationDto>>>> SearchDesignation(string? search)
+        public async Task<ActionResult<Response<List<DesignationDTO>>>> SearchDesignation(string? search)
         {
             try
             {

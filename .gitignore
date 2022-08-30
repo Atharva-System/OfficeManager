@@ -280,3 +280,4 @@ __pycache__/
 /src/OfficeManager.Domain/obj
 /src/OfficeManager.Infrastructure/obj
 /tests/OfficeManager.Application.UnitTests/obj
+/obj/Docker

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationUserRoles;
 using OfficeManager.Application.ApplicationRoles.Commands.DeleteUserRoles;
 using OfficeManager.Application.ApplicationRoles.Queries;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 
 namespace OfficeManager.API.Controllers.Identity
@@ -35,7 +36,7 @@ namespace OfficeManager.API.Controllers.Identity
         //[Authorize]
         [HttpGet]
         [Route("GetAll")]
-        public async Task<ActionResult<List<RolesDto>>> GetAll()
+        public async Task<ActionResult<List<RolesDTO>>> GetAll()
         {
             return await Mediator.Send(new GetUserRolesQuery());
         }

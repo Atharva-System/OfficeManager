@@ -19,7 +19,7 @@
         }
         public static Result Failure(IEnumerable<string> errors,string message)
         {
-            return new Result(false,errors,message,null);
+            return new Result(false,errors,message, string.Empty);
         }
     }
 }

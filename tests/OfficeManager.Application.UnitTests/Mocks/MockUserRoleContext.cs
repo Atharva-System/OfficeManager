@@ -6,11 +6,11 @@ namespace OfficeManager.Application.UnitTests.Mocks
 {
     public class MockUserRoleContext : BaseMockContext
     {
-        protected readonly Mock<IApplicationDbContext> _mockContext;
+        protected readonly Mock<IApplicationDbContext> mockContext;
 
         public MockUserRoleContext()
         {
-            _mockContext = GetUserRoleDbContext();
+            mockContext = GetUserRoleDbContext();
         }
         protected Mock<IApplicationDbContext> GetUserRoleDbContext()
         {

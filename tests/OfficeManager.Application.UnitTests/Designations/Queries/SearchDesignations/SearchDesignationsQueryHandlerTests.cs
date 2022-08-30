@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Designations.Queries.SearchDesignations;
 using OfficeManager.Application.UnitTests.Mocks;
@@ -10,7 +11,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         private readonly SearchDesignationsQueryHandler handler;
         public SearchDesignationsQueryHandlerTests()
         {
-            handler = new SearchDesignationsQueryHandler(_mockContext.Object, _mapper);
+            handler = new SearchDesignationsQueryHandler(mockContext.Object, mapper);
         }
 
         [Fact]
@@ -18,66 +19,66 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         {
             var result = await handler.Handle(new SearchDesignationsQuery(String.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result._StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe("200");
 
-            result._IsSuccess.ShouldBe(true);
+            result.IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("Data found!");
+            result.Message.ShouldBe("Data found!");
 
             result.Data.Count.ShouldBe(2);
         }
 
         [Fact]
-        public async Task GetAllDesignationList_By_SearchParam()
+        public async Task GetAllDesignationListBySearchParam()
         {
             var result = await handler.Handle(new SearchDesignationsQuery("Software"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result._StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe("200");
 
-            result._IsSuccess.ShouldBe(true);
+            result.IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("Data found!");
+            result.Message.ShouldBe("Data found!");
 
             result.Data.Count.ShouldBe(1);
         }
 
         [Fact]
-        public async Task GetAllDesignationListBy_SearchParam_NoRecordFound()
+        public async Task GetAllDesignationListBySearchParamNoRecordFound()
         {
             var result = await handler.Handle(new SearchDesignationsQuery("Sales Head"), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result._StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe("200");
 
-            result._IsSuccess.ShouldBe(true);
+            result.IsSuccess.ShouldBe(true);
 
-            result._Message.ShouldBe("No Data found!");
+            result.Message.ShouldBe("No Data found!");
 
             result.Data.Count.ShouldBe(0);
         }
 
         [Fact]
-        public async Task GetAllDesignationList_ExceptionThrown()
+        public async Task GetAllDesignationListExceptionThrown()
         {
             var DesignationMockSet = new Mock<DbSet<Designation>>();
-            _mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
+            mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
 
             var result = await handler.Handle(new SearchDesignationsQuery(String.Empty), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDto>>>();
+            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result._StatusCode.ShouldBe("500");
+            result.StatusCode.ShouldBe("500");
 
-            result._IsSuccess.ShouldBe(false);
+            result.IsSuccess.ShouldBe(false);
 
-            result._Message.ShouldBe("There is some issue with the data!");
+            result.Message.ShouldBe("There is some issue with the data!");
 
-            result._Errors.Count.ShouldBeGreaterThan(0);
+            result.Errors.Count.ShouldBeGreaterThan(0);
 
             result.Data.ShouldBeNull();
         }
