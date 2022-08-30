@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Options;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Domain.Entities;
 using OfficeManager.Infrastructure.Common;
@@ -13,17 +11,17 @@ namespace OfficeManager.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext,IApplicationDbContext
     {
-        private readonly IMediator _mediator;
-        private readonly AuditableEntitySaveChangesInterceptor _interceptor;
-        private IDbContextTransaction _transaction;
+        private readonly IMediator mediator;
+        private readonly AuditableEntitySaveChangesInterceptor interceptor;
+        private IDbContextTransaction transaction;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             IMediator mediator, AuditableEntitySaveChangesInterceptor interceptor)
             : base(options)
         {
-            _mediator = mediator;
-            _interceptor = interceptor;
+            this.mediator = mediator;
+            this.interceptor = interceptor;
         }
         public DbSet<RoleMaster> Roles { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -36,7 +34,7 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<Skill> Skill { get; set; }
         public DbSet<SkillLevel> SkillLevel { get; set; }
         public DbSet<SkillRate> SkillRate { get; set; }
-        public DbSet<DepartMent> DepartMent { get; set; }
+        public DbSet<Department> Department { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
 
@@ -49,20 +47,20 @@ namespace OfficeManager.Infrastructure.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.AddInterceptors(_interceptor);
+            optionsBuilder.AddInterceptors(interceptor);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-                await _mediator.DispatchDomainEvents(this);
+                await mediator.DispatchDomainEvents(this);
 
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                _transaction.Rollback();
+                transaction.Rollback();
                 throw ex;
             }
         }
@@ -71,13 +69,13 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                await _mediator.DispatchDomainEvents(this);
+                await mediator.DispatchDomainEvents(this);
 
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                _transaction.Rollback();
+                transaction.Rollback();
                 throw ex;
             }
         }
@@ -86,7 +84,7 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                _transaction = this.Database.BeginTransaction();
+                transaction = this.Database.BeginTransaction();
             }
             catch (Exception ex)
             {
@@ -98,7 +96,7 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                _transaction?.Commit();
+                transaction?.Commit();
             }
             catch (Exception ex)
             {

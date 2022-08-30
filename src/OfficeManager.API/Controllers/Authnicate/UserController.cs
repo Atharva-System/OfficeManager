@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using OfficeManager.Application.ApplicationUsers.Commands.LoginApplicationUser;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Feature.ApplicationUsers.Commands;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -40,11 +41,11 @@ namespace OfficeManager.API.Controllers.Identity
 
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult<Response<LoggedInUserDto>>> Login([FromBody] LoginUserCommand command)
+        public async Task<ActionResult<Response<LoggedInUserDTO>>> Login([FromBody] LoginUser command)
         {
             try
             {
-                Response<LoggedInUserDto> response = await Mediator.Send(command);
+                Response<LoggedInUserDTO> response = await Mediator.Send(command);
 
                 if (response != null && !response.IsSuccess && response.Data == null)
                 {
@@ -63,7 +64,7 @@ namespace OfficeManager.API.Controllers.Identity
             }
         }
 
-        private LoggedInUserDto GenerateJWT(LoggedInUserDto user)
+        private LoggedInUserDTO GenerateJWT(LoggedInUserDTO user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]));
             var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

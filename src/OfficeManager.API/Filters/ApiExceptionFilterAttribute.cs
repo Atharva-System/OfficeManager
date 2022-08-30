@@ -6,11 +6,11 @@ namespace OfficeManager.API.Filters
 {
     public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
-        private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
+        private readonly IDictionary<Type, Action<ExceptionContext>> exceptionHandlers;
 
         public ApiExceptionFilterAttribute()
         {
-            _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
+            exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
             {
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
@@ -23,9 +23,9 @@ namespace OfficeManager.API.Filters
         {
             Type type = context.Exception.GetType();
 
-            if(_exceptionHandlers.ContainsKey(type))
+            if(exceptionHandlers.ContainsKey(type))
             {
-                _exceptionHandlers[type].Invoke(context);
+                exceptionHandlers[type].Invoke(context);
                 return;
             }
 

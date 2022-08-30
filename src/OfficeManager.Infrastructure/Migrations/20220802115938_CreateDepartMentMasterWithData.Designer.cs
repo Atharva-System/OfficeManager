@@ -12,8 +12,8 @@ using OfficeManager.Infrastructure.Persistence;
 namespace OfficeManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220802115938_CreateDepartMentMasterWithData")]
-    partial class CreateDepartMentMasterWithData
+    [Migration("20220802115938_CreateDepartmentMasterWithData")]
+    partial class CreateDepartmentMasterWithData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -266,7 +266,7 @@ namespace OfficeManager.Infrastructure.Migrations
                     b.ToTable("ApplicationUserDepartments");
                 });
 
-            modelBuilder.Entity("OfficeManager.Domain.Entities.DepartMent", b =>
+            modelBuilder.Entity("OfficeManager.Domain.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -287,7 +287,7 @@ namespace OfficeManager.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DepartMent");
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("OfficeManager.Domain.Entities.DepartmentMaster", b =>

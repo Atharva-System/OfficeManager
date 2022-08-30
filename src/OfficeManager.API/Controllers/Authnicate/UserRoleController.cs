@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationUserRoles;
-using OfficeManager.Application.ApplicationRoles.Commands.DeleteUserRoles;
 using OfficeManager.Application.ApplicationRoles.Queries;
-using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Feature.UserRoles.Commands;
 
 namespace OfficeManager.API.Controllers.Identity
 {
@@ -15,7 +14,7 @@ namespace OfficeManager.API.Controllers.Identity
     public class UserRoleController : ApiControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<Result>> CreateApplicationRole(CreateUserRolesCommand command)
+        public async Task<ActionResult<Result>> CreateApplicationRole(CreateUserRoles command)
         {
             try
             {
@@ -38,7 +37,7 @@ namespace OfficeManager.API.Controllers.Identity
         [Route("GetAll")]
         public async Task<ActionResult<List<RolesDTO>>> GetAll()
         {
-            return await Mediator.Send(new GetUserRolesQuery());
+            return await Mediator.Send(new GetUserRoles());
         }
 
         [HttpDelete]
@@ -47,7 +46,7 @@ namespace OfficeManager.API.Controllers.Identity
         {
             try
             {
-                var result = await Mediator.Send(new DeleteUserRoleCommand(id));
+                var result = await Mediator.Send(new DeleteUserRole(id));
                 if (result.Succeeded)
                     return Ok(result);
                 return BadRequest(result);

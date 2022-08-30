@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Departments.Queries.SearchDepartments;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Feature.Departments.Queries;
 
 namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartments
 {
@@ -17,7 +17,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentList()
         {
-            var result = await handler.Handle(new SearchDepartmentsQuery(String.Empty), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
@@ -33,7 +33,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentListBySearchParam()
         {
-            var result = await handler.Handle(new SearchDepartmentsQuery("Anal"), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments("Anal"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
@@ -49,7 +49,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new SearchDepartmentsQuery("HR"), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments("HR"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
@@ -65,10 +65,10 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentListExceptionThrown()
         {
-            var DepartmentMockSet = new Mock<DbSet<DepartMent>>();
-            mockContext.Setup(r => r.DepartMent).Returns(DepartmentMockSet.Object);
+            var DepartmentMockSet = new Mock<DbSet<Department>>();
+            mockContext.Setup(r => r.Department).Returns(DepartmentMockSet.Object);
 
-            var result = await handler.Handle(new SearchDepartmentsQuery(String.Empty), CancellationToken.None);
+            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 

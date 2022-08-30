@@ -1,5 +1,5 @@
-﻿using OfficeManager.Application.ApplicationRoles.Commands.CreateApplicationUserRoles;
-using OfficeManager.Application.Common.Models;
+﻿using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Feature.UserRoles.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
 
 namespace OfficeManager.Application.UnitTests.UserRoles.Commands.CreateUserRoleMapping

@@ -8,8 +8,8 @@ namespace OfficeManager.API.Controllers
     [Route("api/[controller]")]
     public class ApiControllerBase : ControllerBase
     {
-        private ISender _mediator = null!;
+        private ISender mediator = null!;
 
-        protected ISender Mediator => _mediator ?? HttpContext.RequestServices.GetRequiredService<ISender>();
+        protected ISender Mediator => mediator ?? HttpContext.RequestServices.GetRequiredService<ISender>();
     }
 }
