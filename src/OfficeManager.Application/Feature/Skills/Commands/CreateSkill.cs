@@ -32,8 +32,8 @@ namespace OfficeManager.Application.Feature.Skills.Commands
             Response<object> response = new Response<object>();
             response.Data = skill;
             response.IsSuccess = true;
-            response.Message = "Skill is added";
-            response.StatusCode = "200";
+            response.Message = Messages.AddedSuccesfully;
+            response.StatusCode = StausCodes.Accepted;
 
             return response;
         }

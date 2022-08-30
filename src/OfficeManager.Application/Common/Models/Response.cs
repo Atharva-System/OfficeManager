@@ -14,7 +14,7 @@
         {
             _Message = "";
             _Errors = new List<string>();
-            _StatusCode = "200";
+            _StatusCode = StausCodes.Accepted;
             _IsSuccess = true;
         }
 
@@ -47,5 +47,6 @@
             get => this._IsSuccess;
             set { this._IsSuccess = value; }
         }
+
     }
 }

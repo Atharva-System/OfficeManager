@@ -2,7 +2,7 @@
 using OfficeManager.Application.Feature.UserRoles.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
 
-namespace OfficeManager.Application.UnitTests.UserRoles.Commands.DeleteUserRoles
+namespace OfficeManager.Application.UnitTests.UserRoles.Commands
 {
     public class DeleteUserRoleCommandHandlerTests : MockUserRoleContext
     {
@@ -15,7 +15,7 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Commands.DeleteUserRoles
 
             result.ShouldBeOfType<Result>();
 
-            result.Message.Equals("Role deleted Successfully");
+            result.Message.ShouldBe(Messages.DeletedSuccessfully);
 
             var userRoleMappings = mockContext.Object.UserRoleMapping;
 

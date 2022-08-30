@@ -85,8 +85,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
             context.CommitTransaction();
 
-            response.Message = "Employee added successfully";
-            response.StatusCode = "200";
+            response.Message = Messages.AddedSuccesfully;
+            response.StatusCode = StausCodes.Accepted;
             response.Data = string.Empty;
 
             return response;

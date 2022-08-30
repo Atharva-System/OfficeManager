@@ -4,7 +4,7 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.UnitTests.Mocks;
 using OfficeManager.Application.Feature.Designations.Queries;
 
-namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesignations
+namespace OfficeManager.Application.UnitTests.Designations.Queries
 {
     public class SearchDesignationsQueryHandlerTests : MockDesignationsContext
     {
@@ -17,15 +17,15 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         [Fact]
         public async Task GetAllDesignationList()
         {
-            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations(string.Empty), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe(StausCodes.Accepted);
 
             result.IsSuccess.ShouldBe(true);
 
-            result.Message.ShouldBe("Data found!");
+            result.Message.ShouldBe(Messages.DataFound);
 
             result.Data.Count.ShouldBe(2);
         }
@@ -33,15 +33,15 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         [Fact]
         public async Task GetAllDesignationListBySearchParam()
         {
-            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations("Software"), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations("Software"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe(StausCodes.Accepted);
 
             result.IsSuccess.ShouldBe(true);
 
-            result.Message.ShouldBe("Data found!");
+            result.Message.ShouldBe(Messages.DataFound);
 
             result.Data.Count.ShouldBe(1);
         }
@@ -49,15 +49,15 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
         [Fact]
         public async Task GetAllDesignationListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations("Sales Head"), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations("Sales Head"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe(StausCodes.Accepted);
 
             result.IsSuccess.ShouldBe(true);
 
-            result.Message.ShouldBe("No Data found!");
+            result.Message.ShouldBe(Messages.NoDataFound);
 
             result.Data.Count.ShouldBe(0);
         }
@@ -68,15 +68,15 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries.SearchDesigna
             var DesignationMockSet = new Mock<DbSet<Designation>>();
             mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
 
-            var result = await handler.Handle(new Feature.Designations.Queries.SearchDesignations(string.Empty), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe("500");
+            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
 
             result.IsSuccess.ShouldBe(false);
 
-            result.Message.ShouldBe("There is some issue with the data!");
+            result.Message.ShouldBe(Messages.IssueWithData);
 
             result.Errors.Count.ShouldBeGreaterThan(0);
 

@@ -9,7 +9,9 @@ namespace OfficeManager.Application.Common.Constant
         public static string UpdatedSuccessfully => "Updated Successfully";
         public static string DeletedSuccessfully => "Deleted Successfully";
         public static string NotFound => "Entity not found";
+        public static string DataFound => "Data found";
         public static string NoDataFound => "No Data found";
+        public static string IssueWithData => "There is some issue with the data";
         public static string CheckCredentials => "Please check login credentials";
         public static string UserNameOrPasswordIsIncorrect => "Username or password is incorrect";
         public static string ConfirmYourEmail => "Please confirm your email";
@@ -35,9 +37,16 @@ namespace OfficeManager.Application.Common.Constant
 
     public static class StausCodes
     {
+        //200
         public static string Accepted => HttpStatusCode.Accepted.ToString();
+
+        //400
         public static string BadRequest => HttpStatusCode.BadRequest.ToString();
+
+        //404
         public static string NotFound => HttpStatusCode.NotFound.ToString();
+
+        //500
         public static string InternalServerError => HttpStatusCode.InternalServerError.ToString();
     }
 }

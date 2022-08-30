@@ -24,11 +24,11 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
                 context.UserRoleMapping.Remove(userRole);
                 await context.SaveChangesAsync(cancellationToken);
                 context.CommitTransaction();
-                return Result.Success("Role deleted Successfully", string.Empty);
+                return Result.Success(Messages.DeletedSuccessfully, string.Empty);
             }
             else
             {
-                return Result.Failure(new List<string>() { "No Role found" }, string.Empty);
+                return Result.Failure(new List<string>() { Messages.NoDataFound }, string.Empty);
             }
         }
     }

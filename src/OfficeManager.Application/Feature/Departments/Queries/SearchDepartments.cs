@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MailKit.Mime;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
@@ -29,7 +30,7 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                 List<DepartmentDTO> departments = new List<DepartmentDTO>();
                 if (!string.IsNullOrEmpty(request.search))
                 {
-                    departments = await context.DepartMent
+                    departments = await context.Department
                         .AsNoTracking()
                         .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
                         .Where(x => x.Name.Contains(request.search)).ToListAsync(cancellationToken);
@@ -41,21 +42,19 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                         .ToListAsync();
                 }
                 response.Data = departments;
-                response.StatusCode = "200";
+                response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
-                response.Message = departments.Count > 0 ? "Data found!" : "No Data found!";
+                response.Message = departments.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
 
-                //return Result.Success("Department found",departments);
                 return response;
             }
             catch (Exception ex)
             {
-                //return Result.Failure(Array.Empty<string>(),"Data has some issue please check");
                 response.Data = new List<DepartmentDTO>();
-                response.Message = "There is some issue with the data!";
+                response.Message = Messages.IssueWithData;
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
 

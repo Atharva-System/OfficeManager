@@ -4,7 +4,7 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.UnitTests.Mocks;
 using OfficeManager.Application.Feature.Departments.Queries;
 
-namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartments
+namespace OfficeManager.Application.UnitTests.Departments.Queries
 {
     public class SearchDepartmentQueryHandlerTests : MockDepartmentContext
     {
@@ -17,15 +17,15 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentList()
         {
-            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
+            var result = await handler.Handle(new SearchDepartments(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe(StausCodes.Accepted);
 
             result.IsSuccess.ShouldBe(true);
 
-            result.Message.ShouldBe("Data found!");
+            result.Message.ShouldBe(Messages.DataFound);
 
             result.Data.Count.ShouldBe(2);
         }
@@ -33,15 +33,15 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentListBySearchParam()
         {
-            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments("Anal"), CancellationToken.None);
+            var result = await handler.Handle(new SearchDepartments("Anal"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe(StausCodes.Accepted);
 
             result.IsSuccess.ShouldBe(true);
 
-            result.Message.ShouldBe("Data found!");
+            result.Message.ShouldBe(Messages.DataFound);
 
             result.Data.Count.ShouldBe(1);
         }
@@ -49,15 +49,15 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
         [Fact]
         public async Task GetAllDepartmentListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments("HR"), CancellationToken.None);
+            var result = await handler.Handle(new SearchDepartments("HR"), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe("200");
+            result.StatusCode.ShouldBe(StausCodes.Accepted);
 
             result.IsSuccess.ShouldBe(true);
 
-            result.Message.ShouldBe("No Data found!");
+            result.Message.ShouldBe(Messages.NoDataFound);
 
             result.Data.Count.ShouldBe(0);
         }
@@ -68,15 +68,15 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries.SearchDepartme
             var DepartmentMockSet = new Mock<DbSet<Department>>();
             mockContext.Setup(r => r.Department).Returns(DepartmentMockSet.Object);
 
-            var result = await handler.Handle(new Feature.Departments.Queries.SearchDepartments(string.Empty), CancellationToken.None);
+            var result = await handler.Handle(new SearchDepartments(string.Empty), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe("500");
+            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
 
             result.IsSuccess.ShouldBe(false);
 
-            result.Message.ShouldBe("There is some issue with the data!");
+            result.Message.ShouldBe(Messages.IssueWithData);
 
             result.Errors.Count.ShouldBeGreaterThan(0);
         }

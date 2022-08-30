@@ -52,7 +52,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                     if (parameters.Get<bool>("@IsSuccess"))
                     {
                         response.Message = "All the employees are inserted successfully";
-                        response.StatusCode = "200";
+                        response.StatusCode = StausCodes.Accepted;
                         response.IsSuccess = true;
                     }
                 }
@@ -99,10 +99,10 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             catch (Exception ex)
             {
                 response.Data = string.Empty;
-                response.Message = "There is some error in data";
+                response.Message = Messages.IssueWithData;
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
         }

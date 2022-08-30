@@ -40,17 +40,18 @@ namespace OfficeManager.Application.Feature.Skills.Queries
                     .OrderBy(x => x.Name)
                     .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNo, request.PageSize);
+
             if (response.Data.TotalCount > 0)
             {
-                response.Message = "Records found!";
+                response.Message = Messages.DataFound;
                 response.IsSuccess = true;
-                response.StatusCode = "200";
+                response.StatusCode = StausCodes.Accepted;
             }
             else
             {
-                response.Message = "No Records found!";
+                response.Message = Messages.NoDataFound;
                 response.IsSuccess = true;
-                response.StatusCode = "200";
+                response.StatusCode = StausCodes.NotFound;
             }
             return response;
         }
