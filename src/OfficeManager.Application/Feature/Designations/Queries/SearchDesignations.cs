@@ -35,8 +35,8 @@ namespace OfficeManager.Application.Feature.Designations.Queries
                     response.Data = await context.Designation
                         .ProjectToListAsync<DesignationDTO>(mapper.ConfigurationProvider);
                 }
-                response.Message = response.Data.Count > 0 ? "Data found!" : "No Data found!";
-                response.StatusCode = "200";
+                response.Message = response.Data.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
+                response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
                 return response;
             }
@@ -44,19 +44,17 @@ namespace OfficeManager.Application.Feature.Designations.Queries
             {
                 response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
                 response.Message = "";
-                response.StatusCode = "400";
+                response.StatusCode = StausCodes.BadRequest;
                 response.IsSuccess = false;
                 return response;
-                //return Result.Failure(exception.Errors.Select(err => err.ErrorMessage).ToList(), "");
             }
             catch (Exception ex)
             {
                 response.Errors.Add(ex.Message);
-                response.Message = "There is some issue with the data!";
-                response.StatusCode = "500";
+                response.Message = Messages.IssueWithData;
+                response.StatusCode = StausCodes.InternalServerError;
                 response.IsSuccess = false;
                 return response;
-                //return Result.Failure(Array.Empty<string>(),"Issue found in data.");
             }
         }
     }

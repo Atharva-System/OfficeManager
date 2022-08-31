@@ -2,7 +2,7 @@
 using OfficeManager.Application.Feature.UserRoles.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
 
-namespace OfficeManager.Application.UnitTests.UserRoles.Commands.CreateUserRoleMapping
+namespace OfficeManager.Application.UnitTests.UserRoles.Commands
 {
     public class CreateUserRolesCommandHandlerTests : MockUserRoleContext
     {
@@ -19,7 +19,7 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Commands.CreateUserRoleM
 
             result.ShouldBeOfType<Result>();
 
-            result.Message.Equals("Role Added Successfully");
+            result.Message.ShouldBe(Messages.AddedSuccesfully);
 
             var userRoleMappings = mockContext.Object.UserRoleMapping;
 

@@ -34,9 +34,9 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             Employee employee = context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
             if (employee == null)
             {
-                response.Errors.Add("Data not found.");
+                response.Errors.Add(Messages.NoDataFound);
                 response.IsSuccess = false;
-                response.StatusCode = "400";
+                response.StatusCode = StausCodes.NotFound;
                 return response;
             }
             context.BeginTransaction();
@@ -87,8 +87,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             await context.SaveChangesAsync(cancellationToken);
 
             context.CommitTransaction();
-            response.Message = "Employee updated successfully";
-            response.StatusCode = "200";
+            response.Message = Messages.AddedSuccesfully;
+            response.StatusCode = StausCodes.Accepted;
             response.Data = string.Empty;
 
             return response;

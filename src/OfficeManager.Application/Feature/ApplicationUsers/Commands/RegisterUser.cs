@@ -65,7 +65,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                 await context.SaveChangesAsync(cancellationToken);
 
                 context.CommitTransaction();
-                return Result.Success($"{employee.EmployeeName} is registered successfully.", string.Empty);
+                return Result.Success(Messages.RegisteredSuccesfully, string.Empty);
             }
             catch (Exception ex)
             {

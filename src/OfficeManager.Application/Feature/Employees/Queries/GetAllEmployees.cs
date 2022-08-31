@@ -64,23 +64,23 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                     if (response.Data.Employees.Count > 0 && response.Data.TotalCount > 0)
                     {
                         response.IsSuccess = true;
-                        response.StatusCode = "200";
-                        response.Message = "All the data found";
+                        response.StatusCode = StausCodes.Accepted;
+                        response.Message = Messages.DataFound;
                     }
                     else
                     {
-                        response.Message = "No records found";
+                        response.Message = Messages.NoDataFound;
                         response.IsSuccess = false;
-                        response.StatusCode = "404";
+                        response.StatusCode = StausCodes.NotFound;
                     }
                 }
                 return response;
             }
             catch (Exception ex)
             {
-                response.Errors.Add("Data or connection issue, please check internet or contact administrator.");
+                response.Errors.Add(Messages.IssueWithData);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
 

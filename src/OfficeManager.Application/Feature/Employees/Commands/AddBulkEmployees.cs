@@ -68,23 +68,23 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                     response.Data = request.employees;
                     response.Message = "Employees bulk insertion set to verify!";
                     response.IsSuccess = true;
-                    response.StatusCode = "200";
+                    response.StatusCode = StausCodes.Accepted;
                 }
                 else
                 {
-                    response.Message = "Data not found";
+                    response.Message = Messages.NoDataFound;
                     response.IsSuccess = false;
-                    response.StatusCode = "404";
+                    response.StatusCode = StausCodes.NotFound;
                 }
                 return response;
             }
             catch (Exception ex)
             {
                 response.Data = new List<BulkImportEmployeeDTO>();
-                response.Message = "There is some error in data";
+                response.Message = Messages.IssueWithData;
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
         }

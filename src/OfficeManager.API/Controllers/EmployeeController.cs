@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Common.Constant;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
@@ -29,7 +30,7 @@ namespace OfficeManager.API.Controllers
             var DojTo = DateTime.Parse(String.IsNullOrEmpty(DOJTo)? "12/12/9999" : DOJTo);
             GetAllEmployees query = new GetAllEmployees(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
             var response = await Mediator.Send(query);
-            if (response.StatusCode == "500")
+            if (response.StatusCode == StausCodes.InternalServerError)
                 return StatusCode(500, response);
             else if (response.StatusCode == "404")
                 return NotFound(response);
@@ -139,7 +140,7 @@ namespace OfficeManager.API.Controllers
             {
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return StatusCode(500, response);
             }
         }
@@ -159,7 +160,7 @@ namespace OfficeManager.API.Controllers
             catch (ValidationException ex)
             {
                 response.Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
-                response.StatusCode = "400";
+                response.StatusCode = StausCodes.NotFound;
                 response.IsSuccess = false;
                 return BadRequest(response);
             }
@@ -167,7 +168,7 @@ namespace OfficeManager.API.Controllers
             {
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return StatusCode(500, response);
             }
         }

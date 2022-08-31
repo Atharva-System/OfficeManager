@@ -40,7 +40,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                 employeeDetail.RoleId = context.UserRoleMapping.FirstOrDefault(ur => ur.UserId == employeeDetail.UserId).RoleId;
                 response.Data = employeeDetail;
                 response.IsSuccess = true;
-                response.StatusCode = "200";
+                response.StatusCode = StausCodes.Accepted;
                 var skills = context.EmployeeSkills.Where(sk => sk.EmployeeId == employeeDetail.EmployeeId && sk.IsActive == true)
                     .Select(empSkill => new EmployeeSkill
                     {
@@ -55,7 +55,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             else
             {
                 response.IsSuccess = false;
-                response.StatusCode = "404";
+                response.StatusCode = StausCodes.NotFound;
             }
 
             return response;
