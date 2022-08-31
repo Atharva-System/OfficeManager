@@ -5,7 +5,7 @@
 	2. Please try to remove all possible warning and null check references before push code
 	3. Try to use async method and use await in that method
 	4. Do not use static method for any mapping
-	5. Always keep practice remove innecessary namespace from class file (Right click and click 'Remove and Sort Usings')
+	5. Always keep practice remove unnecessary namespace from class file (Right click and click 'Remove and Sort Usings')
 
 ## Application Project
 	1. DTOs must put in different folder (OfficeManager.Application\Dtos)
