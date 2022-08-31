@@ -42,7 +42,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                     Email = request.Email,
                     EmployeeName = request.EmployeeName
                 };
-                context.Employees.Add(employee);
+                await context.Employees.AddAsync(employee);
 
                 await context.SaveChangesAsync(cancellationToken);
 
@@ -52,7 +52,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                     Email = request.Email,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
                 };
-                context.Users.Add(user);
+                await context.Users.AddAsync(user);
 
                 await context.SaveChangesAsync(cancellationToken);
 
@@ -61,7 +61,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                     UserId = user.Id,
                     RoleId = request.roleId
                 };
-                context.UserRoleMapping.Add(userRole);
+                await context.UserRoleMapping.AddAsync(userRole);
                 await context.SaveChangesAsync(cancellationToken);
 
                 context.CommitTransaction();
