@@ -1,8 +1,6 @@
 ﻿using MockQueryable.Moq;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Dtos;
-using OfficeManager.Application.Feature.UserRoles.Commands;
-using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.UnitTests.Mocks
 {
@@ -14,9 +12,9 @@ namespace OfficeManager.Application.UnitTests.Mocks
         {
             currentUserService = new Mock<ICurrentUserServices>();
             currentUserService.Setup(x => x.loggedInUser).Returns(new Mock<LoggedInUserDTO>().Object);
-            mockContext = GetApplicationUserRoleDbContext();
+            mockContext = GetApplicationUserDbContext();
         }
-        protected Mock<IApplicationDbContext> GetApplicationUserRoleDbContext()
+        protected Mock<IApplicationDbContext> GetApplicationUserDbContext()
         {
             var mockContext = new Mock<IApplicationDbContext>();
 

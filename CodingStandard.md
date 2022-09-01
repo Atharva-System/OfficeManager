@@ -11,3 +11,4 @@
 	1. DTOs must put in different folder (OfficeManager.Application\Dtos)
 	2. Add new module related command and query in 'Feature' folder
 	3. Do not use constant messages in class file, try to use it from Constant\Messages file, if missing then add it that file
+	4. Always keep practice to write Unit Test for your functionality
