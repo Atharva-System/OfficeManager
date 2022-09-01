@@ -19,8 +19,6 @@ namespace OfficeManager.Application.UnitTests.Mocks
             //Designation
             mockContext.Setup(r => r.Designation).Returns(GetDesignations().AsQueryable().BuildMockDbSet().Object);
 
-           // mockContext.Setup(r => r.Designation).Returns(CreateDbSetMock(GetDesignations().AsQueryable()).Object);
-
             return mockContext;
         }
 
