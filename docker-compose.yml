@@ -1,6 +1,14 @@
 version: '3.4'
 
 services:
+  rediscache:
+    image: redis
+    container_name: rediscache
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_volume:/data
   officemanager.api:
     image: ${DOCKER_REGISTRY-}officemanagerapi
     build:
@@ -11,3 +19,4 @@ services:
   
 volumes:
   portainer_data:
+  redis_volume:

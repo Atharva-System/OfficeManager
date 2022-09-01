@@ -1,24 +1,31 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using MailKit.Mime;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Interfaces;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
-    public record SearchDepartments(string search) : IRequest<Response<List<DepartmentDTO>>>;
+    public record SearchDepartments : IRequest<Response<List<DepartmentDTO>>>, ICacheable
+    {
+        public string Search { get; set; } = string.Empty;
+
+        public bool BypassCache => false;
+
+        public string CacheKey => CacheKeys.Departments;
+    }
 
     public class SearchDepartmentQueryHandler : IRequestHandler<SearchDepartments, Response<List<DepartmentDTO>>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
         public SearchDepartmentQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            Context = context;
+            Mapper = mapper;
         }
 
         public async Task<Response<List<DepartmentDTO>>> Handle(SearchDepartments request, CancellationToken cancellationToken)
@@ -28,17 +35,17 @@ namespace OfficeManager.Application.Feature.Departments.Queries
             {
 
                 List<DepartmentDTO> departments = new List<DepartmentDTO>();
-                if (!string.IsNullOrEmpty(request.search))
+                if (!string.IsNullOrEmpty(request.Search))
                 {
-                    departments = await context.Department
+                    departments = await Context.Department
                         .AsNoTracking()
-                        .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
-                        .Where(x => x.Name.Contains(request.search)).ToListAsync(cancellationToken);
+                        .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
+                        .Where(x => x.Name.Contains(request.Search)).ToListAsync(cancellationToken);
                 }
                 else
                 {
-                    departments = await context.Department
-                        .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
+                    departments = await Context.Department
+                        .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
                         .ToListAsync();
                 }
                 response.Data = departments;
