@@ -5,11 +5,11 @@ namespace OfficeManager.Application.Common.Behaviours
 {
     internal class UnhandledExceptionBehaviour<TRequest,TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly ILogger<TRequest> logger;
+        private readonly ILogger<TRequest> Logger;
 
         public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
         {
-            this.logger = logger;
+            Logger = logger;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -22,7 +22,7 @@ namespace OfficeManager.Application.Common.Behaviours
             {
                 var requestName = typeof(TRequest).Name;
 
-                logger.LogError(ex, "Office Manager Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+                Logger.LogError(ex, "Office Manager Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
                 throw;
             }

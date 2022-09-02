@@ -10,10 +10,10 @@ namespace OfficeManager.Application.Feature.Skills.Queries
 
     public class GetAllSkillLevelQueryHandler : IRequestHandler<GetAllSkillLevels, Response<List<SkillLevel>>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
         public GetAllSkillLevelQueryHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<List<SkillLevel>>> Handle(GetAllSkillLevels request, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace OfficeManager.Application.Feature.Skills.Queries
 
             try
             {
-                response.Data = await context.SkillLevel.Where(sk => sk.IsActive == true).ToListAsync();
+                response.Data = await Context.SkillLevel.Where(sk => sk.IsActive == true).ToListAsync();
 
                 if (response.Data.Count == 0)
                 {

@@ -20,18 +20,18 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUser, Result>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
 
         public RegisterUserCommandHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Result> Handle(RegisterUser request, CancellationToken cancellationToken)
         {
             try
             {
-                context.BeginTransaction();
+                Context.BeginTransaction();
                 Employee employee = new Employee
                 {
                     EmployeeNo = request.EmployeeNo,
@@ -42,9 +42,9 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                     Email = request.Email,
                     EmployeeName = request.EmployeeName
                 };
-                await context.Employees.AddAsync(employee);
+                await Context.Employees.AddAsync(employee);
 
-                await context.SaveChangesAsync(cancellationToken);
+                await Context.SaveChangesAsync(cancellationToken);
 
                 UserMaster user = new UserMaster
                 {
@@ -52,19 +52,19 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                     Email = request.Email,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
                 };
-                await context.Users.AddAsync(user);
+                await Context.Users.AddAsync(user);
 
-                await context.SaveChangesAsync(cancellationToken);
+                await Context.SaveChangesAsync(cancellationToken);
 
                 UserRoleMapping userRole = new UserRoleMapping()
                 {
                     UserId = user.Id,
                     RoleId = request.roleId
                 };
-                await context.UserRoleMapping.AddAsync(userRole);
-                await context.SaveChangesAsync(cancellationToken);
+                await Context.UserRoleMapping.AddAsync(userRole);
+                await Context.SaveChangesAsync(cancellationToken);
 
-                context.CommitTransaction();
+                Context.CommitTransaction();
                 return Result.Success(Messages.RegisteredSuccesfully, string.Empty);
             }
             catch (Exception ex)

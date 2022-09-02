@@ -10,11 +10,11 @@ namespace OfficeManager.Application.Feature.Skills.Queries
 
     public class GetAllSkillRatesQueryHandler : IRequestHandler<GetAllSkillRates, Response<List<SkillRate>>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
 
         public GetAllSkillRatesQueryHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<List<SkillRate>>> Handle(GetAllSkillRates request, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace OfficeManager.Application.Feature.Skills.Queries
             };
             try
             {
-                response.Data = await context.SkillRate.Where(sk => sk.IsActive == true).ToListAsync(cancellationToken);
+                response.Data = await Context.SkillRate.Where(sk => sk.IsActive == true).ToListAsync(cancellationToken);
 
                 if (response.Data.Count == 0)
                 {

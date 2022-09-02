@@ -9,21 +9,21 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
 
     public class DeleteUserRoleCommandHandler : IRequestHandler<DeleteUserRole, Result>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
         public DeleteUserRoleCommandHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Result> Handle(DeleteUserRole request, CancellationToken cancellationToken)
         {
-            context.BeginTransaction();
-            var userRole = await context.UserRoleMapping.FirstOrDefaultAsync(d => d.Id == request.id);
+            Context.BeginTransaction();
+            var userRole = await Context.UserRoleMapping.FirstOrDefaultAsync(d => d.Id == request.id);
             if (userRole != null)
             {
-                context.UserRoleMapping.Remove(userRole);
-                await context.SaveChangesAsync(cancellationToken);
-                context.CommitTransaction();
+                Context.UserRoleMapping.Remove(userRole);
+                await Context.SaveChangesAsync(cancellationToken);
+                Context.CommitTransaction();
                 return Result.Success(Messages.DeletedSuccessfully, string.Empty);
             }
             else

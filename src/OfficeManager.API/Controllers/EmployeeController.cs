@@ -16,7 +16,14 @@ namespace OfficeManager.API.Controllers
     [Authorize]
     public class EmployeeController : ApiControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly IConfiguration Configuration;
+
+        private readonly IFilesServices Service;
+        public EmployeeController(IFilesServices service, IConfiguration configuration)
+        {
+            Service = service;
+            Configuration = configuration;
+        }
 
         [HttpGet]
         [Route("GetAllEmployee")]
@@ -37,14 +44,6 @@ namespace OfficeManager.API.Controllers
             else
                 return Ok(response);
         }
-        private readonly IFilesServices service;
-        public EmployeeController(IFilesServices service, IConfiguration configuration)
-        {
-            this.service = service;
-            this.configuration = configuration;
-        }
-
-
 
         [HttpGet]
         [Route("GetEmployeeById/{id}")]
@@ -86,8 +85,8 @@ namespace OfficeManager.API.Controllers
                 }
             }
             if (string.IsNullOrEmpty(path))
-                path = configuration.GetValue<string>("ImportFile");
-            var employees = await service.ReadEmployeeExcel(path);
+                path = Configuration.GetValue<string>("ImportFile");
+            var employees = await Service.ReadEmployeeExcel(path);
             var departments = await Mediator.Send(new SearchDepartments());
             var designations = await Mediator.Send(new SearchDesignations());
             AddBulkEmployees command = new AddBulkEmployees();
