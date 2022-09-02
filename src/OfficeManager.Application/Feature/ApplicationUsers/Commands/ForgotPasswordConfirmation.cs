@@ -11,10 +11,10 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
     }
     public class ForgotPasswordConfirmationCommandHandler : IRequestHandler<ForgotPasswordConfirmation, bool>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
         public ForgotPasswordConfirmationCommandHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<bool> Handle(ForgotPasswordConfirmation request, CancellationToken cancellationToken)

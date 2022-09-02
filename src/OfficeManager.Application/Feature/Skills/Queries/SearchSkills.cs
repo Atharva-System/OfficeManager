@@ -20,12 +20,12 @@ namespace OfficeManager.Application.Feature.Skills.Queries
 
     public class SearchSkillQueryHandler : IRequestHandler<SearchSkills, Response<PaginatedList<SkillDTO>>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
         public SearchSkillQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            Context = context;
+            Mapper = mapper;
         }
 
         public async Task<Response<PaginatedList<SkillDTO>>> Handle(SearchSkills request, CancellationToken cancellationToken)
@@ -35,15 +35,15 @@ namespace OfficeManager.Application.Feature.Skills.Queries
             {
                 response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
                 if (string.IsNullOrEmpty(request.Search))
-                    response.Data = await context.Skill
+                    response.Data = await Context.Skill
                         .OrderBy(x => x.Name)
-                        .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
+                        .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
                         .PaginatedListAsync(request.PageNo, request.PageSize);
                 else
-                    response.Data = await context.Skill
+                    response.Data = await Context.Skill
                         .Where(x => x.Name.Contains(request.Search))
                         .OrderBy(x => x.Name)
-                        .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
+                        .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
                         .PaginatedListAsync(request.PageNo, request.PageSize);
 
                 response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;

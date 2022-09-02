@@ -17,14 +17,14 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
     public class LoginUserCommandHandler : IRequestHandler<LoginUser, Response<LoggedInUserDTO>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
-        private readonly ICurrentUserServices currentUserService;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
+        private readonly ICurrentUserServices CurrentUserService;
         public LoginUserCommandHandler(IApplicationDbContext context, IMapper mapper, ICurrentUserServices currentUserService)
         {
-            this.context = context;
-            this.mapper = mapper;
-            this.currentUserService = currentUserService;
+            Context = context;
+            Mapper = mapper;
+            CurrentUserService = currentUserService;
         }
 
         public async Task<Response<LoggedInUserDTO>> Handle(LoginUser request, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
             try
             {
-                var user = await context.Users.Include(x => x.Employee)
+                var user = await Context.Users.Include(x => x.Employee)
                 .FirstOrDefaultAsync(a => a.Employee.EmployeeNo == request.EmployeeNo);
 
                 if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
@@ -44,15 +44,15 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
                     return response;
                 }
 
-                var userRoles = await context.UserRoleMapping.Include(x => x.Roles).Where(d => d.UserId == user.Id)
-                                    .ProjectTo<UserRoleDTO>(mapper.ConfigurationProvider).ToListAsync();
+                var userRoles = await Context.UserRoleMapping.Include(x => x.Roles).Where(d => d.UserId == user.Id)
+                                    .ProjectTo<UserRoleDTO>(Mapper.ConfigurationProvider).ToListAsync();
 
-                LoggedInUserDTO loggedInUser = mapper.Map<UserMaster, LoggedInUserDTO>(user);
+                LoggedInUserDTO loggedInUser = Mapper.Map<UserMaster, LoggedInUserDTO>(user);
                 loggedInUser.Roles = userRoles;
 
                 response.Data = loggedInUser;
 
-                currentUserService.loggedInUser = loggedInUser;
+                CurrentUserService.loggedInUser = loggedInUser;
 
                 response.IsSuccess = true;
                 response.Message = Messages.Success;

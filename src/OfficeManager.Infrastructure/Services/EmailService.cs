@@ -13,7 +13,7 @@ namespace OfficeManager.Infrastructure.Services
 
         public EmailService(IOptions<EmailSettings> options)
         {
-            this.emailSettings = options.Value;
+            emailSettings = options.Value;
         }
 
         public void SendEmail(Message message, CancellationToken cancellationToken)

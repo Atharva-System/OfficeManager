@@ -10,11 +10,11 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
     public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPassword, bool>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
 
         public ForgotPasswordCommandHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<bool> Handle(ForgotPassword request, CancellationToken cancellationToken)

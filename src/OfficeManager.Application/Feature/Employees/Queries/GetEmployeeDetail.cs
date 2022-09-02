@@ -3,6 +3,7 @@ using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace OfficeManager.Application.Feature.Employees.Queries
 {
@@ -10,10 +11,10 @@ namespace OfficeManager.Application.Feature.Employees.Queries
 
     public class GetEmployeeDetailQueryHandler : IRequestHandler<GetEmployeeDetail, Response<EmployeeDetailDTO>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
         public GetEmployeeDetailQueryHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<EmployeeDetailDTO>> Handle(GetEmployeeDetail request, CancellationToken cancellationToken)
@@ -21,7 +22,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             Response<EmployeeDetailDTO> response = new Response<EmployeeDetailDTO>();
             response.Data = new EmployeeDetailDTO();
 
-            var employeeDetail = context.Employees.Where(emp => emp.Id == request.employeeId)
+            var employeeDetail = Context.Employees.Where(emp => emp.Id == request.employeeId)
                 .Select(emp => new EmployeeDetailDTO
                 {
                     EmployeeId = emp.Id,
@@ -33,15 +34,16 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                     DateOfBirth = emp.DateOfBirth.Value,
                     DateOfJoining = emp.DateOfJoining,
                     skills = new List<EmployeeSkill>(),
-                    UserId = context.Users.FirstOrDefault(u => u.EmployeeID == emp.Id).Id
+                    UserId = Context.Users.FirstOrDefault(u => u.EmployeeID == emp.Id).Id
                 }).FirstOrDefault();
+
             if (employeeDetail != null)
             {
-                employeeDetail.RoleId = context.UserRoleMapping.FirstOrDefault(ur => ur.UserId == employeeDetail.UserId).RoleId;
+                employeeDetail.RoleId = Context.UserRoleMapping.FirstOrDefault(ur => ur.UserId == employeeDetail.UserId).RoleId;
                 response.Data = employeeDetail;
                 response.IsSuccess = true;
                 response.StatusCode = StausCodes.Accepted;
-                var skills = context.EmployeeSkills.Where(sk => sk.EmployeeId == employeeDetail.EmployeeId && sk.IsActive == true)
+                var skills = Context.EmployeeSkills.Where(sk => sk.EmployeeId == employeeDetail.EmployeeId && sk.IsActive == true)
                     .Select(empSkill => new EmployeeSkill
                     {
                         EmployeeId = empSkill.EmployeeId,

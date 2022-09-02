@@ -8,10 +8,10 @@ namespace OfficeManager.Application.Feature.Skills.Validators
 {
     public class CreateSkillValidator : AbstractValidator<CreateSkill>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
         public CreateSkillValidator(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
             RuleFor(p => p.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .MaximumLength(100).WithMessage("Name is acceeding maximum length of 100 characters.")
@@ -20,7 +20,7 @@ namespace OfficeManager.Application.Feature.Skills.Validators
 
         public async Task<bool> BeUniqueSkill(string skillName, CancellationToken cancellationToken)
         {
-            var skill = await context.Skill.FirstOrDefaultAsync(s => s.Name == skillName);
+            var skill = await Context.Skill.FirstOrDefaultAsync(s => s.Name == skillName);
             return skill is null;
         }
     }

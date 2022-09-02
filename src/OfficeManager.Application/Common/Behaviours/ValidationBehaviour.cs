@@ -5,21 +5,21 @@ namespace OfficeManager.Application.Common.Behaviours
 {
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IEnumerable<IValidator<TRequest>> validators;
+        private readonly IEnumerable<IValidator<TRequest>> Validators;
 
         public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
         {
-            this.validators = validators;
+            Validators = validators;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if(validators.Any())
+            if(Validators.Any())
             {
                 var context = new ValidationContext<TRequest>(request);
 
                 var validationResults = await Task.WhenAll(
-                    validators.Select(v =>
+                    Validators.Select(v =>
                         v.ValidateAsync(context, cancellationToken)));
 
                 var failures = validationResults

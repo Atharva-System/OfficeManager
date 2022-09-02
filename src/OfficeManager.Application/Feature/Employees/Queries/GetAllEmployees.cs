@@ -23,11 +23,11 @@ namespace OfficeManager.Application.Feature.Employees.Queries
 
     public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployees, Response<EmployeeListResponse>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
 
         public GetAllEmployeeQueryHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<EmployeeListResponse>> Handle(GetAllEmployees request, CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                 parameters.Add("@@DOJToDate", request.DateOfJoiningTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfJoiningTo.Value);
                 //parameters.Add("@PageNumber", request.PageNo);
                 //parameters.Add("@PageSize", request.PageSize);
-                using (var connection = new SqlConnection(context.GetConnectionString))
+                using (var connection = new SqlConnection(Context.GetConnectionString))
                 {
                     response.Data = new EmployeeListResponse();
                     response.Data.Employees = new List<EmployeeDTO>();
