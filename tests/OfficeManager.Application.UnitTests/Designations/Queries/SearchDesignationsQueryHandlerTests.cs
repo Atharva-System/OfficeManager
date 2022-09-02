@@ -17,7 +17,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         [Fact]
         public async Task GetAllDesignationList()
         {
-            var result = await handler.Handle(new SearchDesignations(string.Empty), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations (), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
@@ -33,7 +33,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         [Fact]
         public async Task GetAllDesignationListBySearchParam()
         {
-            var result = await handler.Handle(new SearchDesignations("Software"), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations { Search = "Software" }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
@@ -49,7 +49,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         [Fact]
         public async Task GetAllDesignationListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new SearchDesignations("Sales Head"), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations { Search = "Sales Head" }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 
@@ -68,7 +68,7 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
             var DesignationMockSet = new Mock<DbSet<Designation>>();
             mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
 
-            var result = await handler.Handle(new SearchDesignations(string.Empty), CancellationToken.None);
+            var result = await handler.Handle(new SearchDesignations(), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DesignationDTO>>>();
 

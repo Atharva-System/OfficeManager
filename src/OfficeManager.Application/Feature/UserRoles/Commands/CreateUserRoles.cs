@@ -23,7 +23,7 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
         public async Task<Result> Handle(CreateUserRoles request, CancellationToken cancellationToken)
         {
             context.BeginTransaction();
-            context.UserRoleMapping.Add(new UserRoleMapping()
+            await context.UserRoleMapping.AddAsync(new UserRoleMapping()
             {
                 UserId = request.UserId,
                 RoleId = request.RoleId

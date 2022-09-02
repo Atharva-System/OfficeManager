@@ -15,6 +15,5 @@ namespace OfficeManager.Application.UnitTests.Mocks
 
             mapper = mapperConfig.CreateMapper();
         }
-       
     }
 }

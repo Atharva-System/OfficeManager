@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using MediatR;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
+using System.ComponentModel.DataAnnotations;
+using AutoMapper.QueryableExtensions;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace OfficeManager.Application.Feature.Skills.Queries
 {
@@ -28,32 +31,43 @@ namespace OfficeManager.Application.Feature.Skills.Queries
         public async Task<Response<PaginatedList<SkillDTO>>> Handle(SearchSkills request, CancellationToken cancellationToken)
         {
             Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
-            response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
-            if (string.IsNullOrEmpty(request.Search))
-                response.Data = await context.Skill
-                    .OrderBy(x => x.Name)
-                    .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
-                    .PaginatedListAsync(request.PageNo, request.PageSize);
-            else
-                response.Data = await context.Skill
-                    .Where(x => x.Name.Contains(request.Search))
-                    .OrderBy(x => x.Name)
-                    .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
-                    .PaginatedListAsync(request.PageNo, request.PageSize);
+            try
+            {
+                response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
+                if (string.IsNullOrEmpty(request.Search))
+                    response.Data = await context.Skill
+                        .OrderBy(x => x.Name)
+                        .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
+                        .PaginatedListAsync(request.PageNo, request.PageSize);
+                else
+                    response.Data = await context.Skill
+                        .Where(x => x.Name.Contains(request.Search))
+                        .OrderBy(x => x.Name)
+                        .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
+                        .PaginatedListAsync(request.PageNo, request.PageSize);
 
-            if (response.Data.TotalCount > 0)
-            {
-                response.Message = Messages.DataFound;
-                response.IsSuccess = true;
+                response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
                 response.StatusCode = StausCodes.Accepted;
-            }
-            else
-            {
-                response.Message = Messages.NoDataFound;
                 response.IsSuccess = true;
-                response.StatusCode = StausCodes.NotFound;
+                return response;
             }
-            return response;
+            catch (ValidationException exception)
+            {
+                response.Errors = exception.Errors.Select(err => err.ErrorMessage)
+                    .ToList();
+                response.Message = "";
+                response.StatusCode = StausCodes.BadRequest;
+                response.IsSuccess = false;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message);
+                response.Message = Messages.IssueWithData;
+                response.StatusCode = StausCodes.InternalServerError;
+                response.IsSuccess = false;
+                return response;
+            }
         }
     }
 }

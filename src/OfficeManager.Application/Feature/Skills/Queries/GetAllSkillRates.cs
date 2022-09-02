@@ -23,22 +23,34 @@ namespace OfficeManager.Application.Feature.Skills.Queries
             {
                 Data = new List<SkillRate>()
             };
-
-            response.Data =await context.SkillRate.Where(sk => sk.IsActive == true).ToListAsync();
-
-            if (response.Data.Count == 0)
+            try
             {
-                response.Errors.Add(Messages.NoDataFound);
-                response.StatusCode = StausCodes.NotFound;
-                response.IsSuccess = false;
-            }
-            else
-            {
-                response.Message = Messages.DataFound;
-                response.StatusCode = StausCodes.Accepted;
+                response.Data = await context.SkillRate.Where(sk => sk.IsActive == true).ToListAsync(cancellationToken);
+
+                if (response.Data.Count == 0)
+                {
+                    response.Errors.Add(Messages.NoDataFound);
+                    response.StatusCode = StausCodes.NotFound;
+                }
+                else
+                {
+                    response.Message = Messages.DataFound;
+                    response.StatusCode = StausCodes.Accepted;
+                }
+
                 response.IsSuccess = true;
+                return response;
             }
-            return response;
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message);
+                response.Message = Messages.IssueWithData;
+                response.StatusCode = StausCodes.InternalServerError;
+                response.IsSuccess = false;
+                return response;
+            }
+
+            
         }
     }
 }

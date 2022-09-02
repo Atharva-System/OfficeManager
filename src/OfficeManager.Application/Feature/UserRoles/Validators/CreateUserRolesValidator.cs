@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Application.Feature.UserRoles.Commands;
 using OfficeManager.Domain.Entities;
 
-namespace OfficeManager.Application.Feature.UserRoles.Commands
+namespace OfficeManager.Application.Feature.UserRoles.Validators
 {
     public class CreateUserRolesValidator : AbstractValidator<CreateUserRoles>
     {

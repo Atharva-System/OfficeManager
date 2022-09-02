@@ -20,6 +20,7 @@ namespace OfficeManager.Application.Feature.Skills.Commands
 
         public async Task<Response<object>> Handle(CreateSkill request, CancellationToken cancellationToken)
         {
+            context.BeginTransaction();
             Skill skill = new Skill();
             skill.Name = request.Name;
             skill.Description = request.Description;

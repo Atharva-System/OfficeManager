@@ -1,4 +1,5 @@
-﻿using OfficeManager.Application.Common.Interfaces;
+﻿using MockQueryable.Moq;
+using OfficeManager.Application.Common.Interfaces;
 
 namespace OfficeManager.Application.UnitTests.Mocks
 {

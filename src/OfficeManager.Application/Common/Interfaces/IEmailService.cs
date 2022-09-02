@@ -2,7 +2,7 @@
 
 namespace OfficeManager.Application.Common.Interfaces
 {
-    public interface IEmailSender
+    public interface IEmailService
     {
         void SendEmail(Message message, CancellationToken cancellationToken);
         Task SendEmailAsync(Message message, CancellationToken cancellationToken);

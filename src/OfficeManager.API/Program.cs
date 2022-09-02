@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeManager.API;
@@ -6,10 +8,6 @@ using OfficeManager.Application;
 using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
 using System.Text;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using OfficeManager.Application.Common.EmailService;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +16,6 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureService(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddCors();
-
-var emailConfig = builder.Configuration
-                .GetSection("EmailConfiguration")
-                .Get<EmailConfiguration>();
-builder.Services.AddSingleton(emailConfig);
 
 builder.Services.AddAuthentication(options =>
     {

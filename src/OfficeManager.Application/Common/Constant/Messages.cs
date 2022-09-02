@@ -4,6 +4,7 @@ namespace OfficeManager.Application.Common.Constant
 {
     public static class Messages
     {
+        public static string Success => "Success";
         public static string RegisteredSuccesfully => "Registered Successfully";
         public static string AddedSuccesfully => "Added Successfully";
         public static string UpdatedSuccessfully => "Updated Successfully";

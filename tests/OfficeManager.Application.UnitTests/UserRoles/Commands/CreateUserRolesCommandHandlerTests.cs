@@ -6,16 +6,16 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Commands
 {
     public class CreateUserRolesCommandHandlerTests : MockUserRoleContext
     {
-        private readonly CreateUserRolesCommandHandler _handler;
+        private readonly CreateUserRolesCommandHandler handler;
         public CreateUserRolesCommandHandlerTests()
         {
-            _handler = new CreateUserRolesCommandHandler(mockContext.Object);
+            handler = new CreateUserRolesCommandHandler(mockContext.Object);
         }
 
         [Fact]
-        public async Task When_ValidUserRole_Added()
+        public async Task WhenValidUserRoleAdded()
         {
-            var result = await _handler.Handle(AddUserRoleCommand(), CancellationToken.None);
+            var result = await handler.Handle(AddUserRoleCommand(), CancellationToken.None);
 
             result.ShouldBeOfType<Result>();
 

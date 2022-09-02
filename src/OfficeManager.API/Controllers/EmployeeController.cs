@@ -88,8 +88,8 @@ namespace OfficeManager.API.Controllers
             if (string.IsNullOrEmpty(path))
                 path = configuration.GetValue<string>("ImportFile");
             var employees = await service.ReadEmployeeExcel(path);
-            var departments = await Mediator.Send(new SearchDepartments(null));
-            var designations = await Mediator.Send(new SearchDesignations(null));
+            var departments = await Mediator.Send(new SearchDepartments());
+            var designations = await Mediator.Send(new SearchDesignations());
             AddBulkEmployees command = new AddBulkEmployees();
             command.employees = employees;
             command.departments = departments.Data;

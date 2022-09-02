@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Application.Feature.Skills.Commands;
 using OfficeManager.Domain.Entities;
 
-namespace OfficeManager.Application.Feature.Skills.Commands
+namespace OfficeManager.Application.Feature.Skills.Validators
 {
     public class CreateSkillValidator : AbstractValidator<CreateSkill>
     {

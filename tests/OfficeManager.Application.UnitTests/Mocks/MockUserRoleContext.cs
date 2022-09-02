@@ -1,5 +1,7 @@
-﻿using OfficeManager.Application.Common.Interfaces;
+﻿using MockQueryable.Moq;
+using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Feature.UserRoles.Commands;
+using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.UnitTests.Mocks
 {
@@ -26,16 +28,15 @@ namespace OfficeManager.Application.UnitTests.Mocks
             //mockContext.Setup(r => r.UserRoleMapping).Returns(userRoleMappingMockSet.Object);
 
             mockContext.Setup(r => r.UserRoleMapping).Returns(userRoleMappingLists.AsQueryable().BuildMockDbSet().Object);
-
-            mockContext.Setup(r => r.UserRoleMapping.Add(It.IsAny<UserRoleMapping>())).Callback((UserRoleMapping userRoleMapping) =>
+            mockContext.Setup(m => m.UserRoleMapping.AddAsync(It.IsAny<UserRoleMapping>(), default)).Callback<UserRoleMapping, CancellationToken>((s, token) =>
             {
-                userRoleMappingLists.Add(userRoleMapping);
+                userRoleMappingLists.Add(s);
             });
-
-            mockContext.Setup(r => r.UserRoleMapping.Remove(It.IsAny<UserRoleMapping>())).Callback((UserRoleMapping userRoleMapping) =>
+            mockContext.Setup(m => m.UserRoleMapping.Remove(It.IsAny<UserRoleMapping>())).Callback<UserRoleMapping>(s =>
             {
-                userRoleMappingLists.Remove(userRoleMapping);
+                userRoleMappingLists.Remove(s);
             });
+            
 
             return mockContext;
         }

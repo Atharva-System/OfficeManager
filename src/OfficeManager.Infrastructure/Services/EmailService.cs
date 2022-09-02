@@ -1,17 +1,19 @@
-﻿using MimeKit;
+﻿using Microsoft.Extensions.Options;
+using MimeKit;
+using MailKit.Net.Smtp;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
-using MailKit.Net.Smtp;
+using OfficeManager.Infrastructure.Settings;
 
-namespace OfficeManager.Application.Common.EmailService
+namespace OfficeManager.Infrastructure.Services
 {
-    public class EmailSender : IEmailSender
+    public class EmailService : IEmailService
     {
-        private readonly EmailConfiguration emailConfiguration;
+        private readonly EmailSettings emailSettings;
 
-        public EmailSender(EmailConfiguration emailConfiguration)
+        public EmailService(IOptions<EmailSettings> options)
         {
-            this.emailConfiguration = emailConfiguration;
+            this.emailSettings = options.Value;
         }
 
         public void SendEmail(Message message, CancellationToken cancellationToken)
@@ -29,7 +31,7 @@ namespace OfficeManager.Application.Common.EmailService
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(emailConfiguration.From, emailConfiguration.From));
+            emailMessage.From.Add(new MailboxAddress(emailSettings.From, emailSettings.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
             var bodybuilder = new BodyBuilder { HtmlBody = String.Format("<h2 style='color:red;'>{0}</h1>", message.Content) };
@@ -58,9 +60,9 @@ namespace OfficeManager.Application.Common.EmailService
             {
                 try
                 {
-                    await client.ConnectAsync(emailConfiguration.SmtpServer, emailConfiguration.Port, true, cancellationToken);
+                    await client.ConnectAsync(emailSettings.SmtpServer, emailSettings.Port, true, cancellationToken);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await client.AuthenticateAsync(emailConfiguration.Username, emailConfiguration.Password,cancellationToken);
+                    await client.AuthenticateAsync(emailSettings.Username, emailSettings.Password, cancellationToken);
                     await client.SendAsync(mailMessage);
                 }
                 catch
@@ -80,9 +82,9 @@ namespace OfficeManager.Application.Common.EmailService
             using var client = new SmtpClient();
             try
             {
-                await client.ConnectAsync(emailConfiguration.SmtpServer, emailConfiguration.Port, true, cancellationToken);
+                await client.ConnectAsync(emailSettings.SmtpServer, emailSettings.Port, true, cancellationToken);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
-                await client.AuthenticateAsync(emailConfiguration.Username, emailConfiguration.Password, cancellationToken);
+                await client.AuthenticateAsync(emailSettings.Username, emailSettings.Password, cancellationToken);
                 await client.SendAsync(mailMessage);
             }
             catch
@@ -92,7 +94,7 @@ namespace OfficeManager.Application.Common.EmailService
             }
             finally
             {
-                await client.DisconnectAsync(true,cancellationToken);
+                await client.DisconnectAsync(true, cancellationToken);
                 client.Dispose();
             }
         }
