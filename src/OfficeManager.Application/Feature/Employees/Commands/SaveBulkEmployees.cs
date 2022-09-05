@@ -16,6 +16,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
     public class SaveBulkEmployeesCommandHandler : IRequestHandler<SaveBulkEmployees, Response<object>>
     {
         private readonly IApplicationDbContext Context;
+
         public SaveBulkEmployeesCommandHandler(IApplicationDbContext context)
         {
             Context = context;
@@ -32,7 +33,6 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 });
                 using (SqlConnection con = new SqlConnection(Context.GetConnectionString))
                 {
-
                     var lstEmployees = request.employees.Select(emp => new BulkImportEmployee
                     {
                         DepartmentId = emp.DepartmentId,
@@ -46,7 +46,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                     });
                     var parameters = new DynamicParameters();
                     //parameters.Add("@employees", lstEmployees);
-                    parameters.Add("@employees", BulkImportEmployee.ToSqlDataRecord(lstEmployees.ToList()).AsTableValuedParameter("UTEmployee"));
+                    parameters.Add("@employees", BulkImportEmployee.ToSqlDataRecord(lstEmployees.ToList()).AsTableValuedParameter("UT_Employee"));
                     parameters.Add("@IsSuccess", false, direction: ParameterDirection.InputOutput);
                     con.Execute("AddBulkEmployees", parameters, commandType: CommandType.StoredProcedure);
                     if (parameters.Get<bool>("@IsSuccess"))
