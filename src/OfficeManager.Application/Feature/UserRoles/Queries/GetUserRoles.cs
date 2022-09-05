@@ -11,18 +11,18 @@ namespace OfficeManager.Application.ApplicationRoles.Queries
 
     public class GetUserRolesQueryHandler : IRequestHandler<GetUserRoles, List<RolesDTO>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
 
         public GetUserRolesQueryHandler(IApplicationDbContext context,IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            Context = context;
+            Mapper = mapper;
         }
 
         public async Task<List<RolesDTO>> Handle(GetUserRoles request, CancellationToken cancellationToken)
         {
-            return await context.Roles.ProjectTo<RolesDTO>(mapper.ConfigurationProvider).ToListAsync();
+            return await Context.Roles.ProjectTo<RolesDTO>(Mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace OfficeManager.API.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new SearchDepartments(search));
+                var result = await Mediator.Send(new SearchDepartments { Search = search });
                 if (result.Data == null)
                     NotFound("No records found");
                 return result;

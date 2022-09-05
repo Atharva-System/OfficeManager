@@ -23,11 +23,11 @@ namespace OfficeManager.Application.Feature.Employees.Queries
 
     public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployees, Response<EmployeeListResponse>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
 
         public GetAllEmployeeQueryHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<EmployeeListResponse>> Handle(GetAllEmployees request, CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                 parameters.Add("@@DOJToDate", request.DateOfJoiningTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfJoiningTo.Value);
                 //parameters.Add("@PageNumber", request.PageNo);
                 //parameters.Add("@PageSize", request.PageSize);
-                using (var connection = new SqlConnection(context.GetConnectionString))
+                using (var connection = new SqlConnection(Context.GetConnectionString))
                 {
                     response.Data = new EmployeeListResponse();
                     response.Data.Employees = new List<EmployeeDTO>();
@@ -64,23 +64,23 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                     if (response.Data.Employees.Count > 0 && response.Data.TotalCount > 0)
                     {
                         response.IsSuccess = true;
-                        response.StatusCode = "200";
-                        response.Message = "All the data found";
+                        response.StatusCode = StausCodes.Accepted;
+                        response.Message = Messages.DataFound;
                     }
                     else
                     {
-                        response.Message = "No records found";
+                        response.Message = Messages.NoDataFound;
                         response.IsSuccess = false;
-                        response.StatusCode = "404";
+                        response.StatusCode = StausCodes.NotFound;
                     }
                 }
                 return response;
             }
             catch (Exception ex)
             {
-                response.Errors.Add("Data or connection issue, please check internet or contact administrator.");
+                response.Errors.Add(Messages.IssueWithData);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
 

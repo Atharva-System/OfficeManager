@@ -7,20 +7,20 @@ namespace OfficeManager.Application.Common.Behaviours
 {
     public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : IRequest
     {
-        private readonly ILogger logger;
+        private readonly ILogger Logger;
         
-        private readonly ICurrentUserServices currentUserService;
+        private readonly ICurrentUserServices CurrentUserService;
 
         public LoggingBehaviour(ILogger logger, ICurrentUserServices currentUserServices)
         {
-            this.logger = logger;
-            this.currentUserService = currentUserServices;
+            Logger = logger;
+            CurrentUserService = currentUserServices;
         }
 
         public async Task Process(TRequest request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Office Manager Request: {Name} {@UserId} {@UserName} {@Request}",
-                typeof(TRequest).Name, currentUserService.loggedInUser.UserId, currentUserService.loggedInUser.EmployeeNo, request);
+            Logger.LogInformation("Office Manager Request: {Name} {@UserId} {@UserName} {@Request}",
+                typeof(TRequest).Name, CurrentUserService.loggedInUser.UserId, CurrentUserService.loggedInUser.EmployeeNo, request);
         }
     }
 }

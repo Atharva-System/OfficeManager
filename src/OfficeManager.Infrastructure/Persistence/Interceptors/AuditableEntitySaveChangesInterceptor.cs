@@ -8,13 +8,13 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
 {
     public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     {
-        private readonly ICurrentUserServices currentUserService;
-        private readonly IDateTime dateTime;
+        private readonly ICurrentUserServices CurrentUserService;
+        private readonly IDateTime DateTime;
 
         public AuditableEntitySaveChangesInterceptor(ICurrentUserServices currentUserService, IDateTime dateTime)
         {
-            this.currentUserService = currentUserService;
-            this.dateTime = dateTime;
+            CurrentUserService = currentUserService;
+            DateTime = dateTime;
         }
 
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
@@ -49,14 +49,14 @@ namespace OfficeManager.Infrastructure.Persistence.Interceptors
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedDate = dateTime.Now;
-                    entry.Entity.CreatedBy = currentUserService.loggedInUser != null ? currentUserService.loggedInUser.UserId : 0;
+                    entry.Entity.CreatedDate = DateTime.Now;
+                    entry.Entity.CreatedBy = CurrentUserService.loggedInUser != null ? CurrentUserService.loggedInUser.UserId : 0;
                 }
 
                 if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
-                    entry.Entity.ModifiedBy = currentUserService.loggedInUser != null ? currentUserService.loggedInUser.UserId : 0;
-                    entry.Entity.ModifiedDate = dateTime.Now;
+                    entry.Entity.ModifiedBy = CurrentUserService.loggedInUser != null ? CurrentUserService.loggedInUser.UserId : 0;
+                    entry.Entity.ModifiedDate = DateTime.Now;
                 }
             }
         }

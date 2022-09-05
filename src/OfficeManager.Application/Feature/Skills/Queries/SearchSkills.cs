@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using MediatR;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
+using System.ComponentModel.DataAnnotations;
+using AutoMapper.QueryableExtensions;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace OfficeManager.Application.Feature.Skills.Queries
 {
@@ -17,42 +20,54 @@ namespace OfficeManager.Application.Feature.Skills.Queries
 
     public class SearchSkillQueryHandler : IRequestHandler<SearchSkills, Response<PaginatedList<SkillDTO>>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
         public SearchSkillQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            Context = context;
+            Mapper = mapper;
         }
 
         public async Task<Response<PaginatedList<SkillDTO>>> Handle(SearchSkills request, CancellationToken cancellationToken)
         {
             Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
-            response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
-            if (string.IsNullOrEmpty(request.Search))
-                response.Data = await context.Skill
-                    .OrderBy(x => x.Name)
-                    .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
-                    .PaginatedListAsync(request.PageNo, request.PageSize);
-            else
-                response.Data = await context.Skill
-                    .Where(x => x.Name.Contains(request.Search))
-                    .OrderBy(x => x.Name)
-                    .ProjectTo<SkillDTO>(mapper.ConfigurationProvider)
-                    .PaginatedListAsync(request.PageNo, request.PageSize);
-            if (response.Data.TotalCount > 0)
+            try
             {
-                response.Message = "Records found!";
+                response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.PageNo, request.PageSize);
+                if (string.IsNullOrEmpty(request.Search))
+                    response.Data = await Context.Skill
+                        .OrderBy(x => x.Name)
+                        .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
+                        .PaginatedListAsync(request.PageNo, request.PageSize);
+                else
+                    response.Data = await Context.Skill
+                        .Where(x => x.Name.Contains(request.Search))
+                        .OrderBy(x => x.Name)
+                        .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
+                        .PaginatedListAsync(request.PageNo, request.PageSize);
+
+                response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
+                response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
-                response.StatusCode = "200";
+                return response;
             }
-            else
+            catch (ValidationException exception)
             {
-                response.Message = "No Records found!";
-                response.IsSuccess = true;
-                response.StatusCode = "200";
+                response.Errors = exception.Errors.Select(err => err.ErrorMessage)
+                    .ToList();
+                response.Message = "";
+                response.StatusCode = StausCodes.BadRequest;
+                response.IsSuccess = false;
+                return response;
             }
-            return response;
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message);
+                response.Message = Messages.IssueWithData;
+                response.StatusCode = StausCodes.InternalServerError;
+                response.IsSuccess = false;
+                return response;
+            }
         }
     }
 }
