@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using MediatR;
-using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Dtos;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -51,16 +51,25 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                     response.Data.Employees = new List<EmployeeDTO>();
                     response.Data.Employees = (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
                         , commandType: CommandType.StoredProcedure)).ToList();
-                    response.Data.TotalPages = response.Data.Employees.Count / request.PageSize;
                     response.Data.TotalCount = response.Data.Employees.Count;
-
-                    if (response.Data.TotalPages * request.PageSize < response.Data.TotalCount)
+                    if (request.PageSize == 0 && request.PageNo == 0) // when no search for pageSize and pageNo then show all data in one page
                     {
-                        response.Data.TotalPages += 1;
+                        response.Data.PageNumber = 1;
+                        response.Data.PageSize = response.Data.TotalCount;
+                        response.Data.TotalPages = 1;
                     }
-                    response.Data.Employees = response.Data.Employees.Skip((request.PageNo - 1) * request.PageSize).Take(request.PageSize).ToList();
-                    response.Data.PageNumber = request.PageNo;
-                    response.Data.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+                    else
+                    {
+                        response.Data.TotalPages = response.Data.Employees.Count / request.PageSize;
+
+                        if (response.Data.TotalPages * request.PageSize < response.Data.TotalCount)
+                        {
+                            response.Data.TotalPages += 1;
+                        }
+                        response.Data.Employees = response.Data.Employees.Skip((request.PageNo - 1) * request.PageSize).Take(request.PageSize).ToList();
+                        response.Data.PageNumber = request.PageNo;
+                        response.Data.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+                    }
                     if (response.Data.Employees.Count > 0 && response.Data.TotalCount > 0)
                     {
                         response.IsSuccess = true;
@@ -83,7 +92,6 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                 response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
-
         }
     }
 }
