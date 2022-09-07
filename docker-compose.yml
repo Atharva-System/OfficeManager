@@ -9,14 +9,24 @@ services:
       - "6379:6379"
     volumes:
       - redis_volume:/data
+
+  officemanagerdb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: officemanagerdb
+    environment:
+        SA_PASSWORD: "Admin#123"
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+        - "1433:1433"
+
   officemanager.api:
     image: ${DOCKER_REGISTRY-}officemanagerapi
     build:
       context: .
       dockerfile: src\OfficeManager.API\Dockerfile
-  portainer:
-    image: portainer/portainer-ce
+    depends_on:
+      - officemanagerdb
   
 volumes:
-  portainer_data:
   redis_volume:
