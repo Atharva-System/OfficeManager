@@ -11,17 +11,17 @@ namespace OfficeManager.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext,IApplicationDbContext
     {
-        private readonly IMediator mediator;
-        private readonly AuditableEntitySaveChangesInterceptor interceptor;
-        private IDbContextTransaction transaction;
+        private readonly IMediator Mediator;
+        private readonly AuditableEntitySaveChangesInterceptor Interceptor;
+        private IDbContextTransaction Transaction;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             IMediator mediator, AuditableEntitySaveChangesInterceptor interceptor)
             : base(options)
         {
-            this.mediator = mediator;
-            this.interceptor = interceptor;
+            Mediator = mediator;
+            Interceptor = interceptor;
         }
         public DbSet<RoleMaster> Roles { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -47,20 +47,20 @@ namespace OfficeManager.Infrastructure.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.AddInterceptors(interceptor);
+            optionsBuilder.AddInterceptors(Interceptor);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-                await mediator.DispatchDomainEvents(this);
+                await Mediator.DispatchDomainEvents(this);
 
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                Transaction.Rollback();
                 throw ex;
             }
         }
@@ -69,13 +69,13 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                await mediator.DispatchDomainEvents(this);
+                await Mediator.DispatchDomainEvents(this);
 
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                Transaction.Rollback();
                 throw ex;
             }
         }
@@ -84,7 +84,7 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                transaction = this.Database.BeginTransaction();
+                Transaction = this.Database.BeginTransaction();
             }
             catch (Exception ex)
             {
@@ -96,7 +96,7 @@ namespace OfficeManager.Infrastructure.Persistence
         {
             try
             {
-                transaction?.Commit();
+                Transaction?.Commit();
             }
             catch (Exception ex)
             {

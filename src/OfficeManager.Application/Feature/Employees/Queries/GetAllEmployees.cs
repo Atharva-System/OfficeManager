@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using MediatR;
-using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Dtos;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -23,11 +23,11 @@ namespace OfficeManager.Application.Feature.Employees.Queries
 
     public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployees, Response<EmployeeListResponse>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
 
         public GetAllEmployeeQueryHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<EmployeeListResponse>> Handle(GetAllEmployees request, CancellationToken cancellationToken)
@@ -45,45 +45,53 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                 parameters.Add("@@DOJToDate", request.DateOfJoiningTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfJoiningTo.Value);
                 //parameters.Add("@PageNumber", request.PageNo);
                 //parameters.Add("@PageSize", request.PageSize);
-                using (var connection = new SqlConnection(context.GetConnectionString))
+                using (var connection = new SqlConnection(Context.GetConnectionString))
                 {
                     response.Data = new EmployeeListResponse();
                     response.Data.Employees = new List<EmployeeDTO>();
                     response.Data.Employees = (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
                         , commandType: CommandType.StoredProcedure)).ToList();
-                    response.Data.TotalPages = response.Data.Employees.Count / request.PageSize;
                     response.Data.TotalCount = response.Data.Employees.Count;
-
-                    if (response.Data.TotalPages * request.PageSize < response.Data.TotalCount)
+                    if (request.PageSize == 0 && request.PageNo == 0) // when no search for pageSize and pageNo then show all data in one page
                     {
-                        response.Data.TotalPages += 1;
-                    }
-                    response.Data.Employees = response.Data.Employees.Skip((request.PageNo - 1) * request.PageSize).Take(request.PageSize).ToList();
-                    response.Data.PageNumber = request.PageNo;
-                    response.Data.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
-                    if (response.Data.Employees.Count > 0 && response.Data.TotalCount > 0)
-                    {
-                        response.IsSuccess = true;
-                        response.StatusCode = "200";
-                        response.Message = "All the data found";
+                        response.Data.PageNumber = 1;
+                        response.Data.PageSize = response.Data.TotalCount;
+                        response.Data.TotalPages = 1;
                     }
                     else
                     {
-                        response.Message = "No records found";
+                        response.Data.TotalPages = response.Data.Employees.Count / request.PageSize;
+
+                        if (response.Data.TotalPages * request.PageSize < response.Data.TotalCount)
+                        {
+                            response.Data.TotalPages += 1;
+                        }
+                        response.Data.Employees = response.Data.Employees.Skip((request.PageNo - 1) * request.PageSize).Take(request.PageSize).ToList();
+                        response.Data.PageNumber = request.PageNo;
+                        response.Data.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+                    }
+                    if (response.Data.Employees.Count > 0 && response.Data.TotalCount > 0)
+                    {
+                        response.IsSuccess = true;
+                        response.StatusCode = StausCodes.Accepted;
+                        response.Message = Messages.DataFound;
+                    }
+                    else
+                    {
+                        response.Message = Messages.NoDataFound;
                         response.IsSuccess = false;
-                        response.StatusCode = "404";
+                        response.StatusCode = StausCodes.NotFound;
                     }
                 }
                 return response;
             }
             catch (Exception ex)
             {
-                response.Errors.Add("Data or connection issue, please check internet or contact administrator.");
+                response.Errors.Add(Messages.IssueWithData);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
-
         }
     }
 }

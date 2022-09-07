@@ -5,19 +5,27 @@ using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Interfaces;
 
 namespace OfficeManager.Application.Feature.Designations.Queries
 {
-    public record SearchDesignations(string search) : IRequest<Response<List<DesignationDTO>>>;
+    public record SearchDesignations : IRequest<Response<List<DesignationDTO>>>, ICacheable
+    {
+        public string Search { get; set; } = string.Empty;
+
+        public bool BypassCache => false;
+
+        public string CacheKey => CacheKeys.Designations;
+    }
 
     public class SearchDesignationsQueryHandler : IRequestHandler<SearchDesignations, Response<List<DesignationDTO>>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
         public SearchDesignationsQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            Context = context;
+            Mapper = mapper;
         }
 
         public async Task<Response<List<DesignationDTO>>> Handle(SearchDesignations request, CancellationToken cancellationToken)
@@ -25,18 +33,18 @@ namespace OfficeManager.Application.Feature.Designations.Queries
             Response<List<DesignationDTO>> response = new Response<List<DesignationDTO>>();
             try
             {
-                if (!string.IsNullOrEmpty(request.search))
+                if (!string.IsNullOrEmpty(request.Search))
                 {
-                    response.Data = await context.Designation.Where(d => d.Name.Contains(request.search))
-                        .ProjectToListAsync<DesignationDTO>(mapper.ConfigurationProvider);
+                    response.Data = await Context.Designation.Where(d => d.Name.Contains(request.Search))
+                        .ProjectToListAsync<DesignationDTO>(Mapper.ConfigurationProvider);
                 }
                 else
                 {
-                    response.Data = await context.Designation
-                        .ProjectToListAsync<DesignationDTO>(mapper.ConfigurationProvider);
+                    response.Data = await Context.Designation
+                        .ProjectToListAsync<DesignationDTO>(Mapper.ConfigurationProvider);
                 }
-                response.Message = response.Data.Count > 0 ? "Data found!" : "No Data found!";
-                response.StatusCode = "200";
+                response.Message = response.Data.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
+                response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
                 return response;
             }
@@ -44,19 +52,17 @@ namespace OfficeManager.Application.Feature.Designations.Queries
             {
                 response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
                 response.Message = "";
-                response.StatusCode = "400";
+                response.StatusCode = StausCodes.BadRequest;
                 response.IsSuccess = false;
                 return response;
-                //return Result.Failure(exception.Errors.Select(err => err.ErrorMessage).ToList(), "");
             }
             catch (Exception ex)
             {
                 response.Errors.Add(ex.Message);
-                response.Message = "There is some issue with the data!";
-                response.StatusCode = "500";
+                response.Message = Messages.IssueWithData;
+                response.StatusCode = StausCodes.InternalServerError;
                 response.IsSuccess = false;
                 return response;
-                //return Result.Failure(Array.Empty<string>(),"Issue found in data.");
             }
         }
     }

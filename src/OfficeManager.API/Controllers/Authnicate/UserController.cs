@@ -12,10 +12,10 @@ namespace OfficeManager.API.Controllers.Identity
 {
     public class UserController : ApiControllerBase
     {
-        private readonly IConfiguration config;
+        private readonly IConfiguration Config;
         public UserController(IConfiguration config)
         {
-            this.config = config;
+            Config = config;
         }
 
         //[HttpPost]
@@ -66,7 +66,7 @@ namespace OfficeManager.API.Controllers.Identity
 
         private LoggedInUserDTO GenerateJWT(LoggedInUserDTO user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["JWT:Secret"]));
             var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             IEnumerable<Claim> claims = new Claim[]
@@ -77,12 +77,12 @@ namespace OfficeManager.API.Controllers.Identity
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddDays(30).ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Aud, config["JWT:ValidAudience"]),
-                new Claim(JwtRegisteredClaimNames.Iss, config["JWT:ValidIssuer"])
+                new Claim(JwtRegisteredClaimNames.Aud, Config["JWT:ValidAudience"]),
+                new Claim(JwtRegisteredClaimNames.Iss, Config["JWT:ValidIssuer"])
             };
 
             var token = new JwtSecurityToken(
-                config["Jwt:Issuer"],
+                Config["Jwt:Issuer"],
                 null,
                 claims: claims,
                 expires: DateTime.Now.AddDays(30),

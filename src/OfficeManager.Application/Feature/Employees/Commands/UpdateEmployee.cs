@@ -21,25 +21,25 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
     public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployee, Response<object>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
         public UpdateEmployeeCommandHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<object>> Handle(UpdateEmployee request, CancellationToken cancellationToken)
         {
             Response<object> response = new Response<object>();
 
-            Employee employee = context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
+            Employee employee = Context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
             if (employee == null)
             {
-                response.Errors.Add("Data not found.");
+                response.Errors.Add(Messages.NoDataFound);
                 response.IsSuccess = false;
-                response.StatusCode = "400";
+                response.StatusCode = StausCodes.NotFound;
                 return response;
             }
-            context.BeginTransaction();
+            Context.BeginTransaction();
 
             employee.EmployeeNo = request.employeeNo;
             employee.EmployeeName = request.employeeName;
@@ -49,30 +49,30 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             employee.DepartmentId = request.departmentId;
             employee.DesignationId = request.designationId;
 
-            await context.SaveChangesAsync(cancellationToken);
+            await Context.SaveChangesAsync(cancellationToken);
 
-            UserRoleMapping userRole = context.UserRoleMapping.FirstOrDefault(ur => ur.Users.EmployeeID == request.employeeId);
+            UserRoleMapping userRole = Context.UserRoleMapping.FirstOrDefault(ur => ur.Users.EmployeeID == request.employeeId);
             if (userRole != null)
             {
                 userRole.RoleId = request.roleId;
-                await context.SaveChangesAsync(cancellationToken);
+                await Context.SaveChangesAsync(cancellationToken);
             }
 
-            List<EmployeeSkill> skillList = context.EmployeeSkills.Where(empSk => empSk.EmployeeId == employee.Id).ToList();
+            List<EmployeeSkill> skillList = Context.EmployeeSkills.Where(empSk => empSk.EmployeeId == employee.Id).ToList();
             skillList.ForEach(sk =>
             {
                 sk.IsActive = false;
             });
 
-            await context.SaveChangesAsync(cancellationToken);
+            await Context.SaveChangesAsync(cancellationToken);
 
             foreach (EmployeeSkill skill in request.skills)
             {
-                var existingSkill = context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
+                var existingSkill = Context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
                 if (existingSkill == null)
                 {
                     skill.EmployeeId = request.employeeId;
-                    context.EmployeeSkills.Add(skill);
+                    Context.EmployeeSkills.Add(skill);
                 }
                 else
                 {
@@ -84,11 +84,11 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             }
 
 
-            await context.SaveChangesAsync(cancellationToken);
+            await Context.SaveChangesAsync(cancellationToken);
 
-            context.CommitTransaction();
-            response.Message = "Employee updated successfully";
-            response.StatusCode = "200";
+            Context.CommitTransaction();
+            response.Message = Messages.AddedSuccesfully;
+            response.StatusCode = StausCodes.Accepted;
             response.Data = string.Empty;
 
             return response;

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Common.Constant;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
@@ -15,7 +16,14 @@ namespace OfficeManager.API.Controllers
     [Authorize]
     public class EmployeeController : ApiControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly IConfiguration Configuration;
+
+        private readonly IFilesServices Service;
+        public EmployeeController(IFilesServices service, IConfiguration configuration)
+        {
+            Service = service;
+            Configuration = configuration;
+        }
 
         [HttpGet]
         [Route("GetAllEmployee")]
@@ -29,21 +37,13 @@ namespace OfficeManager.API.Controllers
             var DojTo = DateTime.Parse(String.IsNullOrEmpty(DOJTo)? "12/12/9999" : DOJTo);
             GetAllEmployees query = new GetAllEmployees(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
             var response = await Mediator.Send(query);
-            if (response.StatusCode == "500")
+            if (response.StatusCode == StausCodes.InternalServerError)
                 return StatusCode(500, response);
             else if (response.StatusCode == "404")
                 return NotFound(response);
             else
                 return Ok(response);
         }
-        private readonly IFilesServices service;
-        public EmployeeController(IFilesServices service, IConfiguration configuration)
-        {
-            this.service = service;
-            this.configuration = configuration;
-        }
-
-
 
         [HttpGet]
         [Route("GetEmployeeById/{id}")]
@@ -85,10 +85,10 @@ namespace OfficeManager.API.Controllers
                 }
             }
             if (string.IsNullOrEmpty(path))
-                path = configuration.GetValue<string>("ImportFile");
-            var employees = await service.ReadEmployeeExcel(path);
-            var departments = await Mediator.Send(new SearchDepartments(null));
-            var designations = await Mediator.Send(new SearchDesignations(null));
+                path = Configuration.GetValue<string>("ImportFile");
+            var employees = await Service.ReadEmployeeExcel(path);
+            var departments = await Mediator.Send(new SearchDepartments());
+            var designations = await Mediator.Send(new SearchDesignations());
             AddBulkEmployees command = new AddBulkEmployees();
             command.employees = employees;
             command.departments = departments.Data;
@@ -139,7 +139,7 @@ namespace OfficeManager.API.Controllers
             {
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return StatusCode(500, response);
             }
         }
@@ -159,7 +159,7 @@ namespace OfficeManager.API.Controllers
             catch (ValidationException ex)
             {
                 response.Errors = ex.Errors.Select(err => err.ErrorMessage).ToList();
-                response.StatusCode = "400";
+                response.StatusCode = StausCodes.NotFound;
                 response.IsSuccess = false;
                 return BadRequest(response);
             }
@@ -167,7 +167,7 @@ namespace OfficeManager.API.Controllers
             {
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return StatusCode(500, response);
             }
         }

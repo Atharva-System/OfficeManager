@@ -45,19 +45,19 @@ namespace OfficeManager.Application.Dtos
             var email = new SqlMetaData("Email", SqlDbType.NVarChar, 100);
             var roleId = new SqlMetaData("RoleId", SqlDbType.Int);
             var passwordHash = new SqlMetaData("PasswordHash", SqlDbType.NVarChar, 100);
-            var record = new SqlDataRecord(employeeNo, employeeName, departmentId, designationId,
-                dateOfBirth, dateOfJoining, email, roleId, passwordHash);
+            var record = new SqlDataRecord(employeeNo, employeeName, departmentId, designationId, email, dateOfJoining, dateOfBirth, roleId, passwordHash);
+
             foreach (var item in employees)
             {
                 record.SetInt32(0, item.EmployeeNo);
                 record.SetString(1, item.EmployeeName);
                 record.SetInt32(2, item.DepartmentId);
                 record.SetInt32(3, item.DesignationId);
-                record.SetDateTime(4, item.DateOfBirth);
+                record.SetString(4, "");
                 record.SetDateTime(5, item.DateOfJoining);
-                record.SetString(6, "");
+                record.SetDateTime(6, item.DateOfBirth);
                 record.SetInt32(7, item.RoleId);
-                record.SetString(8, item.PasswordHash);
+                record.SetString(8, "");
                 yield return record;
             }
         }

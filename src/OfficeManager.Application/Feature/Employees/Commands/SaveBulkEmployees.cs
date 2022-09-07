@@ -15,10 +15,11 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
     public class SaveBulkEmployeesCommandHandler : IRequestHandler<SaveBulkEmployees, Response<object>>
     {
-        private readonly IApplicationDbContext context;
+        private readonly IApplicationDbContext Context;
+
         public SaveBulkEmployeesCommandHandler(IApplicationDbContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public async Task<Response<object>> Handle(SaveBulkEmployees request, CancellationToken cancellationToken)
@@ -30,9 +31,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 {
                     emp.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123");
                 });
-                using (SqlConnection con = new SqlConnection(context.GetConnectionString))
+                using (SqlConnection con = new SqlConnection(Context.GetConnectionString))
                 {
-
                     var lstEmployees = request.employees.Select(emp => new BulkImportEmployee
                     {
                         DepartmentId = emp.DepartmentId,
@@ -46,19 +46,19 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                     });
                     var parameters = new DynamicParameters();
                     //parameters.Add("@employees", lstEmployees);
-                    parameters.Add("@employees", BulkImportEmployee.ToSqlDataRecord(lstEmployees.ToList()).AsTableValuedParameter("UTEmployee"));
+                    parameters.Add("@employees", BulkImportEmployee.ToSqlDataRecord(lstEmployees.ToList()).AsTableValuedParameter("UT_Employee"));
                     parameters.Add("@IsSuccess", false, direction: ParameterDirection.InputOutput);
                     con.Execute("AddBulkEmployees", parameters, commandType: CommandType.StoredProcedure);
                     if (parameters.Get<bool>("@IsSuccess"))
                     {
                         response.Message = "All the employees are inserted successfully";
-                        response.StatusCode = "200";
+                        response.StatusCode = StausCodes.Accepted;
                         response.IsSuccess = true;
                     }
                 }
                 //request.employees.ForEach(emp =>
                 //{
-                //    context.BeginTransaction();
+                //    Context.BeginTransaction();
                 //    Employee employee = new Employee
                 //    {
                 //        EmployeeNo = emp.EmployeeNo,
@@ -69,9 +69,9 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 //        Email = emp.Email,
                 //        EmployeeName = emp.EmployeeName
                 //    };
-                //    context.Employees.Add(employee);
+                //    Context.Employees.Add(employee);
 
-                //    context.SaveChangesAsync(cancellationToken);
+                //    Context.SaveChangesAsync(cancellationToken);
 
                 //    UserMaster user = new UserMaster
                 //    {
@@ -79,19 +79,19 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 //        Email = emp.Email,
                 //        PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123")
                 //    };
-                //    context.Users.Add(user);
+                //    Context.Users.Add(user);
 
-                //    context.SaveChangesAsync(cancellationToken);
+                //    Context.SaveChangesAsync(cancellationToken);
 
                 //    UserRoleMapping userRole = new UserRoleMapping()
                 //    {
                 //        UserId = user.Id,
                 //        RoleId = emp.RoleId
                 //    };
-                //    context.UserRoleMapping.Add(userRole);
-                //    context.SaveChangesAsync(cancellationToken);
+                //    Context.UserRoleMapping.Add(userRole);
+                //    Context.SaveChangesAsync(cancellationToken);
 
-                //    context.CommitTransaction();
+                //    Context.CommitTransaction();
                 //});
 
                 return response;
@@ -99,10 +99,10 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             catch (Exception ex)
             {
                 response.Data = string.Empty;
-                response.Message = "There is some error in data";
+                response.Message = Messages.IssueWithData;
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
         }

@@ -5,19 +5,27 @@ using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Interfaces;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
-    public record SearchDepartments(string search) : IRequest<Response<List<DepartmentDTO>>>;
+    public record SearchDepartments : IRequest<Response<List<DepartmentDTO>>>, ICacheable
+    {
+        public string Search { get; set; } = string.Empty;
+
+        public bool BypassCache => false;
+
+        public string CacheKey => CacheKeys.Departments;
+    }
 
     public class SearchDepartmentQueryHandler : IRequestHandler<SearchDepartments, Response<List<DepartmentDTO>>>
     {
-        private readonly IApplicationDbContext context;
-        private readonly IMapper mapper;
+        private readonly IApplicationDbContext Context;
+        private readonly IMapper Mapper;
         public SearchDepartmentQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            Context = context;
+            Mapper = mapper;
         }
 
         public async Task<Response<List<DepartmentDTO>>> Handle(SearchDepartments request, CancellationToken cancellationToken)
@@ -27,35 +35,33 @@ namespace OfficeManager.Application.Feature.Departments.Queries
             {
 
                 List<DepartmentDTO> departments = new List<DepartmentDTO>();
-                if (!string.IsNullOrEmpty(request.search))
+                if (!string.IsNullOrEmpty(request.Search))
                 {
-                    departments = await context.Department
+                    departments = await Context.Department
                         .AsNoTracking()
-                        .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
-                        .Where(x => x.Name.Contains(request.search)).ToListAsync(cancellationToken);
+                        .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
+                        .Where(x => x.Name.Contains(request.Search)).ToListAsync(cancellationToken);
                 }
                 else
                 {
-                    departments = await context.Department
-                        .ProjectTo<DepartmentDTO>(mapper.ConfigurationProvider)
+                    departments = await Context.Department
+                        .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
                         .ToListAsync();
                 }
                 response.Data = departments;
-                response.StatusCode = "200";
+                response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
-                response.Message = departments.Count > 0 ? "Data found!" : "No Data found!";
+                response.Message = departments.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
 
-                //return Result.Success("Department found",departments);
                 return response;
             }
             catch (Exception ex)
             {
-                //return Result.Failure(Array.Empty<string>(),"Data has some issue please check");
                 response.Data = new List<DepartmentDTO>();
-                response.Message = "There is some issue with the data!";
+                response.Message = Messages.IssueWithData;
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return response;
             }
 

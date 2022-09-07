@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.Application.Common.Constant;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Skills.Commands;
@@ -36,7 +37,7 @@ namespace OfficeManager.API.Controllers
                 response.Errors.Add(ex.Message);
                 response.Message = "Internal Server Error";
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return StatusCode(500, response);
             }
         }
@@ -64,7 +65,7 @@ namespace OfficeManager.API.Controllers
                 response.Errors.Add(ex.Message);
                 response.Message = "Internal Server Error";
                 response.IsSuccess = false;
-                response.StatusCode = "500";
+                response.StatusCode = StausCodes.InternalServerError;
                 return StatusCode(500, response);
             }
         }
