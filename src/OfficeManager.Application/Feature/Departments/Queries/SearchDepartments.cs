@@ -1,71 +1,74 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Interfaces;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
-    public record SearchDepartments : IRequest<Response<List<DepartmentDTO>>>, ICacheable
+    public record SearchDepartments : IRequest<Response<PaginatedList<DepartmentDTO>>>
     {
-        public string Search { get; set; } = string.Empty;
-
-        public bool BypassCache => false;
-
-        public string CacheKey => CacheKeys.Departments;
+        public string search { get; init; } = string.Empty;
+        public int Page_No { get; set; } = 1;
+        public int Page_Size { get; set; } = 10;
     }
-
-    public class SearchDepartmentQueryHandler : IRequestHandler<SearchDepartments, Response<List<DepartmentDTO>>>
+    public class SearchDepartmentHandler : IRequestHandler<SearchDepartments,Response<PaginatedList<DepartmentDTO>>>
     {
-        private readonly IApplicationDbContext Context;
-        private readonly IMapper Mapper;
-        public SearchDepartmentQueryHandler(IApplicationDbContext context, IMapper mapper)
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        public SearchDepartmentHandler(IApplicationDbContext context, IMapper mapper)
         {
-            Context = context;
-            Mapper = mapper;
+            _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<Response<List<DepartmentDTO>>> Handle(SearchDepartments request, CancellationToken cancellationToken)
+        public async Task<Response<PaginatedList<DepartmentDTO>>> Handle(SearchDepartments request, CancellationToken cancellationToken)
         {
-            Response<List<DepartmentDTO>> response = new Response<List<DepartmentDTO>>();
+            Response<PaginatedList<DepartmentDTO>> response = new Response<PaginatedList<DepartmentDTO>>();
             try
             {
-
-                List<DepartmentDTO> departments = new List<DepartmentDTO>();
-                if (!string.IsNullOrEmpty(request.Search))
+                PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(),0,request.Page_No, request.Page_Size);
+                if(string.IsNullOrEmpty(request.search))
                 {
-                    departments = await Context.Department
-                        .AsNoTracking()
-                        .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
-                        .Where(x => x.Name.Contains(request.Search)).ToListAsync(cancellationToken);
+                    departments = await _context.Department
+                        .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                        .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
                 }
                 else
                 {
-                    departments = await Context.Department
-                        .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
-                        .ToListAsync();
+                    departments = await _context.Department
+                        .AsNoTracking()
+                        .Where(d => d.Name.Contains(request.search))
+                        .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                        .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
                 }
                 response.Data = departments;
+                response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
                 response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
-                response.Message = departments.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
-
+            }
+            catch (ValidationException exception)
+            {
+                response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
+                response.Message = "";
+                response.StatusCode = StausCodes.BadRequest;
+                response.IsSuccess = false;
                 return response;
             }
             catch (Exception ex)
             {
-                response.Data = new List<DepartmentDTO>();
-                response.Message = Messages.IssueWithData;
                 response.Errors.Add(ex.Message);
-                response.IsSuccess = false;
+                response.Message = Messages.IssueWithData;
                 response.StatusCode = StausCodes.InternalServerError;
+                response.IsSuccess = false;
                 return response;
             }
-
-
+            return response;
         }
     }
 }

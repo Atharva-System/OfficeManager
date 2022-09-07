@@ -12,9 +12,10 @@ namespace OfficeManager.API.Controllers
     [Authorize]
     public class SkillController : ApiControllerBase
     {
+        //return paginated result useful for search and listing features
         [HttpGet]
-        [Route("GetAllSkill")]
-        public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> GetSkills([FromQuery] SearchSkills query)
+        [Route("")]
+        public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> Search([FromQuery] SearchSkills query)
         {
             Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
             try
@@ -41,9 +42,25 @@ namespace OfficeManager.API.Controllers
                 return StatusCode(500, response);
             }
         }
+        //return all the deaprtments usefull for dropdown like usage
+        [HttpGet]
+        [Route("All")]
+        public async Task<ActionResult<Response<List<SkillDTO>>>> GetAll()
+        {
+            var response = await Mediator.Send(new GetAllSkills());
+            if (response.StatusCode == StatusCodes.Status400BadRequest.ToString())
+            {
+                return BadRequest(response);
+            }
+            else if (response.StatusCode == StatusCodes.Status500InternalServerError.ToString())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+            return Ok(response);
+        }
 
         [HttpPost]
-        [Route("AddSkill")]
+        [Route("Add")]
         public async Task<ActionResult<Response<object>>> AddSkill(CreateSkill command)
         {
             Response<object> response = new Response<object>();

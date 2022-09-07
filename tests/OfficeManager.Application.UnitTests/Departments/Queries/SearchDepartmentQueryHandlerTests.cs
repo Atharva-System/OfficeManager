@@ -17,7 +17,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         [Fact]
         public async Task GetAllDepartmentList()
         {
-            var result = await handler.Handle(new SearchDepartments { }, CancellationToken.None);
+            var result = await handler.Handle(new GetAllDepartments { }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
@@ -33,7 +33,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         [Fact]
         public async Task GetAllDepartmentListBySearchParam()
         {
-            var result = await handler.Handle(new SearchDepartments { Search = "Anal" }, CancellationToken.None);
+            var result = await handler.Handle(new GetAllDepartments { Search = "Anal" }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
@@ -49,7 +49,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         [Fact]
         public async Task GetAllDepartmentListBySearchParamNoRecordFound()
         {
-            var result = await handler.Handle(new SearchDepartments { Search = "HR" }, CancellationToken.None);
+            var result = await handler.Handle(new GetAllDepartments { Search = "HR" }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
@@ -68,7 +68,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
             var DepartmentMockSet = new Mock<DbSet<Department>>();
             mockContext.Setup(r => r.Department).Returns(DepartmentMockSet.Object);
 
-            var result = await handler.Handle(new SearchDepartments(), CancellationToken.None);
+            var result = await handler.Handle(new GetAllDepartments(), CancellationToken.None);
 
             result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
 
