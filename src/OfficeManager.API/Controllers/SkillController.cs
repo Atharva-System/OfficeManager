@@ -13,7 +13,7 @@ namespace OfficeManager.API.Controllers
     public class SkillController : ApiControllerBase
     {
         [HttpGet]
-        [Route("GetAllSkill")]
+        [Route("")]
         public async Task<ActionResult<Response<PaginatedList<SkillDTO>>>> GetSkills([FromQuery] SearchSkills query)
         {
             Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
@@ -43,7 +43,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("AddSkill")]
+        [Route("Add")]
         public async Task<ActionResult<Response<object>>> AddSkill(CreateSkill command)
         {
             Response<object> response = new Response<object>();

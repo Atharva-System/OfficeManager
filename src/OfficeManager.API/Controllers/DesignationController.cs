@@ -10,7 +10,7 @@ namespace OfficeManager.API.Controllers
     public class DesignationController : ApiControllerBase
     {
         [HttpGet]
-        [Route("GetAllDesignation")]
+        [Route("")]
         public async Task<ActionResult<Response<List<DesignationDTO>>>> SearchDesignation(string? search)
         {
             try

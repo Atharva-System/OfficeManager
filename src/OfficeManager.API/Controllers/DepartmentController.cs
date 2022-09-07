@@ -10,7 +10,7 @@ namespace OfficeManager.API.Controllers
     public class DepartmentController : ApiControllerBase
     {
         [HttpGet]
-        [Route("GetAllDepartment")]
+        [Route("")]
         public async Task<ActionResult<Response<List<DepartmentDTO>>>> SearchDepartment(string? search)
         {
             try

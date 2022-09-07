@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Domain.Common;
 using OfficeManager.Domain.Entities;
 using OfficeManager.Infrastructure.Common;
 using OfficeManager.Infrastructure.Persistence.Interceptors;
+using OfficeManager.Infrastructure.Services;
 using System.Reflection;
 
 namespace OfficeManager.Infrastructure.Persistence
@@ -14,14 +16,17 @@ namespace OfficeManager.Infrastructure.Persistence
         private readonly IMediator Mediator;
         private readonly AuditableEntitySaveChangesInterceptor Interceptor;
         private IDbContextTransaction Transaction;
+        private readonly ICurrentUserServices CurrentUserService;
 
         public ApplicationDbContext(
+            ICurrentUserServices currentUserService,
             DbContextOptions<ApplicationDbContext> options,
             IMediator mediator, AuditableEntitySaveChangesInterceptor interceptor)
             : base(options)
         {
             Mediator = mediator;
             Interceptor = interceptor;
+            CurrentUserService = currentUserService;
         }
         public DbSet<RoleMaster> Roles { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -56,6 +61,21 @@ namespace OfficeManager.Infrastructure.Persistence
             {
                 await Mediator.DispatchDomainEvents(this);
 
+                foreach (var entry in this.ChangeTracker.Entries<BaseAuditableEntity>())
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Entity.CreatedDate = DateTime.Now;
+                        entry.Entity.CreatedBy = CurrentUserService.loggedInUser != null ? CurrentUserService.loggedInUser.UserId : 0;
+                    }
+
+                    if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
+                    {
+                        entry.Entity.ModifiedBy = CurrentUserService.loggedInUser != null ? CurrentUserService.loggedInUser.UserId : 0;
+                        entry.Entity.ModifiedDate = DateTime.Now;
+                    }
+                }
+
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -70,6 +90,21 @@ namespace OfficeManager.Infrastructure.Persistence
             try
             {
                 await Mediator.DispatchDomainEvents(this);
+
+                foreach (var entry in this.ChangeTracker.Entries<BaseAuditableEntity>())
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Entity.CreatedDate = DateTime.Now;
+                        entry.Entity.CreatedBy = CurrentUserService.loggedInUser != null ? CurrentUserService.loggedInUser.UserId : 0;
+                    }
+
+                    if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
+                    {
+                        entry.Entity.ModifiedBy = CurrentUserService.loggedInUser != null ? CurrentUserService.loggedInUser.UserId : 0;
+                        entry.Entity.ModifiedDate = DateTime.Now;
+                    }
+                }
 
                 return await base.SaveChangesAsync(cancellationToken);
             }

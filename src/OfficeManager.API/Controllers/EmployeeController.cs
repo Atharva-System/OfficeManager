@@ -26,7 +26,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllEmployee")]
+        [Route("")]
         public async Task<ActionResult<Response<EmployeeListResponse>>> GetAll(string? search, int? DepartmentId,int? DesignationId,int? RoleId,string? DOBFrom, string? DOBTo, string? DOJFrom, string? DOJTo
             ,int PageNo,int PageSize)
         
@@ -46,7 +46,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetEmployeeById/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult<Response<EmployeeDetailDTO>>> GetEmployeeDetail(int id)
         {
             try
@@ -64,7 +64,7 @@ namespace OfficeManager.API.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("UploadBulkEmployeeImportData")]
+        [Route("Import")]
         public async Task<ActionResult<Response<List<BulkImportEmployeeDTO>>>> UploadBulkEmployeeImportData(List<IFormFile> file)
         {
             long size = file.Sum(f => f.Length);
@@ -98,7 +98,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("SaveBulkEmployees")]
+        [Route("SaveBulk")]
         public async Task<ActionResult<Response<object>>> SaveBulkEmployees([FromBody] SaveBulkEmployees command)
         {
             try
@@ -117,7 +117,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPut]
-        [Route("EditEmployee")]
+        [Route("Edit")]
         public async Task<ActionResult<Response<object>>> UpdateEmployee([FromBody] UpdateEmployee command)
         {
             Response<object> response = new Response<object>();
@@ -145,7 +145,7 @@ namespace OfficeManager.API.Controllers
         }
 
         [HttpPost]
-        [Route("AddEmployee")]
+        [Route("Add")]
         public async Task<ActionResult<Response<object>>> AddEmployee([FromBody] AddEmployee command)
         {
             Response<object> response = new Response<object>();

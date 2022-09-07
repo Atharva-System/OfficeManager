@@ -46,7 +46,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                     });
                     var parameters = new DynamicParameters();
                     //parameters.Add("@employees", lstEmployees);
-                    parameters.Add("@employees", BulkImportEmployee.ToSqlDataRecord(lstEmployees.ToList()).AsTableValuedParameter("UTEmployee"));
+                    parameters.Add("@employees", BulkImportEmployee.ToSqlDataRecord(lstEmployees.ToList()).AsTableValuedParameter("UT_Employee"));
                     parameters.Add("@IsSuccess", false, direction: ParameterDirection.InputOutput);
                     con.Execute("AddBulkEmployees", parameters, commandType: CommandType.StoredProcedure);
                     if (parameters.Get<bool>("@IsSuccess"))

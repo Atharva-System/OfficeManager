@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace OfficeManager.API.Controllers.Identity
+namespace OfficeManager.API.Controllers
 {
     public class UserController : ApiControllerBase
     {
@@ -45,14 +45,15 @@ namespace OfficeManager.API.Controllers.Identity
         {
             try
             {
+                Response<string> loginResponse = new Response<string>();
                 Response<LoggedInUserDTO> response = await Mediator.Send(command);
 
                 if (response != null && !response.IsSuccess && response.Data == null)
                 {
                     return BadRequest(response);
                 }
-                response.Data = GenerateJWT(response.Data);
-                return Ok(response);
+                loginResponse.Data = GenerateJWT(response.Data);
+                return Ok(loginResponse);
             }
             catch (ValidationException ex)
             {
@@ -64,7 +65,7 @@ namespace OfficeManager.API.Controllers.Identity
             }
         }
 
-        private LoggedInUserDTO GenerateJWT(LoggedInUserDTO user)
+        private string GenerateJWT(LoggedInUserDTO user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["JWT:Secret"]));
             var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -90,7 +91,7 @@ namespace OfficeManager.API.Controllers.Identity
                 );
 
             user.Token = new JwtSecurityTokenHandler().WriteToken(token);
-            return user;
+            return user.Token;
         }
 
         //[Authorize]
