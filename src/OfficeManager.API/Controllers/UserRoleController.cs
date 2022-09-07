@@ -5,6 +5,7 @@ using OfficeManager.Application.ApplicationRoles.Queries;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.UserRoles.Commands;
+using OfficeManager.Application.Feature.UserRoles.Queries;
 
 namespace OfficeManager.API.Controllers
 {
@@ -33,13 +34,35 @@ namespace OfficeManager.API.Controllers
                 return BadRequest(Result.Failure(Enumerable.Empty<string>(), ex.Message));
             }
         }
-
+        //return all the deaprtments usefull for dropdown like usage
         //[Authorize]
         [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<List<RolesDTO>>> GetAll()
+        [Route("All")]
+        public async Task<ActionResult<Response<List<RolesDTO>>>> GetAll()
         {
-            return await Mediator.Send(new GetUserRoles());
+            var response = await Mediator.Send(new GetUserRoles());
+            if (response.StatusCode == StatusCodes.Status500InternalServerError.ToString())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+            return Ok(response);
+        }
+
+        //return paginated result useful for search and listing features
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult<Response<PaginatedList<RolesDTO>>>> Search([FromQuery] SearchUserRoles query)
+        {
+            var response = await Mediator.Send(query);
+            if (response.StatusCode == StatusCodes.Status400BadRequest.ToString())
+            {
+                return BadRequest(response);
+            }
+            else if (response.StatusCode == StatusCodes.Status500InternalServerError.ToString())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+            return Ok(response);
         }
 
         [HttpDelete]

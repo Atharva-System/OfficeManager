@@ -24,18 +24,12 @@ namespace OfficeManager.API.Controllers
             Service = service;
             Configuration = configuration;
         }
-
+        //return paginated result useful for search and listing features
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<Response<EmployeeListResponse>>> GetAll(string? search, int? DepartmentId,int? DesignationId,int? RoleId,string? DOBFrom, string? DOBTo, string? DOJFrom, string? DOJTo
-            ,int PageNo,int PageSize)
+        public async Task<ActionResult<Response<EmployeeListResponse>>> GetAll([FromQuery] GetAllEmployees query)
         
         {
-            var DobFrom = DateTime.Parse(String.IsNullOrEmpty(DOBFrom)? "01/01/1753" : DOBFrom);
-            var DobTo = DateTime.Parse(String.IsNullOrEmpty(DOBTo)? "12/12/9999" : DOBTo);
-            var DojFrom = DateTime.Parse(String.IsNullOrEmpty(DOJFrom)? "01/01/1753" : DOJFrom);
-            var DojTo = DateTime.Parse(String.IsNullOrEmpty(DOJTo)? "12/12/9999" : DOJTo);
-            GetAllEmployees query = new GetAllEmployees(search,(DepartmentId != null?DepartmentId.Value:0), (DesignationId != null ? DesignationId.Value : 0), RoleId,DobFrom,DobTo,DojFrom,DojTo,PageNo,PageSize);
             var response = await Mediator.Send(query);
             if (response.StatusCode == StausCodes.InternalServerError)
                 return StatusCode(500, response);
@@ -87,8 +81,8 @@ namespace OfficeManager.API.Controllers
             if (string.IsNullOrEmpty(path))
                 path = Configuration.GetValue<string>("ImportFile");
             var employees = await Service.ReadEmployeeExcel(path);
-            var departments = await Mediator.Send(new SearchDepartments());
-            var designations = await Mediator.Send(new SearchDesignations());
+            var departments = await Mediator.Send(new GetAllDepartments());
+            var designations = await Mediator.Send(new GetAllDesignations());
             AddBulkEmployees command = new AddBulkEmployees();
             command.employees = employees;
             command.departments = departments.Data;
