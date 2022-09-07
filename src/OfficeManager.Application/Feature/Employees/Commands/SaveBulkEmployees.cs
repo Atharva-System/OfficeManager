@@ -16,6 +16,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
     public class SaveBulkEmployeesCommandHandler : IRequestHandler<SaveBulkEmployees, Response<object>>
     {
         private readonly IApplicationDbContext Context;
+
         public SaveBulkEmployeesCommandHandler(IApplicationDbContext context)
         {
             Context = context;
@@ -32,7 +33,6 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 });
                 using (SqlConnection con = new SqlConnection(Context.GetConnectionString))
                 {
-
                     var lstEmployees = request.employees.Select(emp => new BulkImportEmployee
                     {
                         DepartmentId = emp.DepartmentId,
