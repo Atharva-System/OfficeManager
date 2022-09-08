@@ -87,7 +87,7 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         {
             mockContext.Setup(r => r.Skill).Returns(GetTenSkills().AsQueryable().BuildMockDbSet().Object);
 
-            var result = await handler.Handle(new SearchSkills { PageNo = 1, PageSize = 5 }, CancellationToken.None);
+            var result = await handler.Handle(new SearchSkills { Page_No = 1, Page_Size = 5 }, CancellationToken.None);
 
             result.StatusCode.ShouldBe(StausCodes.Accepted);
 
@@ -105,7 +105,7 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         [Fact]
         public async Task GetSkillList_NextPage_NoRecordFound()
         {
-            var result = await handler.Handle(new SearchSkills { PageNo = 2 }, CancellationToken.None);
+            var result = await handler.Handle(new SearchSkills { Page_No = 2 }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
 

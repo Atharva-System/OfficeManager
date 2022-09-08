@@ -17,11 +17,11 @@ namespace OfficeManager.Application.Feature.Designations.Queries
         public string CacheKey => CacheKeys.Designations;
     }
 
-    public class SearchDesignationsQueryHandler : IRequestHandler<GetAllDesignations, Response<List<DesignationDTO>>>
+    public class GetAllDesignationsHandler : IRequestHandler<GetAllDesignations, Response<List<DesignationDTO>>>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
-        public SearchDesignationsQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetAllDesignationsHandler(IApplicationDbContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
