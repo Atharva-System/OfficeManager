@@ -16,11 +16,11 @@ namespace OfficeManager.Application.Feature.Departments.Queries
         public string CacheKey => CacheKeys.Departments;
     }
 
-    public class SearchDepartmentQueryHandler : IRequestHandler<GetAllDepartments, Response<List<DepartmentDTO>>>
+    public class GetAllDepartmentsHandler : IRequestHandler<GetAllDepartments, Response<List<DepartmentDTO>>>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
-        public SearchDepartmentQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetAllDepartmentsHandler(IApplicationDbContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
