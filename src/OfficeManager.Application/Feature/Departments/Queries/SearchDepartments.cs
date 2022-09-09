@@ -8,6 +8,8 @@ using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Interfaces;
+using OfficeManager.Domain.Entities;
+using System.Linq.Dynamic;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
@@ -16,6 +18,8 @@ namespace OfficeManager.Application.Feature.Departments.Queries
         public string search { get; init; } = string.Empty;
         public int Page_No { get; set; } = 1;
         public int Page_Size { get; set; } = 10;
+        public string SortingColumn { get; set; } = "Name";
+        public string SortingDirection { get; set; } = "ASC";
     }
     public class SearchDepartmentHandler : IRequestHandler<SearchDepartments,Response<PaginatedList<DepartmentDTO>>>
     {
@@ -33,9 +37,10 @@ namespace OfficeManager.Application.Feature.Departments.Queries
             try
             {
                 PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(),0,request.Page_No, request.Page_Size);
-                if(string.IsNullOrEmpty(request.search))
+                var query = _context.Department.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
+                if (string.IsNullOrEmpty(request.search))
                 {
-                    departments = await _context.Department
+                    departments = await query
                         .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
                         .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
                 }

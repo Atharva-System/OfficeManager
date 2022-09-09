@@ -24,6 +24,8 @@ namespace OfficeManager.Application.Feature.Employees.Queries
         public DateTime? DateOfJoiningTo { get; init; }
         public int Page_No { get; init; } = 1;
         public int Page_Size { get; init; } = 10;
+        public string SortingColumn { get; set; } = "EmployeeNo";
+        public string SortingDirection { get; set; } = "ASC";
     }
 
     public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployees, Response<PaginatedList<EmployeeDTO>>>
@@ -43,7 +45,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             try
             {
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@Name", request.Search);
+                parameters.Add("@Search", request.Search);
                 parameters.Add("@DepartmentId", request.DepartmentId);
                 parameters.Add("@DesignationId", request.DesignationId);
                 parameters.Add("@DOBFromDate", request.DateOfBirthFrom == null ? Convert.ToDateTime("1753-01-02") : request.DateOfBirthFrom.Value);
@@ -55,6 +57,8 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                     response.Data = new PaginatedList<EmployeeDTO>(new List<EmployeeDTO>(), 0, request.Page_No, request.Page_Size);
                     response.Data = await (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
                         , commandType: CommandType.StoredProcedure))
+                        .AsQueryable()
+                        .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
                         .ToList()
                         .PaginatedListAsync<EmployeeDTO>(request.Page_No, request.Page_Size);
 

@@ -16,6 +16,8 @@ namespace OfficeManager.Application.Feature.Skills.Queries
         public string Search { get; init; } = string.Empty;
         public int Page_No { get; init; } = 1;
         public int Page_Size { get; set; } = 10;
+        public string SortingColumn { get; set; } = "Name";
+        public string SortingDirection { get; set; } = "ASC";
     }
 
     public class SearchSkillQueryHandler : IRequestHandler<SearchSkills, Response<PaginatedList<SkillDTO>>>
@@ -34,15 +36,14 @@ namespace OfficeManager.Application.Feature.Skills.Queries
             try
             {
                 response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.Page_No, request.Page_Size);
+                var skills = Context.Skill.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
                 if (string.IsNullOrEmpty(request.Search))
-                    response.Data = await Context.Skill
-                        .OrderBy(x => x.Name)
+                    response.Data = await skills
                         .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
                         .PaginatedListAsync(request.Page_No, request.Page_Size);
                 else
-                    response.Data = await Context.Skill
+                    response.Data = await skills
                         .Where(x => x.Name.Contains(request.Search))
-                        .OrderBy(x => x.Name)
                         .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
                         .PaginatedListAsync(request.Page_No, request.Page_Size);
 
