@@ -7,6 +7,7 @@ using OfficeManager.API;
 using OfficeManager.Application;
 using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
+using OfficeManager.Infrastructure.Settings;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureService(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddCors();
+
+var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -31,9 +34,9 @@ builder.Services.AddAuthentication(options =>
             //ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience[0],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
         };
     });
 
