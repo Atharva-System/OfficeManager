@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace OfficeManager.Application.Common.Behaviours
@@ -17,6 +18,14 @@ namespace OfficeManager.Application.Common.Behaviours
             try
             {
                 return await next();
+            }
+            catch(ValidationException vex)
+            {
+                var requestName = typeof(TRequest).Name;
+
+                Logger.LogError(vex, "Office Manager Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+
+                throw;
             }
             catch(Exception ex)
             {

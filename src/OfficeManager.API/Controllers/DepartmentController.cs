@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Departments.Queries;
+using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.API.Controllers
 {
@@ -12,36 +13,17 @@ namespace OfficeManager.API.Controllers
         //return all the deaprtments usefull for dropdown like usage
         [HttpGet]
         [Route("All")]
-        public async Task<ActionResult<Response<List<DepartmentDTO>>>> GetAll()
+        public async Task<IResponse> GetAll()
         {
-            try
-            {
-                var result = await Mediator.Send(new GetAllDepartments());
-                if (result.Data == null)
-                    NotFound("No records found");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Search has some issue please check internet connection.");
-            }
+            return await Mediator.Send(new GetAllDepartments());
         }
 
         //return paginated result useful for search and listing features
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<Response<PaginatedList<DepartmentDTO>>>> Search([FromQuery] SearchDepartments query)
+        public async Task<IResponse> Search([FromQuery] SearchDepartments query)
         {
-            var response = await Mediator.Send(query);
-            if(response.StatusCode == StatusCodes.Status400BadRequest.ToString())
-            {
-                return BadRequest(response);
-            }
-            else if (response.StatusCode == StatusCodes.Status500InternalServerError.ToString())
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
-            return Ok(response);
+            return await Mediator.Send(query);
         }
     }
 }

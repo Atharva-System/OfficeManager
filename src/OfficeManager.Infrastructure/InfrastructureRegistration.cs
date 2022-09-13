@@ -25,6 +25,9 @@ namespace OfficeManager.Infrastructure
             services.AddSingleton<ICurrentUserServices, CurrentUserService>();
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
+            services.AddTransient<IFilesServices, FilesServices>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
 
             var cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>();
 

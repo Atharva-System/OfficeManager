@@ -1,5 +1,7 @@
 ﻿namespace OfficeManager.Application.Common.Exceptions
 {
+
+    [Serializable]
     public class NotFoundException : Exception
     {
         public NotFoundException() : base() {}

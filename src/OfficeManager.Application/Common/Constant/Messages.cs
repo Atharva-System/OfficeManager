@@ -9,6 +9,7 @@ namespace OfficeManager.Application.Common.Constant
         public static string AddedSuccesfully => "Added Successfully";
         public static string UpdatedSuccessfully => "Updated Successfully";
         public static string DeletedSuccessfully => "Deleted Successfully";
+        public static string InvalidCredentials => "Invalid credentials endtered.";
         public static string NotFound => "Entity not found";
         public static string DataFound => "Data found";
         public static string NoDataFound => "No Data found";

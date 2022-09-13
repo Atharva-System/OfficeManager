@@ -4,9 +4,12 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeManager.API;
+using OfficeManager.API.Filters;
+using OfficeManager.API.Infrastructure.Filters;
 using OfficeManager.Application;
 using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
+using OfficeManager.Infrastructure.Settings;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,13 +19,14 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureService(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddCors();
+var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
 
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -31,14 +35,21 @@ builder.Services.AddAuthentication(options =>
             //ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience[0],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
         };
     });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ApiExceptionFilterAttribute));
+    options.Filters.Add(new ApiValidationExceptionFilter());
+    options.Filters.Add(typeof(AccessExceptionFilter));
+    options.Filters.Add(typeof(NotFoundExceptionFilter));
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
 
 //swagger
 builder.Services.AddSwaggerGen(c =>
@@ -105,7 +116,7 @@ if (!Directory.Exists(resourcesPath))
 app.UseStaticFiles(new StaticFileOptions()
 {
     FileProvider = new PhysicalFileProvider(resourcesPath),
-    RequestPath = new PathString("/Resources")    
+    RequestPath = new PathString("/Resources")
 });
 
 app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());

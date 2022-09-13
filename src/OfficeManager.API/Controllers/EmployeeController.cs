@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using OfficeManager.Application.Common.Constant;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
@@ -9,11 +10,13 @@ using OfficeManager.Application.Feature.Departments.Queries;
 using OfficeManager.Application.Feature.Designations.Queries;
 using OfficeManager.Application.Feature.Employees.Commands;
 using OfficeManager.Application.Feature.Employees.Queries;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using System.Net.Http.Headers;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class EmployeeController : ApiControllerBase
     {
         private readonly IConfiguration Configuration;
@@ -27,16 +30,10 @@ namespace OfficeManager.API.Controllers
         //return paginated result useful for search and listing features
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<Response<EmployeeListResponse>>> GetAll([FromQuery] GetAllEmployees query)
+        public async Task<IResponse> GetAll([FromQuery] GetAllEmployees query)
         
         {
-            var response = await Mediator.Send(query);
-            if (response.StatusCode == StausCodes.InternalServerError)
-                return StatusCode(500, response);
-            else if (response.StatusCode == "404")
-                return NotFound(response);
-            else
-                return Ok(response);
+            return (await Mediator.Send(query));
         }
 
         [HttpGet]
@@ -85,7 +82,7 @@ namespace OfficeManager.API.Controllers
             var designations = await Mediator.Send(new GetAllDesignations());
             AddBulkEmployees command = new AddBulkEmployees();
             command.employees = employees;
-            command.departments = departments.Data;
+            command.departments = JsonConvert.DeserializeObject<DataResponse<List<DepartmentDTO>>>(JsonConvert.SerializeObject(departments))?.Data;
             command.designations = designations.Data;
             var response = await Mediator.Send(command);
             return Ok(response);

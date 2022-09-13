@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeManager.API.Filters;
 using OfficeManager.Application.ApplicationRoles.Queries;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
@@ -11,7 +12,6 @@ namespace OfficeManager.API.Controllers
 {
     [Authorize]
     [Route("api/v1/UserRoles")]
-
     public class UserRoleController : ApiControllerBase
     {
         [HttpPost]

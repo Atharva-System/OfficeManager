@@ -3,6 +3,8 @@ using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.UnitTests.Mocks;
 using OfficeManager.Application.Feature.Departments.Queries;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Departments.Queries
 {
@@ -19,15 +21,17 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         {
             var result = await handler.Handle(new SearchDepartments { }, CancellationToken.None);
 
+            result.ShouldBeOfType<IResponse>();
+
             result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(200);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(2);
+            response.Data.Items.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -35,15 +39,20 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         {
             var result = await handler.Handle(new SearchDepartments { search = "Anal" }, CancellationToken.None);
 
+            
+            result.ShouldBeOfType<IResponse>();
+
             result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(200);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -51,15 +60,19 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         {
             var result = await handler.Handle(new SearchDepartments { search = "HR" }, CancellationToken.None);
 
+            result.ShouldBeOfType<IResponse>();
+
             result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(200);
 
-            result.Message.ShouldBe(Messages.NoDataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(0);
+            response.Message.ShouldBe(Messages.NoDataFound);
+
+            response.Data.Items.Count.ShouldBe(0);
         }
 
         [Fact]
@@ -67,15 +80,19 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         {
             var result = await handler.Handle(new SearchDepartments { search = "HR", Page_No=1,Page_Size=10 }, CancellationToken.None);
 
+            result.ShouldBeOfType<IResponse>();
+
             result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(200);
 
-            result.Message.ShouldBe(Messages.NoDataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(0);
+            response.Message.ShouldBe(Messages.NoDataFound);
+
+            response.Data.Items.Count.ShouldBe(0);
         }
 
         [Fact]
@@ -86,15 +103,17 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             var result = await handler.Handle(new SearchDepartments(), CancellationToken.None);
 
+            result.ShouldBeOfType<IResponse>();
+
             result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            var response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(500);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }
