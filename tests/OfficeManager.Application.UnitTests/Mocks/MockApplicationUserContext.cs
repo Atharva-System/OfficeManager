@@ -8,11 +8,13 @@ namespace OfficeManager.Application.UnitTests.Mocks
     {
         protected readonly Mock<IApplicationDbContext> mockContext;
         protected readonly Mock<ICurrentUserServices> currentUserService;
+        protected readonly Mock<ITokenService> _tokenService;
         public MockApplicationUserContext()
         {
             currentUserService = new Mock<ICurrentUserServices>();
             currentUserService.Setup(x => x.loggedInUser).Returns(new Mock<LoggedInUserDTO>().Object);
             mockContext = GetApplicationUserDbContext();
+            _tokenService = new Mock<ITokenService>();
         }
         protected Mock<IApplicationDbContext> GetApplicationUserDbContext()
         {

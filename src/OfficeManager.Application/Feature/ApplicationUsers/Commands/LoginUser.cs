@@ -9,27 +9,29 @@ using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 {
-    public record LoginUser : IRequest<Response<LoggedInUserDTO>>
+    public record LoginUser : IRequest<Response<TokenDTO>>
     {
         public int EmployeeNo { get; init; }
         public string Password { get; init; } = string.Empty;
     }
 
-    public class LoginUserCommandHandler : IRequestHandler<LoginUser, Response<LoggedInUserDTO>>
+    public class LoginUserCommandHandler : IRequestHandler<LoginUser, Response<TokenDTO>>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
         private readonly ICurrentUserServices CurrentUserService;
-        public LoginUserCommandHandler(IApplicationDbContext context, IMapper mapper, ICurrentUserServices currentUserService)
+        private readonly ITokenService TokenService;
+        public LoginUserCommandHandler(IApplicationDbContext context, IMapper mapper, ICurrentUserServices currentUserService, ITokenService tokenService)
         {
             Context = context;
             Mapper = mapper;
             CurrentUserService = currentUserService;
+            TokenService = tokenService;
         }
 
-        public async Task<Response<LoggedInUserDTO>> Handle(LoginUser request, CancellationToken cancellationToken)
+        public async Task<Response<TokenDTO>> Handle(LoginUser request, CancellationToken cancellationToken)
         {
-            Response<LoggedInUserDTO> response = new Response<LoggedInUserDTO>();
+            Response<TokenDTO> response = new Response<TokenDTO>();
 
             try
             {
@@ -49,10 +51,23 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
                 LoggedInUserDTO loggedInUser = Mapper.Map<UserMaster, LoggedInUserDTO>(user);
                 loggedInUser.Roles = userRoles;
+                var tokendto = TokenService.CreateToken(loggedInUser);
 
-                response.Data = loggedInUser;
+                response.Data = tokendto;
 
                 CurrentUserService.loggedInUser = loggedInUser;
+
+                RefreshToken refreshToken = new RefreshToken
+                {
+                    UserId = loggedInUser.UserId,
+                    Code = tokendto.RefreshToken,
+                    Expiration = tokendto.RefreshTokenExpiration
+                };
+
+                Context.RefreshToken.Add(refreshToken);
+                Context.BeginTransaction();
+                await Context.SaveChangesAsync(cancellationToken);
+                Context.CommitTransaction();
 
                 response.IsSuccess = true;
                 response.Message = Messages.Success;
