@@ -1,34 +1,39 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
+using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
-using FluentValidation;
+using OfficeManager.Application.Interfaces;
 
-namespace OfficeManager.Application.ApplicationRoles.Queries
+namespace OfficeManager.Application.Feature.Designations.Queries
 {
-    public record GetUserRoles : IRequest<Response<List<RolesDTO>>>;
+    public record GetAllDesignations : IRequest<Response<List<DesignationDTO>>>, ICacheable
+    {
 
-    public class GetUserRolesQueryHandler : IRequestHandler<GetUserRoles, Response<List<RolesDTO>>>
+        public bool BypassCache => false;
+
+        public string CacheKey => CacheKeys.Designations;
+    }
+
+    public class GetAllDesignationsHandler : IRequestHandler<GetAllDesignations, Response<List<DesignationDTO>>>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
-
-        public GetUserRolesQueryHandler(IApplicationDbContext context,IMapper mapper)
+        public GetAllDesignationsHandler(IApplicationDbContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
         }
 
-        public async Task<Response<List<RolesDTO>>> Handle(GetUserRoles request, CancellationToken cancellationToken)
+        public async Task<Response<List<DesignationDTO>>> Handle(GetAllDesignations request, CancellationToken cancellationToken)
         {
-            Response<List<RolesDTO>> response = new Response<List<RolesDTO>>();
+            Response<List<DesignationDTO>> response = new Response<List<DesignationDTO>>();
             try
             {
-                response._Data = new List<RolesDTO>();
-                response._Data = await Context.Roles.ProjectTo<RolesDTO>(Mapper.ConfigurationProvider).ToListAsync();
+                response.Data = await Context.Designation
+                    .ProjectToListAsync<DesignationDTO>(Mapper.ConfigurationProvider);
                 response.Message = response.Data.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
                 response.StatusCode = StausCodes.Accepted;
                 response.IsSuccess = true;
@@ -36,8 +41,7 @@ namespace OfficeManager.Application.ApplicationRoles.Queries
             }
             catch (ValidationException exception)
             {
-                response.Errors = exception.Errors.Select(err => err.ErrorMessage)
-                    .ToList();
+                response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
                 response.Message = "";
                 response.StatusCode = StausCodes.BadRequest;
                 response.IsSuccess = false;
@@ -51,7 +55,6 @@ namespace OfficeManager.Application.ApplicationRoles.Queries
                 response.IsSuccess = false;
                 return response;
             }
-            
         }
     }
 }

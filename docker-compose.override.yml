@@ -11,13 +11,3 @@ services:
       - "ConnectionStrings:Default=Data Source=192.168.31.56,1433;Initial Catalog=OfficeManager_DB;User Id=sa;Password=admin"
    ports:
       - "10000:80"
-
-  portainer:
-    container_name: portainer
-    restart: always    
-    ports:
-        - "10080:8000"
-        - "11000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data

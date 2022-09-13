@@ -10,7 +10,7 @@ namespace OfficeManager.API.Controllers
     public class SkillRateController : ApiControllerBase
     {
         [HttpGet]
-        [Route("GetAllSkillRate")]
+        [Route("")]
         public async Task<ActionResult<Response<List<SkillRate>>>> GetAllSkillRates()
         {
             try

@@ -8,47 +8,48 @@ using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 
-namespace OfficeManager.Application.Feature.Designations.Queries
+namespace OfficeManager.Application.Feature.UserRoles.Queries
 {
-    public record SearchDesignations : IRequest<Response<PaginatedList<DesignationDTO>>>
+    public record SearchUserRoles : IRequest<Response<PaginatedList<RolesDTO>>>
     {
-        public string Search { get; set; } = string.Empty;
-        public int Page_No { get; set; } = 1;
-        public int Page_Size { get; set; } = 10;
+        public string Search { get; init; } = string.Empty;
+        public int Page_No { get; init; } = 1;
+        public int Page_Size { get; init; } = 10;
         public string SortingColumn { get; set; } = "Name";
         public string SortingDirection { get; set; } = "ASC";
     }
-    public class SearchDesginatoinsHandler : IRequestHandler<SearchDesignations, Response<PaginatedList<DesignationDTO>>>
+
+    public class SearchUserRolesHandler : IRequestHandler<SearchUserRoles, Response<PaginatedList<RolesDTO>>>
     {
+
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public SearchDesginatoinsHandler(IApplicationDbContext context, IMapper mapper)
+        public SearchUserRolesHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<Response<PaginatedList<DesignationDTO>>> Handle(SearchDesignations request, CancellationToken cancellationToken)
+        public async Task<Response<PaginatedList<RolesDTO>>> Handle(SearchUserRoles request, CancellationToken cancellationToken)
         {
-            Response<PaginatedList<DesignationDTO>> response = new Response<PaginatedList<DesignationDTO>>();
-
+            Response<PaginatedList<RolesDTO>> response = new Response<PaginatedList<RolesDTO>>();
             try
             {
-                var designations = _context.Designation.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
+                var roles = _context.Roles.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
                 if (string.IsNullOrEmpty(request.Search))
                 {
-                    response._Data = await designations
-                        .ProjectTo<DesignationDTO>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync<DesignationDTO>(request.Page_No, request.Page_Size);
+                    response._Data = await roles
+                        .ProjectTo<RolesDTO>(_mapper.ConfigurationProvider)
+                        .PaginatedListAsync<RolesDTO>(request.Page_No, request.Page_Size);
                 }
                 else
                 {
-                    response._Data = await designations
+                    response._Data = await roles
                         .AsNoTracking()
                         .Where(d => d.Name.Contains(request.Search))
-                        .ProjectTo<DesignationDTO>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync<DesignationDTO>(request.Page_No, request.Page_Size);
+                        .ProjectTo<RolesDTO>(_mapper.ConfigurationProvider)
+                        .PaginatedListAsync<RolesDTO>(request.Page_No, request.Page_Size);
                 }
                 response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
                 response.StatusCode = StausCodes.Accepted;
