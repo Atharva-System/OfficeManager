@@ -42,6 +42,7 @@ namespace OfficeManager.Infrastructure.Persistence
         public DbSet<Department> Department { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<EmployeeSkill> EmployeeSkills { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

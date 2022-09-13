@@ -16,6 +16,8 @@ namespace OfficeManager.Infrastructure
         {
             services.AddScoped<AuditableEntitySaveChangesInterceptor>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("Default"),
                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 

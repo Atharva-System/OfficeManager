@@ -12,7 +12,7 @@ namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
         public LoginUserCommandHandlerTests()
         {
             
-            handler = new LoginUserCommandHandler(mockContext.Object, mapper, currentUserService.Object);
+            handler = new LoginUserCommandHandler(mockContext.Object, mapper, currentUserService.Object,_tokenService.Object);
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
         {
             var result = await handler.Handle(new LoginUser { EmployeeNo = 99999 , Password = "Atharva@123"}, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<LoggedInUserDTO>>();
+            result.ShouldBeOfType<Response<TokenDTO>>();
 
             result.StatusCode.ShouldBe(StausCodes.Accepted);
 
@@ -34,7 +34,7 @@ namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
         {
             var result = await handler.Handle(new LoginUser { EmployeeNo = 99999, Password = "Admin@123" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<LoggedInUserDTO>>();
+            result.ShouldBeOfType<Response<TokenDTO>>();
 
             result.StatusCode.ShouldBe(StausCodes.BadRequest);
 
@@ -51,7 +51,7 @@ namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
 
             var result = await handler.Handle(new LoginUser { EmployeeNo = 99999, Password = "Admin@123" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<LoggedInUserDTO>>();
+            result.ShouldBeOfType<Response<TokenDTO>>();
 
             result.StatusCode.ShouldBe(StausCodes.InternalServerError);
 
