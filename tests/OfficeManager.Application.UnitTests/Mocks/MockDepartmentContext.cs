@@ -29,7 +29,6 @@ namespace OfficeManager.Application.UnitTests.Mocks
             });
             mockContext.Setup(r => r.Department).Returns(GetDepartments().AsQueryable().BuildMockDbSet().Object);
          
-            mockContext.Object.SaveChangesAsync();
             return mockContext;
         }
 

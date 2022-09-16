@@ -23,6 +23,5 @@ namespace OfficeManager.Application.Common.Interfaces
         Task<int> SaveChangesWithoutLogAsync(CancellationToken cancellationToken);
         void BeginTransaction();
         void CommitTransaction();
-        void SaveChangesAsync();
     }
 }
