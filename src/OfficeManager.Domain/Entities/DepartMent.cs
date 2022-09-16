@@ -2,13 +2,13 @@
 
 namespace OfficeManager.Domain.Entities
 {
-    public class Department
+    public class Department : BaseAuditableEntity
     {
         [Key]
         public int Id { get; set; }
 
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool IsActive { get; set; }
         public virtual List<Employee> Employees { get; set; }
     }
