@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Feature\ApplicationUsers\Queries\**" />
+    <Compile Remove="Clients\**" />
+    <Compile Remove="Feature\Designations\Commands\**" />
+    <Compile Remove="Feature\Skills\Commands\DeactivateSkill\**" />
+    <Compile Remove="Feature\Skills\Commands\UpdateSkill\**" />
+    <EmbeddedResource Remove="Feature\ApplicationUsers\Queries\**" />
+    <EmbeddedResource Remove="Clients\**" />
+    <EmbeddedResource Remove="Feature\Designations\Commands\**" />
+    <EmbeddedResource Remove="Feature\Skills\Commands\DeactivateSkill\**" />
+    <EmbeddedResource Remove="Feature\Skills\Commands\UpdateSkill\**" />
+    <None Remove="Feature\ApplicationUsers\Queries\**" />
+    <None Remove="Clients\**" />
+    <None Remove="Feature\Designations\Commands\**" />
+    <None Remove="Feature\Skills\Commands\DeactivateSkill\**" />
+    <None Remove="Feature\Skills\Commands\UpdateSkill\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
+    <PackageReference Include="MimeKit" Version="3.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OfficeManager.Domain\OfficeManager.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Enums\" />
+  </ItemGroup>
+
+</Project>

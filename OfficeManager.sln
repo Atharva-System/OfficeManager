@@ -5,21 +5,35 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6A1B570C-A64A-4F69-92D3-5FE30BA3CD07}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{8B293080-EBC7-4ED1-9B60-17186EF4353A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8B293080-EBC7-4ED1-9B60-17186EF4353A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{7D5FF695-9717-4E28-B80C-859EF1943740}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Domain", "OfficeManager.Domain\OfficeManager.Domain.csproj", "{E46BCCAB-3BEE-4794-8721-F2C186E46402}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Domain", "src\OfficeManager.Domain\OfficeManager.Domain.csproj", "{E46BCCAB-3BEE-4794-8721-F2C186E46402}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Application", "OfficeManager.Application\OfficeManager.Application.csproj", "{D5C72F70-6E35-4B81-AAA7-31E02A981C37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Application", "src\OfficeManager.Application\OfficeManager.Application.csproj", "{D5C72F70-6E35-4B81-AAA7-31E02A981C37}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Infrastructure", "OfficeManager.Infrastructure\OfficeManager.Infrastructure.csproj", "{9161101A-B341-40A6-BB0C-3893D033D04B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Infrastructure", "src\OfficeManager.Infrastructure\OfficeManager.Infrastructure.csproj", "{9161101A-B341-40A6-BB0C-3893D033D04B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.API", "OfficeManager.API\OfficeManager.API.csproj", "{FC394541-68CF-4701-AE2A-A045834E71D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.API", "src\OfficeManager.API\OfficeManager.API.csproj", "{FC394541-68CF-4701-AE2A-A045834E71D3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4DA78287-28B9-4594-83E1-523CA752A069}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4DA78287-28B9-4594-83E1-523CA752A069}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeManager.Application.UnitTests", "OfficeManager.Application.UnitTests\OfficeManager.Application.UnitTests.csproj", "{EAB5045C-A7D3-457A-9C8C-E983081D225D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Application.UnitTests", "tests\OfficeManager.Application.UnitTests\OfficeManager.Application.UnitTests.csproj", "{EAB5045C-A7D3-457A-9C8C-E983081D225D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BEA8D45D-F034-44A0-A672-04B34D875F22}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{FA89ECBE-CF00-48EE-8962-B3FAD4AE9DA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9882B560-3066-4C32-9298-7EA04A2D1AAF}"
+	ProjectSection(SolutionItems) = preProject
+		CodingStandard.md = CodingStandard.md
+		Docker_Help.md = Docker_Help.md
+		Docker_SqlServer_Connect_Help.png = Docker_SqlServer_Connect_Help.png
+		OfficeManager.ruleset = OfficeManager.ruleset
+	EndProjectSection
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{0CFE615C-7103-49BB-BEA6-C28BA46EB29F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,16 +61,23 @@ Global
 		{EAB5045C-A7D3-457A-9C8C-E983081D225D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAB5045C-A7D3-457A-9C8C-E983081D225D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAB5045C-A7D3-457A-9C8C-E983081D225D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CFE615C-7103-49BB-BEA6-C28BA46EB29F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CFE615C-7103-49BB-BEA6-C28BA46EB29F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CFE615C-7103-49BB-BEA6-C28BA46EB29F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{6A1B570C-A64A-4F69-92D3-5FE30BA3CD07} = {BEA8D45D-F034-44A0-A672-04B34D875F22}
+		{8B293080-EBC7-4ED1-9B60-17186EF4353A} = {BEA8D45D-F034-44A0-A672-04B34D875F22}
+		{7D5FF695-9717-4E28-B80C-859EF1943740} = {BEA8D45D-F034-44A0-A672-04B34D875F22}
 		{E46BCCAB-3BEE-4794-8721-F2C186E46402} = {6A1B570C-A64A-4F69-92D3-5FE30BA3CD07}
 		{D5C72F70-6E35-4B81-AAA7-31E02A981C37} = {6A1B570C-A64A-4F69-92D3-5FE30BA3CD07}
 		{9161101A-B341-40A6-BB0C-3893D033D04B} = {8B293080-EBC7-4ED1-9B60-17186EF4353A}
 		{FC394541-68CF-4701-AE2A-A045834E71D3} = {7D5FF695-9717-4E28-B80C-859EF1943740}
-		{EAB5045C-A7D3-457A-9C8C-E983081D225D} = {4DA78287-28B9-4594-83E1-523CA752A069}
+		{EAB5045C-A7D3-457A-9C8C-E983081D225D} = {FA89ECBE-CF00-48EE-8962-B3FAD4AE9DA6}
+		{FA89ECBE-CF00-48EE-8962-B3FAD4AE9DA6} = {4DA78287-28B9-4594-83E1-523CA752A069}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCBE18CD-BAA7-4239-BC30-D82A3404E103}

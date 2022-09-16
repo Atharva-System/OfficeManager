@@ -1,0 +1,98 @@
+<div class="card card-body">
+  <div class="row">
+    <div class="col-8">
+      <div class="form-inline d-flex flex-wrap">
+        <div class="form-group d-flex align-items-center mb-2">
+          <input type="text" placeholder="Search Name" class="form-control control-size" id="search" name="search" [(ngModel)]="search">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <button class="btn btn-search btn-small bg-primary" (click)="searchSkill()">
+            <i class="fa fa-search"></i>  Search
+          </button>
+
+
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="d-flex justify-content-end">
+        <a class="btn btn-search btn-small bg-success" [routerLink]="['add']">
+          <i class="fa fa-plus"></i>  Add New Skill
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="card mt-2" *ngrxLet="skillPage$ as skillPage">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span>Page No. {{skillPage.pageNumber}} Of {{ skillPage.totalPages }} pages</span>
+
+      <nav aria-label="Page navigation">
+        <ul class="pagination align-items-center">
+          <li class="page-item"><button class="page-link" [disabled]="skillPage.pageNumber <= 1" (click)="paginate(skillPage.pageNumber - 1)">Previous</button></li>
+          <li class="page-item" *ngFor="let page of createRange(skillPage.totalPages)"><button class="page-link" (click)="paginate(page)">{{ page }}</button></li>
+          <li class="page-item"><button class="page-link" [disabled]="skillPage.pageNumber >= skillPage.totalPages" (click)="paginate(skillPage.pageNumber + 1)">Next</button></li>
+        </ul>
+      </nav>
+  </div>
+  <div class="card-body tableFixHead p-0">
+    <ng-container *ngrxLet="loading$ as loading">
+
+      <table class="table" *ngrxLet="skills$ as skills">
+        <thead>
+          <tr>
+            <th>Sr. no.</th>
+            <th>Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!loading && skills.length > 0">
+          <tr *ngFor="let skill of skills;let i = index">
+            <td>{{ ((pageNo - 1) * 10) + i + 1 }}</td>
+            <td>{{ skill.name }}</td>
+            <td>
+              {{ skill.description }}
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="!loading && skills.length == 0">
+          <tr>
+            <td colspan="6">No Records Found</td>
+          </tr>
+        </tbody>
+        <tbody class="fullwidth d-flex justify-content-center"  *ngIf="loading">
+          <tr>
+            <td colspan="6" class="fullwidth d-flex justify-content-center">
+              <div class="spinner-border m-5" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  </div>
+  <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+    <span>Page No. {{skillPage.pageNumber}} Of {{ skillPage.totalPages }} pages</span>
+
+    <div class="d-flex align-items-center">
+      <select class="form-control mx-2" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="paginate(1)">
+        <option [value]="0">Select Pagesize</option>
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+      </select>
+      <nav aria-label="Page navigation">
+        <ul class="pagination align-items-center">
+          <li class="page-item"><button class="page-link" [disabled]="skillPage.pageNumber <= 1" (click)="paginate(skillPage.pageNumber - 1)">Previous</button></li>
+          <li class="page-item" *ngFor="let page of createRange(skillPage.totalPages)"><button class="page-link" (click)="paginate(page)">{{ page }}</button></li>
+          <li class="page-item"><button class="page-link" [disabled]="skillPage.pageNumber >= skillPage.totalPages" (click)="paginate(skillPage.pageNumber + 1)">Next</button></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

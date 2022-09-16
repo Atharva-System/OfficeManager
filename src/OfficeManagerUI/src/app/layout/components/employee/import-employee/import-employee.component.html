@@ -1,0 +1,42 @@
+<div class="card mt-2">
+  <div class="card-header">
+    <h2 class="card-title">Import Employees Preview</h2>
+  </div>
+  <div class="card-body">
+    <div class="card card-body tableFixHead mt-2">
+      <div class="alert alert-warning" role="alert" *ngIf="invalidMessageVisible">
+        * Please check the high lighted records it can't be saved.
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>EmployeeNo</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Date Of Birth</th>
+            <th>Date of Joining</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees" [ngClass]="{'bg-danger':!employee.isValid}">
+            <td>{{ employee.employeeNo }}</td>
+            <td>{{ employee.employeeName }}</td>
+            <td>
+              {{ employee.department }}
+            </td>
+            <td>
+              {{ employee.designation }}
+            </td>
+            <td>{{ employee.dateOfBirth | date }}</td>
+            <td>{{ employee.dateOfJoining | date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <button class="btn bg-primary" (click)="saveAll()">Save</button>
+    <button class="btn btn-secondary" (click)="cancelUpload()">cancel</button>
+  </div>
+</div>

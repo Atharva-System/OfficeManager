@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  officemanager.api:
+   container_name: officemanager.api
+   environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "CacheSettings:RedisURL=rediscache"
+      - "CacheSettings:Port=6379"
+      - "CacheSettings:PreferRedis=true"
+      - "ConnectionStrings:Default=Data Source=192.168.31.56,1433;Initial Catalog=OfficeManager_DB;User Id=sa;Password=admin"
+   ports:
+      - "10000:80"
