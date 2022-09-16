@@ -45,6 +45,21 @@ namespace OfficeManager.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("Filter")]
+        public async Task<ActionResult<Response<PaginatedList<DepartmentDTO>>>> Filter([FromQuery] FilterDepartments query)
+        {
+            var response = await Mediator.Send(query);
+            if (response.StatusCode == StatusCodes.Status400BadRequest.ToString())
+            {
+                return BadRequest(response);
+            }
+            else if (response.StatusCode == StatusCodes.Status500InternalServerError.ToString())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+            return Ok(response);
+        }
         [HttpPost]
         [Route("Add")]
         public async Task<ActionResult<Response<PaginatedList<DepartmentDTO>>>> AddDepartment([FromBody] AddDepartment command)
