@@ -47,6 +47,7 @@ builder.Services.AddControllers();
 //swagger
 builder.Services.AddSwaggerGen(c =>
 {
+    c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Office Manager - Api", Version = "v1", });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

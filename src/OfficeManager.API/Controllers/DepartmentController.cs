@@ -5,6 +5,8 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Departments.Queries;
 using OfficeManager.Application.Feature.Employees.Commands;
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace OfficeManager.API.Controllers
 {
     [Authorize]
@@ -13,6 +15,7 @@ namespace OfficeManager.API.Controllers
         //return all the deaprtments usefull for dropdown like usage
         [HttpGet]
         [Route("All")]
+        //[SwaggerOperation(Summary = "Write your summary here", Description = "Write your Description here")]
         public async Task<ActionResult<Response<List<DepartmentDTO>>>> GetAll()
         {
             try
