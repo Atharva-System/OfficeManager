@@ -2,18 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
-using OfficeManager.Application.Feature.ApplicationUsers.Commands;
-using OfficeManager.Application.Interfaces;
 using OfficeManager.Domain.Entities;
-using System.Linq.Dynamic;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
@@ -25,12 +18,14 @@ namespace OfficeManager.Application.Feature.Departments.Queries
         public string SortingColumn { get; set; } = "Name";
         public string SortingDirection { get; set; } = "ASC";
     }
-    public class FilterDepartmentHandler : IRequestHandler<FilterDepartments,Response<PaginatedList<DepartmentDTO>>>
+
+    public class FilterDepartmentHandler : IRequestHandler<FilterDepartments, Response<PaginatedList<DepartmentDTO>>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IFilterLinq _filterLinq;
-        public FilterDepartmentHandler(IApplicationDbContext context, IMapper mapper,IFilterLinq filterLinq)
+
+        public FilterDepartmentHandler(IApplicationDbContext context, IMapper mapper, IFilterLinq filterLinq)
         {
             _context = context;
             _mapper = mapper;
@@ -61,7 +56,8 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                     Dictionary<string, string> filterValues = new Dictionary<string, string>();
                     foreach (string filter in filters)
                     {
-                        filterValues.Add(filter.Split('=')[0], filter.Split('=')[1]);
+                        if (filter.Contains("="))
+                            filterValues.Add(filter.Split('=')[0].Trim(), filter.Split('=')[1].Trim());
                     }
 
                     var filterExpression = _filterLinq.GetWherePredicate<Department>(filterValues);
@@ -69,6 +65,7 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                     departments = await query
                         .Where(filterExpression)
                         .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                        .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
                         .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
                 }
 
