@@ -48,7 +48,6 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                 }
                 else
                 {
-                    string filterString = request.filterString.Replace(" ", "");
                     string[] filters = filterString.Split(',');
 
                     var query = _context.Department;
