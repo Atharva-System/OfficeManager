@@ -7,6 +7,7 @@ using OfficeManager.Infrastructure.Persistence;
 using OfficeManager.Infrastructure.Persistence.Interceptors;
 using OfficeManager.Infrastructure.Services;
 using OfficeManager.Infrastructure.Settings;
+using MediatR;
 
 namespace OfficeManager.Infrastructure
 {
@@ -24,6 +25,7 @@ namespace OfficeManager.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ApplicationDbContextInitializer>();
             services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient(typeof(IFilterLinq), typeof(FilterLinq));
             services.AddSingleton<ICurrentUserServices, CurrentUserService>();
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
             services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));

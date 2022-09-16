@@ -43,5 +43,22 @@ namespace OfficeManager.API.Controllers
             }
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("Filter")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Response<PaginatedList<DepartmentDTO>>>> Filter([FromQuery] FilterDepartments query)
+        {
+            var response = await Mediator.Send(query);
+            if (response.StatusCode == StatusCodes.Status400BadRequest.ToString())
+            {
+                return BadRequest(response);
+            }
+            else if (response.StatusCode == StatusCodes.Status500InternalServerError.ToString())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+            return Ok(response);
+        }
     }
 }
