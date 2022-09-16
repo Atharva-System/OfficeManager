@@ -18,7 +18,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands.Validator
                 .MaximumLength(50).WithMessage("name is exceeding the limit of 50 characters.");
 
             RuleFor(p => p.description)
-                .MaximumLength(200).WithMessage("description is exceeding the limit of 200 characters.");
+                .MaximumLength(500).WithMessage("description is exceeding the limit of 200 characters.");
         }
     }
 }

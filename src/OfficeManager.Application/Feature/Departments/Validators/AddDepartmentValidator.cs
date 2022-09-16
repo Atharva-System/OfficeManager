@@ -18,7 +18,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands.Validator
                 .MustAsync(BeUniqueDepartment).WithMessage("name is already exist..");
 
             RuleFor(p => p.description)
-                .MaximumLength(200).WithMessage("description is exceeding the limit of 200 characters.");
+                .MaximumLength(500).WithMessage("description is exceeding the limit of 200 characters.");
         }
 
         public async Task<bool> BeUniqueDepartment(string name, CancellationToken cancellationToken)
