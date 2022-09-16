@@ -15,7 +15,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands.Validator
             RuleFor(p => p.name)
                 .NotEmpty().WithMessage("name is required")
                 .MaximumLength(50).WithMessage("name is exceeding the limit of 50 characters.")
-                .MustAsync(BeUniqueDepartment).WithMessage("Specified Department already exist..");
+                .MustAsync(BeUniqueDepartment).WithMessage("name is already exist..");
 
             RuleFor(p => p.description)
                 .MaximumLength(200).WithMessage("description is exceeding the limit of 200 characters.");
