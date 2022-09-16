@@ -42,7 +42,6 @@ namespace OfficeManager.Application.Feature.Departments.Queries
             Response<PaginatedList<DepartmentDTO>> response = new Response<PaginatedList<DepartmentDTO>>();
             try
             {
-                EvoluteRequest(request);
                 PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(), 0, request.Page_No, request.Page_Size);
                 
                 if (String.IsNullOrEmpty(request.filterString) || String.IsNullOrWhiteSpace(request.filterString))
@@ -95,14 +94,6 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                 return response;
             }
             return response;
-        }
-
-        private void EvoluteRequest(FilterDepartments request)
-        {
-            if(request.Page_No <= 0)
-                request.Page_No = 1;
-            if (request.Page_Size <= 0)
-                request.Page_Size = 1;
         }
     }
 }
