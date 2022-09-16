@@ -34,6 +34,8 @@ namespace OfficeManager.Application.Common.Constant
         public static string PasswordSuccessfullyReset => "Your password has been successfully reset.Your new password has been sent to your email address.We recommend that you change your password.";
         public static string ResetPasswordCodeInvalid => "Your Reset Password Code is invalid";
         public static string EmailSuccessfullyChangedConfirmYourEmail => "Email Successfully Changed.Please confirm your email";
+
+        public static string DepartmentNameExists => "Department Name already exists";
     }
 
     public static class StausCodes

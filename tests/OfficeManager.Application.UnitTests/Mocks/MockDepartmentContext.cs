@@ -17,8 +17,19 @@ namespace OfficeManager.Application.UnitTests.Mocks
             var mockContext = new Mock<IApplicationDbContext>();
 
             //Department
+            var depart = GetDepartments();
+            mockContext.Setup(r => r.Department).Returns(depart.AsQueryable().BuildMockDbSet().Object);
+            mockContext.Setup(m => m.Department.AddAsync(It.IsAny<Department>(), default)).Callback<Department, CancellationToken>((s, token) =>
+            {
+                depart.Add(s);
+            });
+            mockContext.Setup(m => m.Department.Remove(It.IsAny<Department>())).Callback<Department>(s =>
+            {
+                depart.Remove(s);
+            });
             mockContext.Setup(r => r.Department).Returns(GetDepartments().AsQueryable().BuildMockDbSet().Object);
-
+         
+            mockContext.Object.SaveChangesAsync();
             return mockContext;
         }
 
@@ -32,7 +43,7 @@ namespace OfficeManager.Application.UnitTests.Mocks
                  IsActive = true
              },
              new Department{
-                 Id = 1,
+                 Id = 2,
                  Name = "Analytics",
                  Description="Analytics",
                  IsActive = true
