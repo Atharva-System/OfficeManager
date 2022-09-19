@@ -20,6 +20,12 @@ services:
     ports:
         - "1433:1433"
 
+  watchdogdb:
+    image: postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+
   officemanager.api:
     image: ${DOCKER_REGISTRY-}officemanagerapi
     build:
@@ -27,6 +33,9 @@ services:
       dockerfile: src\OfficeManager.API\Dockerfile
     depends_on:
       - officemanagerdb
+      - watchdogdb
   
 volumes:
   redis_volume:
+  postgres_data:
+  pgadmin_data:
