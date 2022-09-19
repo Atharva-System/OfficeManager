@@ -35,6 +35,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuer = true,
             //ValidateAudience = true,
             ValidateLifetime = true,
+            RequireExpirationTime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience[0],
@@ -48,6 +49,7 @@ builder.Services.AddControllers();
 //swagger
 builder.Services.AddSwaggerGen(c =>
 {
+    c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Office Manager - Api", Version = "v1", });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
