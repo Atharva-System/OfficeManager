@@ -150,12 +150,15 @@ if (!string.IsNullOrEmpty(postgreSqlConnection))
     // inject into the middleware
     app.UseWatchDogExceptionLogger();
 
-    app.UseWatchDog(opt =>
+    if (!string.IsNullOrEmpty(watchDogSettings.Username)
+        && !string.IsNullOrEmpty(watchDogSettings.Password))
     {
-        opt.WatchPageUsername = watchDogSettings.Username;
-        opt.WatchPagePassword = watchDogSettings.Password;
-    });
-
+        app.UseWatchDog(opt =>
+        {
+            opt.WatchPageUsername = watchDogSettings.Username;
+            opt.WatchPagePassword = watchDogSettings.Password;
+        });
+    }
 }
 app.Run();
 
