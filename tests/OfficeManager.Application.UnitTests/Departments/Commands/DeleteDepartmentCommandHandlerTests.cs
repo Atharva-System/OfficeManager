@@ -1,6 +1,7 @@
 ﻿using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Feature.Employees.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Skills.Commands
 {
@@ -17,11 +18,13 @@ namespace OfficeManager.Application.UnitTests.Skills.Commands
         {
             var result = await handler.Handle(new DeleteDepartment(1), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<object>>();
+            result.ShouldBeOfType<SuccessResponse>();
 
-            result.Message.ShouldBe(Messages.DeletedSuccessfully);
+            SuccessResponse response = (SuccessResponse)result;
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            response.Message.ShouldBe(Messages.DeletedSuccessfully);
+
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
         }
     }
 }

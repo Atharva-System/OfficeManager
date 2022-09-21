@@ -7,10 +7,12 @@ using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.Feature.UserRoles.Queries
 {
-    public record SearchUserRoles : IRequest<Response<PaginatedList<RolesDTO>>>
+    public record SearchUserRoles : IRequest<IResponse>
     {
         public string Search { get; init; } = string.Empty;
         public int Page_No { get; init; } = 1;
@@ -19,7 +21,7 @@ namespace OfficeManager.Application.Feature.UserRoles.Queries
         public string SortingDirection { get; set; } = "ASC";
     }
 
-    public class SearchUserRolesHandler : IRequestHandler<SearchUserRoles, Response<PaginatedList<RolesDTO>>>
+    public class SearchUserRolesHandler : IRequestHandler<SearchUserRoles, IResponse>
     {
 
         private readonly IApplicationDbContext _context;
@@ -31,47 +33,24 @@ namespace OfficeManager.Application.Feature.UserRoles.Queries
             _mapper = mapper;
         }
 
-        public async Task<Response<PaginatedList<RolesDTO>>> Handle(SearchUserRoles request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(SearchUserRoles request, CancellationToken cancellationToken)
         {
-            Response<PaginatedList<RolesDTO>> response = new Response<PaginatedList<RolesDTO>>();
-            try
+            var roles = _context.Roles.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
+            if (string.IsNullOrEmpty(request.Search))
             {
-                var roles = _context.Roles.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
-                if (string.IsNullOrEmpty(request.Search))
-                {
-                    response._Data = await roles
-                        .ProjectTo<RolesDTO>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync<RolesDTO>(request.Page_No, request.Page_Size);
-                }
-                else
-                {
-                    response._Data = await roles
-                        .AsNoTracking()
-                        .Where(d => d.Name.Contains(request.Search))
-                        .ProjectTo<RolesDTO>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync<RolesDTO>(request.Page_No, request.Page_Size);
-                }
-                response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
-                response.StatusCode = StausCodes.Accepted;
-                response.IsSuccess = true;
-                return response;
+                return new DataResponse<PaginatedList<RolesDTO>>(await roles
+                    .ProjectTo<RolesDTO>(_mapper.ConfigurationProvider)
+                    .PaginatedListAsync<RolesDTO>(request.Page_No, request.Page_Size),
+                    StatusCodes.Accepted,
+                    Messages.DataFound);
             }
-            catch (ValidationException exception)
-            {
-                response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
-                response.Message = "";
-                response.StatusCode = StausCodes.BadRequest;
-                response.IsSuccess = false;
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-                response.Message = Messages.IssueWithData;
-                response.StatusCode = StausCodes.InternalServerError;
-                response.IsSuccess = false;
-                return response;
-            }
+            return new DataResponse<PaginatedList<RolesDTO>>(await roles
+                .AsNoTracking()
+                .Where(d => d.Name.Contains(request.Search))
+                .ProjectTo<RolesDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync<RolesDTO>(request.Page_No, request.Page_Size),
+                StatusCodes.Accepted,
+                Messages.DataFound);
         }
     }
 }

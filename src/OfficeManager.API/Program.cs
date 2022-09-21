@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeManager.API;
+using OfficeManager.API.Infrastructure.Filters;
 using OfficeManager.Application;
 using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
@@ -19,15 +20,14 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureService(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddCors();
-
 var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
 
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -41,8 +41,15 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new ApiValidationExceptionFilter());
+    options.Filters.Add(new AccessExceptionFilter());
+    options.Filters.Add(new NotFoundExceptionFilter());
+    options.Filters.Add(new AccessExceptionFilter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
 
 //swagger
 builder.Services.AddSwaggerGen(c =>

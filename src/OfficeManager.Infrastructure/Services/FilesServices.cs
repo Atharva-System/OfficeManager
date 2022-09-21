@@ -1,17 +1,16 @@
 ﻿using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeOpenXml;
 
-namespace OfficeManager.API.Services
+namespace OfficeManager.Infrastructure.Services
 {
     public class FilesServices : IFilesServices
     {
         public Task<List<BulkImportEmployeeDTO>> ReadEmployeeExcel(string path)
         {
             List<BulkImportEmployeeDTO> employees = new List<BulkImportEmployeeDTO>();
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
+            using (OfficeOpenXml.ExcelPackage package = new OfficeOpenXml.ExcelPackage(new FileInfo(path)))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Jul 2022"];
+                OfficeOpenXml.ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
                 int totalRows = worksheet.Dimension.Rows;
                 
                 for(int index=4; index < totalRows && worksheet.Cells[index,1].Value != null; index++)

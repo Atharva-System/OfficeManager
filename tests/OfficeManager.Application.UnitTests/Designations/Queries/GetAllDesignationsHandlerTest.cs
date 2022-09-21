@@ -3,6 +3,7 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Designations.Queries;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Designations.Queries
 {
@@ -19,15 +20,12 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         {
             var result = await handler.Handle(new GetAllDesignations(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
+            result.ShouldBeOfType<DataResponse<List<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            result.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.IsSuccess.ShouldBe(true);
+            result.Success.ShouldBe(true);
 
-            result.Message.ShouldBe(Messages.DataFound);
-
-            result.Data.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -38,17 +36,15 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
 
             var result = await handler.Handle(new GetAllDesignations(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DesignationDTO>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            ErrorResponse response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
-
-            result.Data.ShouldBeNull();
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }

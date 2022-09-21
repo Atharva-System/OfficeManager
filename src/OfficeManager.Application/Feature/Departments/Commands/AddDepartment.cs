@@ -1,18 +1,20 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.Employees.Commands
 {
-    public record AddDepartment : IRequest<Response<object>>
+    public record AddDepartment : IRequest<IResponse>
     {
         public string name { get; set; }
         public string description { get; set; } = string.Empty;
         public bool isActive { get; set; } = false;
     }
 
-    public class AddDepartmentCommandHandler : IRequestHandler<AddDepartment, Response<object>>
+    public class AddDepartmentCommandHandler : IRequestHandler<AddDepartment, IResponse>
     {
         private readonly IApplicationDbContext Context;
 
@@ -21,10 +23,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             Context = context;
         }
 
-        public async Task<Response<object>> Handle(AddDepartment request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(AddDepartment request, CancellationToken cancellationToken)
         {
-            Response<object> response = new Response<object>();
-
             Context.BeginTransaction();
 
             Department department = new Department
@@ -39,10 +39,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
             Context.CommitTransaction();
 
-            response.Message = Messages.AddedSuccesfully;
-            response.StatusCode = StausCodes.Accepted;
-            response.Data = department;
-            return response;
+            return new SuccessResponse(StatusCodes.Accepted,Messages.AddedSuccesfully);
         }
     }
 }

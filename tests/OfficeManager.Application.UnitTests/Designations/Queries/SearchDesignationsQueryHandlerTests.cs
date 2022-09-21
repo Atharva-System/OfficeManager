@@ -3,6 +3,7 @@ using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.UnitTests.Mocks;
 using OfficeManager.Application.Feature.Designations.Queries;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Designations.Queries
 {
@@ -19,15 +20,17 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         {
             var result = await handler.Handle(new SearchDesignations(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<DesignationDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<DesignationDTO>> response = (DataResponse<PaginatedList<DesignationDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(2);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -35,15 +38,17 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         {
             var result = await handler.Handle(new SearchDesignations { Search = "Software" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<DesignationDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<DesignationDTO>> response = (DataResponse<PaginatedList<DesignationDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -51,15 +56,17 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         {
             var result = await handler.Handle(new SearchDesignations { Search = "Software", Page_No=1, Page_Size=10 }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<DesignationDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<DesignationDTO>> response = (DataResponse<PaginatedList<DesignationDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -67,15 +74,17 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
         {
             var result = await handler.Handle(new SearchDesignations { Search = "Sales Head" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<DesignationDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DesignationDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<DesignationDTO>> response = (DataResponse<PaginatedList<DesignationDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.NoDataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(0);
+            response.Message.ShouldBe(Messages.NoDataFound);
+
+            response.Data.Items.Count.ShouldBe(0);
         }
 
         [Fact]
@@ -86,17 +95,15 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
 
             var result = await handler.Handle(new SearchDesignations(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<DesignationDTO>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            ErrorResponse response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
-
-            result.Data.ShouldBeNull();
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }

@@ -3,6 +3,6 @@
     public interface IResponse
     {
         bool Success { get; }
-        int StatusCode { get; }
+        string StatusCode { get; }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.Employees.Commands
 {
-    public record UpdateEmployee : IRequest<Response<object>>
+    public record UpdateEmployee : IRequest<IResponse>
     {
         public int employeeId { get; init; }
         public int employeeNo { get; init; }
@@ -19,7 +21,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
         public List<EmployeeSkill> skills { get; init; } = new List<EmployeeSkill>();
     }
 
-    public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployee, Response<object>>
+    public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployee, IResponse>
     {
         private readonly IApplicationDbContext Context;
         public UpdateEmployeeCommandHandler(IApplicationDbContext context)
@@ -27,17 +29,12 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             Context = context;
         }
 
-        public async Task<Response<object>> Handle(UpdateEmployee request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(UpdateEmployee request, CancellationToken cancellationToken)
         {
-            Response<object> response = new Response<object>();
-
             Employee employee = Context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
             if (employee == null)
             {
-                response.Errors.Add(Messages.NoDataFound);
-                response.IsSuccess = false;
-                response.StatusCode = StausCodes.NotFound;
-                return response;
+                return new ErrorResponse(StatusCodes.NotFound,"Employee related to id not found.");
             }
             Context.BeginTransaction();
 
@@ -87,11 +84,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             await Context.SaveChangesAsync(cancellationToken);
 
             Context.CommitTransaction();
-            response.Message = Messages.AddedSuccesfully;
-            response.StatusCode = StausCodes.Accepted;
-            response.Data = string.Empty;
 
-            return response;
+            return new SuccessResponse(StatusCodes.Accepted,Messages.UpdatedSuccessfully);
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.Employees.Commands
 {
-    public record UpdateDepartment : IRequest<Response<object>>
+    public record UpdateDepartment : IRequest<IResponse>
     {
         public int id { get; set; }
         public string name { get; set; }
@@ -13,7 +15,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
         public bool isActive { get; set; } = false;
     }
 
-    public class UpdateDepartmentCommandHandler : IRequestHandler<UpdateDepartment, Response<object>>
+    public class UpdateDepartmentCommandHandler : IRequestHandler<UpdateDepartment, IResponse>
     {
         private readonly IApplicationDbContext Context;
 
@@ -22,10 +24,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             Context = context;
         }
 
-        public async Task<Response<object>> Handle(UpdateDepartment request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(UpdateDepartment request, CancellationToken cancellationToken)
         {
-            Response<object> response = new Response<object>();
-
             Context.BeginTransaction();
 
             Department department = Context.Department.FirstOrDefault(x => x.Id == request.id);
@@ -33,10 +33,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             {
                 if (Context.Department.Any(x => x.Id != request.id && x.Name == request.name))
                 {
-                    response.Message = Messages.DepartmentNameExists;
-                    response.StatusCode = StausCodes.BadRequest;
-                    response.Data = string.Empty;
-                    return response;
+                    return new ErrorResponse(StatusCodes.BadRequest,Messages.DepartmentNameExists);
                 }
                 department.Name = request.name;
                 department.Description = request.description;
@@ -45,17 +42,9 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 Context.Department.Update(department);
                 await Context.SaveChangesAsync(cancellationToken);
                 Context.CommitTransaction();
-                response.Message = Messages.UpdatedSuccessfully;
-                response.StatusCode = StausCodes.Accepted;
-                response.Data = string.Empty;
+                return new SuccessResponse(StatusCodes.Accepted,Messages.AddedSuccesfully);
             }
-            else
-            {
-                response.Message = Messages.NotFound;
-                response.StatusCode = StausCodes.NotFound;
-                response.Data = string.Empty;
-            }
-            return response;
+            return new ErrorResponse(StatusCodes.NotFound,Messages.NoDataFound);
         }
     }
 }

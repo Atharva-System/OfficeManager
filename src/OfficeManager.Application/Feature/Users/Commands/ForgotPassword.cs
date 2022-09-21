@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
 
-namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
+namespace OfficeManager.Application.Feature.Users.Commands
 {
     public record ForgotPassword : IRequest<bool>
     {

@@ -5,16 +5,16 @@ namespace OfficeManager.Application.Wrappers.Concrete
     public class ErrorResponse : IErrorResponse
     {
         public bool Success { get; } = false;
-        public int StatusCode { get; }
+        public string StatusCode { get; }
         public List<string> Errors { get; private set; } = new List<string>();
 
-        public ErrorResponse(int statuscode, List<string> errors)
+        public ErrorResponse(string statuscode, List<string> errors)
         {
             StatusCode = statuscode;
             Errors = errors;
         }
 
-        public ErrorResponse(int statuscode, string error)
+        public ErrorResponse(string statuscode, string error)
         {
             StatusCode = statuscode;
             Errors.Add(error);

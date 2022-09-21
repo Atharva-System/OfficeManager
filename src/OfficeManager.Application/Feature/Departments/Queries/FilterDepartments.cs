@@ -6,11 +6,13 @@ using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
-    public record FilterDepartments : IRequest<Response<PaginatedList<DepartmentDTO>>>
+    public record FilterDepartments : IRequest<IResponse>
     {
         public string filterString { get; init; } = string.Empty;
         public int Page_No { get; set; } = 1;
@@ -19,7 +21,7 @@ namespace OfficeManager.Application.Feature.Departments.Queries
         public string SortingDirection { get; set; } = "ASC";
     }
 
-    public class FilterDepartmentHandler : IRequestHandler<FilterDepartments, Response<PaginatedList<DepartmentDTO>>>
+    public class FilterDepartmentHandler : IRequestHandler<FilterDepartments, IResponse>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -32,64 +34,41 @@ namespace OfficeManager.Application.Feature.Departments.Queries
             _filterLinq = filterLinq;
         }
 
-        public async Task<Response<PaginatedList<DepartmentDTO>>> Handle(FilterDepartments request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(FilterDepartments request, CancellationToken cancellationToken)
         {
-            Response<PaginatedList<DepartmentDTO>> response = new Response<PaginatedList<DepartmentDTO>>();
-            try
+            PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(), 0, request.Page_No, request.Page_Size);
+            IQueryable<Department> query;
+
+
+            if (String.IsNullOrEmpty(request.filterString) || String.IsNullOrWhiteSpace(request.filterString))
             {
-                PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(), 0, request.Page_No, request.Page_Size);
-                
-                if (String.IsNullOrEmpty(request.filterString) || String.IsNullOrWhiteSpace(request.filterString))
-                {
-                    var query = _context.Department.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
-                    departments = await query
-                        .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
-                }
-                else
-                {
-                    string[] filters = request.filterString.Split(',');
-
-                    var query = _context.Department;
-
-                    Dictionary<string, string> filterValues = new Dictionary<string, string>();
-                    foreach (string filter in filters)
-                    {
-                        if (filter.Contains("="))
-                            filterValues.Add(filter.Split('=')[0].Trim(), filter.Split('=')[1].Trim());
-                    }
-
-                    var filterExpression = _filterLinq.GetWherePredicate<Department>(filterValues);
-
-                    departments = await query
-                        .Where(filterExpression)
-                        .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
-                        .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
-                        .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
-                }
-
-                response.Data = departments;
-                response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
-                response.StatusCode = StausCodes.Accepted;
-                response.IsSuccess = true;
+                query = _context.Department.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
+                return new DataResponse<PaginatedList<DepartmentDTO>>(await query
+                    .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                    .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size)
+                    ,StatusCodes.Accepted
+                    ,Messages.DataFound);
             }
-            catch (ValidationException exception)
+            string[] filters = request.filterString.Split(',');
+
+            query = _context.Department;
+
+            Dictionary<string, string> filterValues = new Dictionary<string, string>();
+            foreach (string filter in filters)
             {
-                response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
-                response.Message = "";
-                response.StatusCode = StausCodes.BadRequest;
-                response.IsSuccess = false;
-                return response;
+                if (filter.Contains("="))
+                    filterValues.Add(filter.Split('=')[0].Trim(), filter.Split('=')[1].Trim());
             }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-                response.Message = Messages.IssueWithData;
-                response.StatusCode = StausCodes.InternalServerError;
-                response.IsSuccess = false;
-                return response;
-            }
-            return response;
+
+            var filterExpression = _filterLinq.GetWherePredicate<Department>(filterValues);
+
+            return new DataResponse<PaginatedList<DepartmentDTO>>(await query
+                .Where(filterExpression)
+                .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
+                .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
+                .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size)
+                , StatusCodes.Accepted
+                , Messages.DataFound);
         }
     }
 }

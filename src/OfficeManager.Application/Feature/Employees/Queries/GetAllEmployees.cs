@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Dapper;
 using MediatR;
 using OfficeManager.Application.Common.Interfaces;
@@ -8,10 +7,12 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using System.Data;
 using System.Data.SqlClient;
+using OfficeManager.Application.Wrappers.Concrete;
+using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.Application.Feature.Employees.Queries
 {
-    public record GetAllEmployees: IRequest<Response<PaginatedList<EmployeeDTO>>>
+    public record GetAllEmployees: IRequest<IResponse>
     {
 
         public string Search { get; init; }
@@ -28,7 +29,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
         public string SortingDirection { get; set; } = "ASC";
     }
 
-    public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployees, Response<PaginatedList<EmployeeDTO>>>
+    public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployees, IResponse>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper _mapper;
@@ -39,50 +40,25 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             _mapper = mapper;
         }
 
-        public async Task<Response<PaginatedList<EmployeeDTO>>> Handle(GetAllEmployees request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(GetAllEmployees request, CancellationToken cancellationToken)
         {
-            Response<PaginatedList<EmployeeDTO>> response = new Response<PaginatedList<EmployeeDTO>>();
-            try
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@Search", request.Search);
+            parameters.Add("@DepartmentId", request.DepartmentId);
+            parameters.Add("@DesignationId", request.DesignationId);
+            parameters.Add("@DOBFromDate", request.DateOfBirthFrom == null ? Convert.ToDateTime("1753-01-02") : request.DateOfBirthFrom.Value);
+            parameters.Add("@DOBToDate", request.DateOfBirthTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfBirthTo.Value);
+            parameters.Add("@DOJFromDate", request.DateOfJoiningFrom == null ? Convert.ToDateTime("1753-01-02") : request.DateOfJoiningFrom.Value);
+            parameters.Add("@@DOJToDate", request.DateOfJoiningTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfJoiningTo.Value);
+            using (var connection = new SqlConnection(Context.GetConnectionString))
             {
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@Search", request.Search);
-                parameters.Add("@DepartmentId", request.DepartmentId);
-                parameters.Add("@DesignationId", request.DesignationId);
-                parameters.Add("@DOBFromDate", request.DateOfBirthFrom == null ? Convert.ToDateTime("1753-01-02") : request.DateOfBirthFrom.Value);
-                parameters.Add("@DOBToDate", request.DateOfBirthTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfBirthTo.Value);
-                parameters.Add("@DOJFromDate", request.DateOfJoiningFrom == null ? Convert.ToDateTime("1753-01-02") : request.DateOfJoiningFrom.Value);
-                parameters.Add("@@DOJToDate", request.DateOfJoiningTo == null ? Convert.ToDateTime("9999-12-30") : request.DateOfJoiningTo.Value);
-                using (var connection = new SqlConnection(Context.GetConnectionString))
-                {
-                    response.Data = new PaginatedList<EmployeeDTO>(new List<EmployeeDTO>(), 0, request.Page_No, request.Page_Size);
-                    response.Data = await (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
-                        , commandType: CommandType.StoredProcedure))
-                        .AsQueryable()
-                        .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
-                        .ToList()
-                        .PaginatedListAsync<EmployeeDTO>(request.Page_No, request.Page_Size);
-
-                    if(response.Data.Items.Count > 0)
-                    {
-                        response.IsSuccess = true;
-                        response.StatusCode = StausCodes.Accepted;
-                        response.Message = Messages.DataFound;
-                    }
-                    else
-                    {
-                        response.Message = Messages.NoDataFound;
-                        response.IsSuccess = false;
-                        response.StatusCode = StausCodes.NotFound;
-                    }
-                }
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(Messages.IssueWithData);
-                response.IsSuccess = false;
-                response.StatusCode = StausCodes.InternalServerError;
-                return response;
+                var employees = await (await connection.QueryAsync<EmployeeDTO>("dbo.SearchEmployees", parameters
+                    , commandType: CommandType.StoredProcedure))
+                    .AsQueryable()
+                    .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
+                    .ToList()
+                    .PaginatedListAsync<EmployeeDTO>(request.Page_No, request.Page_Size);
+                return new DataResponse<PaginatedList<EmployeeDTO>>(employees,StatusCodes.Accepted);
             }
         }
     }

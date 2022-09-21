@@ -1,7 +1,7 @@
-﻿using OfficeManager.Application.Feature.ApplicationUsers.Commands;
+﻿using OfficeManager.Application.Feature.Users.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
 
-namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
+namespace OfficeManager.Application.UnitTests.Users.Commands
 {
     public class ForgotPasswordCommandHandlerTests : MockApplicationUserContext
     {

@@ -2,6 +2,7 @@
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Feature.Skills.Queries;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Skills.Queries
 {
@@ -18,15 +19,17 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         {
             var result = await handler.Handle(new GetAllSkillLevels(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<SkillLevel>>>();
+            result.ShouldBeOfType<DataResponse<List<SkillLevel>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<List<SkillLevel>> response = (DataResponse<List<SkillLevel>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Count.ShouldBe(3);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Count.ShouldBe(3);
         }
 
         [Fact]
@@ -37,17 +40,15 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
 
             var result = await handler.Handle(new GetAllSkillLevels(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<SkillLevel>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            ErrorResponse response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
-
-            result.Data.Count.ShouldBe(0);
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }

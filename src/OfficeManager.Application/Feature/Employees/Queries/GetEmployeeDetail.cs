@@ -3,13 +3,14 @@ using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.Feature.Employees.Queries
 {
-    public record GetEmployeeDetail(int employeeId) : IRequest<Response<EmployeeDetailDTO>>;
+    public record GetEmployeeDetail(int employeeId) : IRequest<IResponse>;
 
-    public class GetEmployeeDetailQueryHandler : IRequestHandler<GetEmployeeDetail, Response<EmployeeDetailDTO>>
+    public class GetEmployeeDetailQueryHandler : IRequestHandler<GetEmployeeDetail, IResponse>
     {
         private readonly IApplicationDbContext Context;
         public GetEmployeeDetailQueryHandler(IApplicationDbContext context)
@@ -17,11 +18,8 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             Context = context;
         }
 
-        public async Task<Response<EmployeeDetailDTO>> Handle(GetEmployeeDetail request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(GetEmployeeDetail request, CancellationToken cancellationToken)
         {
-            Response<EmployeeDetailDTO> response = new Response<EmployeeDetailDTO>();
-            response.Data = new EmployeeDetailDTO();
-
             var employeeDetail = Context.Employees.Where(emp => emp.Id == request.employeeId)
                 .Select(emp => new EmployeeDetailDTO
                 {
@@ -40,9 +38,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             if (employeeDetail != null)
             {
                 employeeDetail.RoleId = Context.UserRoleMapping.FirstOrDefault(ur => ur.UserId == employeeDetail.UserId).RoleId;
-                response.Data = employeeDetail;
-                response.IsSuccess = true;
-                response.StatusCode = StausCodes.Accepted;
+                
                 var skills = Context.EmployeeSkills.Where(sk => sk.EmployeeId == employeeDetail.EmployeeId && sk.IsActive == true)
                     .Select(empSkill => new EmployeeSkill
                     {
@@ -52,15 +48,11 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                         rateId = empSkill.rateId
                     }).ToList();
                 if (skills.Any())
-                    response.Data.skills = skills;
-            }
-            else
-            {
-                response.IsSuccess = false;
-                response.StatusCode = StausCodes.NotFound;
+                    employeeDetail.skills = skills;
+                return new DataResponse<EmployeeDetailDTO>(employeeDetail, StatusCodes.Accepted, Messages.DataFound);
             }
 
-            return response;
+            return new ErrorResponse(StatusCodes.NotFound,Messages.NotFound);
         }
     }
 }

@@ -7,17 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Feature\ApplicationUsers\Queries\**" />
+    <Compile Remove="Feature\Users\Queries\**" />
     <Compile Remove="Clients\**" />
     <Compile Remove="Feature\Designations\Commands\**" />
     <Compile Remove="Feature\Skills\Commands\DeactivateSkill\**" />
     <Compile Remove="Feature\Skills\Commands\UpdateSkill\**" />
-    <EmbeddedResource Remove="Feature\ApplicationUsers\Queries\**" />
+    <EmbeddedResource Remove="Feature\Users\Queries\**" />
     <EmbeddedResource Remove="Clients\**" />
     <EmbeddedResource Remove="Feature\Designations\Commands\**" />
     <EmbeddedResource Remove="Feature\Skills\Commands\DeactivateSkill\**" />
     <EmbeddedResource Remove="Feature\Skills\Commands\UpdateSkill\**" />
-    <None Remove="Feature\ApplicationUsers\Queries\**" />
+    <None Remove="Feature\Users\Queries\**" />
     <None Remove="Clients\**" />
     <None Remove="Feature\Designations\Commands\**" />
     <None Remove="Feature\Skills\Commands\DeactivateSkill\**" />
@@ -35,6 +35,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
     <PackageReference Include="MimeKit" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.20" />
   </ItemGroup>

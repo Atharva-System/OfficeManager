@@ -6,17 +6,19 @@ using OfficeManager.Application.Common.Exceptions;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 {
-    public record CreateTokenByRefreshToken : IRequest<Response<TokenDTO>>
+    public record CreateTokenByRefreshToken : IRequest<IResponse>
     {
         public string RefreshToken { get; init; }
         public string CurrentToken { get; set; }
     }
 
-    public class CreateTokenByRefreshTokenHandler : IRequestHandler<CreateTokenByRefreshToken, Response<TokenDTO>>
+    public class CreateTokenByRefreshTokenHandler : IRequestHandler<CreateTokenByRefreshToken, IResponse>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
@@ -30,9 +32,9 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
             TokenService = tokenService;
         }
 
-        public async Task<Response<TokenDTO>> Handle(CreateTokenByRefreshToken request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(CreateTokenByRefreshToken request, CancellationToken cancellationToken)
         {
-            Response<TokenDTO> response = new Response<TokenDTO>();
+            TokenDTO response = new TokenDTO();
             var refreshToken = Context.RefreshToken.FirstOrDefault(rt => rt.Code == request.RefreshToken && rt.IsActive == true);
 
             if(refreshToken == null)
@@ -42,10 +44,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
             if(TokenService.ValidateToken(request.CurrentToken))
             {
-                response.StatusCode = "400";
-                response.Errors.Add("Current token is not expired yet.");
-                response.IsSuccess = false;
-                return response;
+                return new ErrorResponse(StatusCodes.BadRequest, "Current token is not expired yet.");
             }
 
             var user = Context.Users.FirstOrDefault(u => u.Id == refreshToken.UserId);
@@ -56,7 +55,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
             LoggedInUserDTO loggedInUser = Mapper.Map<UserMaster, LoggedInUserDTO>(user);
             loggedInUser.Roles = userRoles;
             var tokendto = TokenService.CreateToken(loggedInUser);
-            response.Data = tokendto;
+            
 
             CurrentUserService.loggedInUser = loggedInUser;
 
@@ -73,11 +72,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
             await Context.SaveChangesAsync(cancellationToken);
             Context.CommitTransaction();
 
-            response.IsSuccess = true;
-            response.Message = Messages.Success;
-            response.StatusCode = StausCodes.Accepted;
-
-            return response;
+            return new DataResponse<TokenDTO>(tokendto, StatusCodes.Accepted);
         }
     }
 }

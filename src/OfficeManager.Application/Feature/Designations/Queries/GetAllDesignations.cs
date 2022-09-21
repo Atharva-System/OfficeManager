@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using FluentValidation;
 using MediatR;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
-using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Interfaces;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.Feature.Designations.Queries
 {
-    public record GetAllDesignations : IRequest<Response<List<DesignationDTO>>>, ICacheable
+    public record GetAllDesignations : IRequest<IResponse>, ICacheable
     {
 
         public bool BypassCache => false;
@@ -17,7 +17,7 @@ namespace OfficeManager.Application.Feature.Designations.Queries
         public string CacheKey => CacheKeys.Designations;
     }
 
-    public class GetAllDesignationsHandler : IRequestHandler<GetAllDesignations, Response<List<DesignationDTO>>>
+    public class GetAllDesignationsHandler : IRequestHandler<GetAllDesignations, IResponse>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
@@ -27,34 +27,15 @@ namespace OfficeManager.Application.Feature.Designations.Queries
             Mapper = mapper;
         }
 
-        public async Task<Response<List<DesignationDTO>>> Handle(GetAllDesignations request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(GetAllDesignations request, CancellationToken cancellationToken)
         {
-            Response<List<DesignationDTO>> response = new Response<List<DesignationDTO>>();
-            try
-            {
-                response.Data = await Context.Designation
-                    .ProjectToListAsync<DesignationDTO>(Mapper.ConfigurationProvider);
-                response.Message = response.Data.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
-                response.StatusCode = StausCodes.Accepted;
-                response.IsSuccess = true;
-                return response;
-            }
-            catch (ValidationException exception)
-            {
-                response.Errors = exception.Errors.Select(err => err.ErrorMessage).ToList();
-                response.Message = "";
-                response.StatusCode = StausCodes.BadRequest;
-                response.IsSuccess = false;
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-                response.Message = Messages.IssueWithData;
-                response.StatusCode = StausCodes.InternalServerError;
-                response.IsSuccess = false;
-                return response;
-            }
+            DataResponse<List<DesignationDTO>> response = new DataResponse<List<DesignationDTO>>(new List<DesignationDTO>(), StatusCodes.Accepted);
+            return new DataResponse<List<DesignationDTO>>(
+                await Context.Designation
+                    .ProjectToListAsync<DesignationDTO>(Mapper.ConfigurationProvider),
+                StatusCodes.Accepted,
+                Messages.DataFound
+                );
         }
     }
 }

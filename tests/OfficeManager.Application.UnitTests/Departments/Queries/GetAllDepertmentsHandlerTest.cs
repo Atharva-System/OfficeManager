@@ -3,6 +3,8 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Departments.Queries;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Departments.Queries
 {
@@ -19,15 +21,15 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
         {
             var result = await handler.Handle(new GetAllDepartments(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
+            result.ShouldBeOfType<IResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            var response = (DataResponse<List<DepartmentDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Count.ShouldBe(2);
+            response.Data.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -38,15 +40,15 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             var result = await handler.Handle(new GetAllDepartments(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<DepartmentDTO>>>();
+            result.ShouldBeOfType<IResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            var response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }

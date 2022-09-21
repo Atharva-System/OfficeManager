@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.Employees.Commands
 {
-    public record AddEmployee : IRequest<Response<object>>
+    public record AddEmployee : IRequest<IResponse>
     {
         public int employeeId { get; init; }
         public int employeeNo { get; init; }
@@ -19,7 +21,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
         public List<EmployeeSkill> skills { get; init; } = new List<EmployeeSkill>();
     }
 
-    public class AddEmployeeCommandHandler : IRequestHandler<AddEmployee, Response<object>>
+    public class AddEmployeeCommandHandler : IRequestHandler<AddEmployee, IResponse>
     {
         private readonly IApplicationDbContext Context;
 
@@ -28,10 +30,8 @@ namespace OfficeManager.Application.Feature.Employees.Commands
             Context = Context;
         }
 
-        public async Task<Response<object>> Handle(AddEmployee request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(AddEmployee request, CancellationToken cancellationToken)
         {
-            Response<object> response = new Response<object>();
-
             Context.BeginTransaction();
 
             Employee employee = new Employee
@@ -85,11 +85,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
             Context.CommitTransaction();
 
-            response.Message = Messages.AddedSuccesfully;
-            response.StatusCode = StausCodes.Accepted;
-            response.Data = string.Empty;
-
-            return response;
+            return new SuccessResponse(StatusCodes.Accepted,"Employee created successfully");
         }
     }
 }

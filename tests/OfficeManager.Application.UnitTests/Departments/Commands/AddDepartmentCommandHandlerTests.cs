@@ -1,6 +1,7 @@
 ﻿using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Feature.Employees.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Skills.Commands
 {
@@ -18,11 +19,13 @@ namespace OfficeManager.Application.UnitTests.Skills.Commands
         {
             var result = await handler.Handle(new AddDepartment { name = "Admin", description = "Admin", isActive = true }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<object>>();
+            result.ShouldBeOfType<SuccessResponse>();
 
-            result.Message.ShouldBe(Messages.AddedSuccesfully);
+            SuccessResponse response = (SuccessResponse)result;
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            response.Message.ShouldBe(Messages.AddedSuccesfully);
+
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
         }
     }
 }

@@ -5,13 +5,13 @@ using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
-using System.ComponentModel.DataAnnotations;
 using AutoMapper.QueryableExtensions;
-using ValidationException = FluentValidation.ValidationException;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.Feature.Skills.Queries
 {
-    public record SearchSkills : IRequest<Response<PaginatedList<SkillDTO>>>
+    public record SearchSkills : IRequest<IResponse>
     {
         public string Search { get; init; } = string.Empty;
         public int Page_No { get; init; } = 1;
@@ -20,7 +20,7 @@ namespace OfficeManager.Application.Feature.Skills.Queries
         public string SortingDirection { get; set; } = "ASC";
     }
 
-    public class SearchSkillQueryHandler : IRequestHandler<SearchSkills, Response<PaginatedList<SkillDTO>>>
+    public class SearchSkillQueryHandler : IRequestHandler<SearchSkills, IResponse>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
@@ -30,45 +30,21 @@ namespace OfficeManager.Application.Feature.Skills.Queries
             Mapper = mapper;
         }
 
-        public async Task<Response<PaginatedList<SkillDTO>>> Handle(SearchSkills request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(SearchSkills request, CancellationToken cancellationToken)
         {
-            Response<PaginatedList<SkillDTO>> response = new Response<PaginatedList<SkillDTO>>();
-            try
-            {
-                response.Data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.Page_No, request.Page_Size);
-                var skills = Context.Skill.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
-                if (string.IsNullOrEmpty(request.Search))
-                    response.Data = await skills
-                        .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
-                        .PaginatedListAsync(request.Page_No, request.Page_Size);
-                else
-                    response.Data = await skills
-                        .Where(x => x.Name.Contains(request.Search))
-                        .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
-                        .PaginatedListAsync(request.Page_No, request.Page_Size);
+            var skills = Context.Skill.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
+            PaginatedList<SkillDTO> data = new PaginatedList<SkillDTO>(new List<SkillDTO>(), 0, request.Page_No, request.Page_Size);
 
-                response.Message = response.Data.Items.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
-                response.StatusCode = StausCodes.Accepted;
-                response.IsSuccess = true;
-                return response;
-            }
-            catch (ValidationException exception)
-            {
-                response.Errors = exception.Errors.Select(err => err.ErrorMessage)
-                    .ToList();
-                response.Message = "";
-                response.StatusCode = StausCodes.BadRequest;
-                response.IsSuccess = false;
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-                response.Message = Messages.IssueWithData;
-                response.StatusCode = StausCodes.InternalServerError;
-                response.IsSuccess = false;
-                return response;
-            }
+            if (string.IsNullOrEmpty(request.Search))
+                data = await skills
+                    .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
+                    .PaginatedListAsync(request.Page_No, request.Page_Size);
+            else
+                data = await skills
+                    .Where(x => x.Name.Contains(request.Search))
+                    .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
+                    .PaginatedListAsync(request.Page_No, request.Page_Size);
+            return new DataResponse<PaginatedList<SkillDTO>>(data, StatusCodes.Accepted, Messages.DataFound);
         }
     }
 }
