@@ -118,7 +118,7 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         {
             var result = await handler.Handle(new SearchSkills { Page_No = 2 }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
             result.ShouldBeOfType<ErrorResponse>();
 

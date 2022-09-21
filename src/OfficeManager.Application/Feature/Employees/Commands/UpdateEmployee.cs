@@ -31,8 +31,6 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
         public async Task<IResponse> Handle(UpdateEmployee request, CancellationToken cancellationToken)
         {
-            Response<object> response = new Response<object>();
-
             Employee employee = Context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
             if (employee == null)
             {

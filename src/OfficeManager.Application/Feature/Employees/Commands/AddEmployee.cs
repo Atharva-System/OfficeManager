@@ -32,8 +32,6 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
         public async Task<IResponse> Handle(AddEmployee request, CancellationToken cancellationToken)
         {
-            Response<object> response = new Response<object>();
-
             Context.BeginTransaction();
 
             Employee employee = new Employee
@@ -87,7 +85,6 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
             Context.CommitTransaction();
 
-            response.Message = Messages.AddedSuccesfully;
             return new SuccessResponse(StatusCodes.Accepted,"Employee created successfully");
         }
     }

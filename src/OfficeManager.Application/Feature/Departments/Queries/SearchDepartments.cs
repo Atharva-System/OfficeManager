@@ -32,7 +32,6 @@ namespace OfficeManager.Application.Feature.Departments.Queries
 
         public async Task<IResponse> Handle(SearchDepartments request, CancellationToken cancellationToken)
         {
-            Response<PaginatedList<DepartmentDTO>> response = new Response<PaginatedList<DepartmentDTO>>();
                 PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(),0,request.Page_No, request.Page_Size);
                 var query = _context.Department.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
                 if (string.IsNullOrEmpty(request.search))

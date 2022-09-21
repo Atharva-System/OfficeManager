@@ -20,9 +20,6 @@ namespace OfficeManager.Application.Feature.Employees.Queries
 
         public async Task<IResponse> Handle(GetEmployeeDetail request, CancellationToken cancellationToken)
         {
-            Response<EmployeeDetailDTO> response = new Response<EmployeeDetailDTO>();
-            response.Data = new EmployeeDetailDTO();
-
             var employeeDetail = Context.Employees.Where(emp => emp.Id == request.employeeId)
                 .Select(emp => new EmployeeDetailDTO
                 {
@@ -41,7 +38,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
             if (employeeDetail != null)
             {
                 employeeDetail.RoleId = Context.UserRoleMapping.FirstOrDefault(ur => ur.UserId == employeeDetail.UserId).RoleId;
-                response.Data = employeeDetail;
+                
                 var skills = Context.EmployeeSkills.Where(sk => sk.EmployeeId == employeeDetail.EmployeeId && sk.IsActive == true)
                     .Select(empSkill => new EmployeeSkill
                     {
@@ -51,7 +48,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                         rateId = empSkill.rateId
                     }).ToList();
                 if (skills.Any())
-                    response.Data.skills = skills;
+                    employeeDetail.skills = skills;
                 return new DataResponse<EmployeeDetailDTO>(employeeDetail, StatusCodes.Accepted, Messages.DataFound);
             }
 
