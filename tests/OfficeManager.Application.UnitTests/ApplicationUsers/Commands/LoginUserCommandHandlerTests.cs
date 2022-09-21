@@ -11,14 +11,14 @@ namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
         private readonly LoginUserCommandHandler handler;
         public LoginUserCommandHandlerTests()
         {
-            
-            handler = new LoginUserCommandHandler(mockContext.Object, mapper, currentUserService.Object,_tokenService.Object);
+
+            handler = new LoginUserCommandHandler(mockContext.Object, mapper, currentUserService.Object, tokenService.Object);
         }
 
         [Fact]
         public async Task User_LoggedIn_Success()
         {
-            var result = await handler.Handle(new LoginUser { EmployeeNo = 99999 , Password = "Atharva@123"}, CancellationToken.None);
+            var result = await handler.Handle(new LoginUser { EmployeeNo = 99999, Password = "Atharva@123" }, CancellationToken.None);
 
             result.ShouldBeOfType<Response<TokenDTO>>();
 

@@ -1,4 +1,5 @@
-﻿using MockQueryable.Moq;
+﻿using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Dtos;
 
@@ -8,13 +9,21 @@ namespace OfficeManager.Application.UnitTests.Mocks
     {
         protected readonly Mock<IApplicationDbContext> mockContext;
         protected readonly Mock<ICurrentUserServices> currentUserService;
-        protected readonly Mock<ITokenService> _tokenService;
+        protected readonly Mock<ITokenService> tokenService;
         public MockApplicationUserContext()
         {
             currentUserService = new Mock<ICurrentUserServices>();
             currentUserService.Setup(x => x.loggedInUser).Returns(new Mock<LoggedInUserDTO>().Object);
             mockContext = GetApplicationUserDbContext();
-            _tokenService = new Mock<ITokenService>();
+            tokenService = new Mock<ITokenService>();
+            tokenService.Setup(t => t.CreateToken(It.IsAny<LoggedInUserDTO>()))
+                    .Returns(new TokenDTO
+                    {
+                        AccessToken = Guid.NewGuid().ToString(),
+                        RefreshToken = Guid.NewGuid().ToString(),
+                        AccessTokenExpiration = DateTime.Now.AddMinutes(10),
+                        RefreshTokenExpiration = DateTime.Now.AddMinutes(10),
+                    });
         }
         protected Mock<IApplicationDbContext> GetApplicationUserDbContext()
         {
@@ -43,6 +52,9 @@ namespace OfficeManager.Application.UnitTests.Mocks
             {
                 employeesMappingLists.Add(s);
             });
+
+            var refreshTokenMockSet = new Mock<DbSet<RefreshToken>>();
+            mockContext.Setup(r => r.RefreshToken).Returns(refreshTokenMockSet.Object);
 
             return mockContext;
         }
