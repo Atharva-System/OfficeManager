@@ -23,11 +23,11 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             result.ShouldBeOfType<IResponse>();
 
-            result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DepartmentDTO>>>();
 
             var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            response.StatusCode.ShouldBe(200);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
             response.Success.ShouldBe(true);
 
@@ -42,11 +42,11 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
             
             result.ShouldBeOfType<IResponse>();
 
-            result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DepartmentDTO>>>();
 
             var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            response.StatusCode.ShouldBe(200);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
             response.Success.ShouldBe(true);
 
@@ -62,11 +62,11 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             result.ShouldBeOfType<IResponse>();
 
-            result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DepartmentDTO>>>();
 
             var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            response.StatusCode.ShouldBe(200);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
             response.Success.ShouldBe(true);
 
@@ -82,11 +82,11 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             result.ShouldBeOfType<IResponse>();
 
-            result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<DepartmentDTO>>>();
 
             var response = (DataResponse<PaginatedList<DepartmentDTO>>)result;
 
-            response.StatusCode.ShouldBe(200);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
             response.Success.ShouldBe(true);
 
@@ -105,11 +105,11 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             result.ShouldBeOfType<IResponse>();
 
-            result.ShouldBeOfType<Response<PaginatedList<DepartmentDTO>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
             var response = (ErrorResponse)result;
 
-            response.StatusCode.ShouldBe(500);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
             response.Success.ShouldBe(false);
 

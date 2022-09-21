@@ -3,6 +3,7 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.UserRoles.Queries;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,15 +25,17 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         {
             var result = await handler.Handle(new SearchUserRoles(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<RolesDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<RolesDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<RolesDTO>> response = (DataResponse<PaginatedList<RolesDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(2);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(2);
         }
 
         [Fact]
@@ -40,15 +43,17 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         {
             var result = await handler.Handle(new SearchUserRoles { Search = "Admin" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<RolesDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<RolesDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<RolesDTO>> response = (DataResponse<PaginatedList<RolesDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            result.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -56,15 +61,17 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         {
             var result = await handler.Handle(new SearchUserRoles { Search = "Admin", Page_No = 1, Page_Size = 10 }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<RolesDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<RolesDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<RolesDTO>> response = (DataResponse<PaginatedList<RolesDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            result.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -72,15 +79,17 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
         {
             var result = await handler.Handle(new SearchUserRoles { Search = "Admin" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<RolesDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<RolesDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<RolesDTO>> response = (DataResponse<PaginatedList<RolesDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            result.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.Items.Count.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.Items.Count.ShouldBe(1);
         }
 
         [Fact]
@@ -91,17 +100,15 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
 
             var result = await handler.Handle(new SearchUserRoles(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<RolesDTO>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            ErrorResponse response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
-
-            result.Data.ShouldBeNull();
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
     }
 }

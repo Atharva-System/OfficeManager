@@ -6,9 +6,9 @@ namespace OfficeManager.Application.Wrappers.Concrete
     {
         public bool Success { get; }
 
-        public int StatusCode { get; }
+        public string StatusCode { get; }
 
-        public Response(bool success, int statuscode)
+        public Response(bool success, string statuscode)
         {
             Success = success;
             StatusCode = statuscode;

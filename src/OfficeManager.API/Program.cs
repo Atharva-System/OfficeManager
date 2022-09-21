@@ -4,7 +4,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeManager.API;
-using OfficeManager.API.Filters;
 using OfficeManager.API.Infrastructure.Filters;
 using OfficeManager.Application;
 using OfficeManager.Infrastructure;
@@ -43,10 +42,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add(typeof(ApiExceptionFilterAttribute));
     options.Filters.Add(new ApiValidationExceptionFilter());
-    options.Filters.Add(typeof(AccessExceptionFilter));
-    options.Filters.Add(typeof(NotFoundExceptionFilter));
+    options.Filters.Add(new AccessExceptionFilter());
+    options.Filters.Add(new NotFoundExceptionFilter());
+    options.Filters.Add(new AccessExceptionFilter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

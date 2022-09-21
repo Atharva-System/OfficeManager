@@ -11,7 +11,7 @@ namespace OfficeManager.API.Infrastructure.Filters
         {
             if(context.Exception is NotFoundException)
             {
-                context.Result = new NotFoundObjectResult(new ErrorResponse(404, context.Exception.Message));
+                context.Result = new NotFoundObjectResult(new ErrorResponse(StatusCodes.Status404NotFound.ToString(), context.Exception.Message));
                 return;
             }
         }

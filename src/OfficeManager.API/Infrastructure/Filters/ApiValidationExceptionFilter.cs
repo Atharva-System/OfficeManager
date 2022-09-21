@@ -12,7 +12,7 @@ namespace OfficeManager.API.Infrastructure.Filters
             if(context.Exception is ValidationException)
             {
                 var exception = (ValidationException)context.Exception;
-                context.Result = new BadRequestObjectResult( new ErrorResponse(400,exception.Errors.Select(err => err.ErrorMessage).ToList()));
+                context.Result = new BadRequestObjectResult( new ErrorResponse(StatusCodes.Status400BadRequest.ToString(), exception.Errors.Select(err => err.ErrorMessage).ToList()));
                 return;
             }
 

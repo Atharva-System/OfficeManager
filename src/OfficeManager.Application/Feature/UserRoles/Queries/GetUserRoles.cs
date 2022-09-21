@@ -4,14 +4,14 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Common.Models;
-using FluentValidation;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.ApplicationRoles.Queries
 {
-    public record GetUserRoles : IRequest<Response<List<RolesDTO>>>;
+    public record GetUserRoles : IRequest<IResponse>;
 
-    public class GetUserRolesQueryHandler : IRequestHandler<GetUserRoles, Response<List<RolesDTO>>>
+    public class GetUserRolesQueryHandler : IRequestHandler<GetUserRoles, IResponse>
     {
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
@@ -22,36 +22,9 @@ namespace OfficeManager.Application.ApplicationRoles.Queries
             Mapper = mapper;
         }
 
-        public async Task<Response<List<RolesDTO>>> Handle(GetUserRoles request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(GetUserRoles request, CancellationToken cancellationToken)
         {
-            Response<List<RolesDTO>> response = new Response<List<RolesDTO>>();
-            try
-            {
-                response._Data = new List<RolesDTO>();
-                response._Data = await Context.Roles.ProjectTo<RolesDTO>(Mapper.ConfigurationProvider).ToListAsync();
-                response.Message = response.Data.Count > 0 ? Messages.DataFound : Messages.NoDataFound;
-                response.StatusCode = StausCodes.Accepted;
-                response.IsSuccess = true;
-                return response;
-            }
-            catch (ValidationException exception)
-            {
-                response.Errors = exception.Errors.Select(err => err.ErrorMessage)
-                    .ToList();
-                response.Message = "";
-                response.StatusCode = StausCodes.BadRequest;
-                response.IsSuccess = false;
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-                response.Message = Messages.IssueWithData;
-                response.StatusCode = StausCodes.InternalServerError;
-                response.IsSuccess = false;
-                return response;
-            }
-            
+            return new DataResponse<List<RolesDTO>>(await Context.Roles.ProjectTo<RolesDTO>(Mapper.ConfigurationProvider).ToListAsync(),StatusCodes.Accepted,Messages.DataFound);
         }
     }
 }

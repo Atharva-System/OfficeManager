@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Interfaces;
 using OfficeManager.Application.Wrappers.Abstract;
@@ -30,9 +29,6 @@ namespace OfficeManager.Application.Feature.Departments.Queries
 
         public async Task<IResponse> Handle(GetAllDepartments request, CancellationToken cancellationToken)
         {
-            try
-            {
-
                 List<DepartmentDTO> departments = new List<DepartmentDTO>();
                
                 departments = await Context.Department
@@ -40,12 +36,7 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                     .ProjectTo<DepartmentDTO>(Mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                return new DataResponse<List<DepartmentDTO>>(departments, 200);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                return new DataResponse<List<DepartmentDTO>>(departments, StatusCodes.Accepted, Messages.DataFound);
 
 
         }

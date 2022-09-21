@@ -15,7 +15,7 @@ namespace OfficeManager.API.Infrastructure.Filters
                     .Select(v => v.ErrorMessage)
                     .ToList();
 
-                var errorResponse = new ErrorResponse(400,errors);
+                var errorResponse = new ErrorResponse(StatusCodes.Status400BadRequest.ToString(),errors);
 
                 context.Result = new BadRequestObjectResult(errorResponse);
                 return;

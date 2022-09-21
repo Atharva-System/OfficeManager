@@ -14,7 +14,7 @@
         {
             _Message = "";
             _Errors = new List<string>();
-            _StatusCode = StausCodes.Accepted;
+            _StatusCode = StatusCodes.Accepted;
             _IsSuccess = true;
         }
 

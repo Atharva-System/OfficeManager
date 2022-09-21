@@ -7,11 +7,8 @@ using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Mappings;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
-using OfficeManager.Application.Interfaces;
 using OfficeManager.Application.Wrappers.Abstract;
 using OfficeManager.Application.Wrappers.Concrete;
-using OfficeManager.Domain.Entities;
-using System.Linq.Dynamic;
 
 namespace OfficeManager.Application.Feature.Departments.Queries
 {
@@ -36,8 +33,6 @@ namespace OfficeManager.Application.Feature.Departments.Queries
         public async Task<IResponse> Handle(SearchDepartments request, CancellationToken cancellationToken)
         {
             Response<PaginatedList<DepartmentDTO>> response = new Response<PaginatedList<DepartmentDTO>>();
-            try
-            {
                 PaginatedList<DepartmentDTO> departments = new PaginatedList<DepartmentDTO>(new List<DepartmentDTO>(),0,request.Page_No, request.Page_Size);
                 var query = _context.Department.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
                 if (string.IsNullOrEmpty(request.search))
@@ -54,16 +49,7 @@ namespace OfficeManager.Application.Feature.Departments.Queries
                         .ProjectTo<DepartmentDTO>(_mapper.ConfigurationProvider)
                         .PaginatedListAsync<DepartmentDTO>(request.Page_No, request.Page_Size);
                 }
-                return new DataResponse<PaginatedList<DepartmentDTO>>(departments, 200);
-            }
-            catch (ValidationException exception)
-            {
-                throw exception;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                return new DataResponse<PaginatedList<DepartmentDTO>>(departments, StatusCodes.Accepted, Messages.DataFound);
         }
     }
 }

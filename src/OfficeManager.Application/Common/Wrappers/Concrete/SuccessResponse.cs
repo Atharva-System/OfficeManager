@@ -6,7 +6,7 @@ namespace OfficeManager.Application.Wrappers.Concrete
     {
         public bool Success { get; } = true;
         public string Message { get; }
-        public int StatusCode { get; }
+        public string StatusCode { get; }
 
 
         public SuccessResponse()
@@ -14,7 +14,7 @@ namespace OfficeManager.Application.Wrappers.Concrete
 
         }
 
-        public SuccessResponse(int statuscode, string message)
+        public SuccessResponse(string statuscode, string message)
         {
             StatusCode = statuscode;
             Message = message;

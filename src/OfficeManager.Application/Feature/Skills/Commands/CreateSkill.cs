@@ -1,16 +1,17 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.Skills.Commands
 {
-    public record CreateSkill : IRequest<Response<object>>
+    public record CreateSkill : IRequest<IResponse>
     {
         public string Name { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;
     }
-    public class CreateSkillCommandHandler : IRequestHandler<CreateSkill, Response<object>>
+    public class CreateSkillCommandHandler : IRequestHandler<CreateSkill, IResponse>
     {
         private readonly IApplicationDbContext Context;
         public CreateSkillCommandHandler(IApplicationDbContext context)
@@ -18,7 +19,7 @@ namespace OfficeManager.Application.Feature.Skills.Commands
             Context = context;
         }
 
-        public async Task<Response<object>> Handle(CreateSkill request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(CreateSkill request, CancellationToken cancellationToken)
         {
             Context.BeginTransaction();
             Skill skill = new Skill();
@@ -30,13 +31,7 @@ namespace OfficeManager.Application.Feature.Skills.Commands
             await Context.SaveChangesAsync(cancellationToken);
             Context.CommitTransaction();
 
-            Response<object> response = new Response<object>();
-            response.Data = skill;
-            response.IsSuccess = true;
-            response.Message = Messages.AddedSuccesfully;
-            response.StatusCode = StausCodes.Accepted;
-
-            return response;
+            return new SuccessResponse(StatusCodes.Accepted, "Skill created successfully");
         }
     }
 }

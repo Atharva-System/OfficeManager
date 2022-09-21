@@ -37,7 +37,7 @@ namespace OfficeManager.Application.Common.Constant
         public static string EmailSuccessfullyChangedConfirmYourEmail => "Email Successfully Changed.Please confirm your email";
     }
 
-    public static class StausCodes
+    public static class StatusCodes
     {
         //200
         public static string Accepted => HttpStatusCode.Accepted.ToString();
@@ -50,5 +50,8 @@ namespace OfficeManager.Application.Common.Constant
 
         //500
         public static string InternalServerError => HttpStatusCode.InternalServerError.ToString();
+
+        //401
+        public static string Forbidden => HttpStatusCode.Forbidden.ToString();
     }
 }

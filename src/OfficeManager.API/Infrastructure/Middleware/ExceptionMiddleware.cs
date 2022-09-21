@@ -35,7 +35,7 @@ namespace OfficeManager.API.Infrastructure.Middleware
             {
                 var e = ex.InnerException != null ? (ApiException)ex.InnerException : (ApiException)ex;
                 httpContext.Response.StatusCode = e.StatusCode;
-                var apierror = JsonConvert.SerializeObject(new ErrorResponse(e.StatusCode,e.Errors),new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                var apierror = JsonConvert.SerializeObject(new ErrorResponse(e.StatusCode.ToString(),e.Errors),new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 return httpContext.Response.WriteAsync(apierror);
             }
 
@@ -63,7 +63,7 @@ namespace OfficeManager.API.Infrastructure.Middleware
             };
             var serializedError = JsonConvert.SerializeObject(errorlogDetail, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
             
-            var error = JsonConvert.SerializeObject(new ErrorResponse(httpContext.Response.StatusCode, message), new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            var error = JsonConvert.SerializeObject(new ErrorResponse(httpContext.Response.StatusCode.ToString(), message), new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
             return httpContext.Response.WriteAsync(error);
         }
     }

@@ -4,6 +4,7 @@ using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Skills.Queries;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Skills.Queries
 {
@@ -20,15 +21,17 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         {
             var result = await handler.Handle(new SearchSkills(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<SkillDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<SkillDTO>> response = (DataResponse<PaginatedList<SkillDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.TotalCount.ShouldBe(2);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.TotalCount.ShouldBe(2);
         }
 
         [Fact]
@@ -36,15 +39,17 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         {
             var result = await handler.Handle(new SearchSkills { Search = "Project Management" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<SkillDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<SkillDTO>> response = (DataResponse<PaginatedList<SkillDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.DataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.TotalCount.ShouldBe(1);
+            response.Message.ShouldBe(Messages.DataFound);
+
+            response.Data.TotalCount.ShouldBe(1);
         }
 
         [Fact]
@@ -52,15 +57,17 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
         {
             var result = await handler.Handle(new SearchSkills { Search = "Test" }, CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
+            result.ShouldBeOfType<DataResponse<PaginatedList<SkillDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<PaginatedList<SkillDTO>> response = (DataResponse<PaginatedList<SkillDTO>>)result;
 
-            result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.Message.ShouldBe(Messages.NoDataFound);
+            response.Success.ShouldBe(true);
 
-            result.Data.TotalCount.ShouldBe(0);
+            response.Message.ShouldBe(Messages.NoDataFound);
+
+            response.Data.TotalCount.ShouldBe(0);
         }
 
         [Fact]
@@ -71,15 +78,15 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
 
             var result = await handler.Handle(new SearchSkills(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
-            result.StatusCode.ShouldBe(StausCodes.InternalServerError);
+            ErrorResponse response = (ErrorResponse)result;
 
-            result.IsSuccess.ShouldBe(false);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            result.Message.ShouldBe(Messages.IssueWithData);
+            response.Success.ShouldBe(false);
 
-            result.Errors.Count.ShouldBeGreaterThan(0);
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
 
         [Fact]
@@ -89,17 +96,21 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
 
             var result = await handler.Handle(new SearchSkills { Page_No = 1, Page_Size = 5 }, CancellationToken.None);
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            result.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-            result.IsSuccess.ShouldBe(true);
+            result.ShouldBeOfType<DataResponse<PaginatedList<SkillDTO>>>();
 
-            result.Message.ShouldBe(Messages.DataFound);
+            DataResponse<PaginatedList<SkillDTO>> response = (DataResponse<PaginatedList<SkillDTO>>)result;
 
-            result.Data.TotalCount.ShouldBe(10);
+            response.Success.ShouldBe(true);
 
-            result.Data.HasNextPage.ShouldBe(true);
+            response.Message.ShouldBe(Messages.DataFound);
 
-            result.Data.TotalPages.ShouldBe(2);
+            response.Data.TotalCount.ShouldBe(10);
+
+            response.Data.HasNextPage.ShouldBe(true);
+
+            response.Data.TotalPages.ShouldBe(2);
         }
 
         [Fact]
@@ -109,13 +120,13 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
 
             result.ShouldBeOfType<Response<PaginatedList<SkillDTO>>>();
 
-            result.StatusCode.ShouldBe(StausCodes.Accepted);
+            result.ShouldBeOfType<ErrorResponse>();
 
-            result.IsSuccess.ShouldBe(true);
+            ErrorResponse response = (ErrorResponse)result;
 
-            result.Message.ShouldBe(Messages.NoDataFound);
+            response.Success.ShouldBe(false);
 
-            result.Data.TotalCount.ShouldBe(2);
+            response.Errors.Count.ShouldBe(2);
         }
     }
 }

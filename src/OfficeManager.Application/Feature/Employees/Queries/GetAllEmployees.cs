@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Dapper;
 using MediatR;
 using OfficeManager.Application.Common.Interfaces;
@@ -9,7 +8,6 @@ using OfficeManager.Application.Dtos;
 using System.Data;
 using System.Data.SqlClient;
 using OfficeManager.Application.Wrappers.Concrete;
-using System.Net;
 using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.Application.Feature.Employees.Queries
@@ -60,7 +58,7 @@ namespace OfficeManager.Application.Feature.Employees.Queries
                     .OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true))
                     .ToList()
                     .PaginatedListAsync<EmployeeDTO>(request.Page_No, request.Page_Size);
-                return new DataResponse<PaginatedList<EmployeeDTO>>(employees,200);
+                return new DataResponse<PaginatedList<EmployeeDTO>>(employees,StatusCodes.Accepted);
             }
         }
     }

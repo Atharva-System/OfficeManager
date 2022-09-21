@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
-using OfficeManager.Application.Feature.ApplicationUsers.Commands;
+using OfficeManager.Application.Feature.Users.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
 
-namespace OfficeManager.Application.UnitTests.ApplicationUsers.Commands
+namespace OfficeManager.Application.UnitTests.Users.Commands
 {
     public class LoginUserCommandHandlerTests : MockApplicationUserContext
     {

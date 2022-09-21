@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OfficeManager.Application.Common.Models;
-using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Departments.Queries;
 using OfficeManager.Application.Wrappers.Abstract;
 

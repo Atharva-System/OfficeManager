@@ -9,9 +9,9 @@ namespace OfficeManager.Application.Wrappers.Concrete
 
         public T Data { get; }
 
-        public int StatusCode { get; }
+        public string StatusCode { get; }
 
-        public PagedDataResponse(T data, int statuscode, int totalitems)
+        public PagedDataResponse(T data, string statuscode, int totalitems)
         {
             Data = data;
             StatusCode = statuscode;

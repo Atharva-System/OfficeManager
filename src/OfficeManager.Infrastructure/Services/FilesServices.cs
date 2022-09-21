@@ -10,7 +10,7 @@ namespace OfficeManager.Infrastructure.Services
             List<BulkImportEmployeeDTO> employees = new List<BulkImportEmployeeDTO>();
             using (OfficeOpenXml.ExcelPackage package = new OfficeOpenXml.ExcelPackage(new FileInfo(path)))
             {
-                OfficeOpenXml.ExcelWorksheet worksheet = package.Workbook.Worksheets["Employees"];
+                OfficeOpenXml.ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
                 int totalRows = worksheet.Dimension.Rows;
                 
                 for(int index=4; index < totalRows && worksheet.Cells[index,1].Value != null; index++)

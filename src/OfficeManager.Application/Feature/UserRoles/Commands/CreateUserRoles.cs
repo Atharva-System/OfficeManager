@@ -1,17 +1,18 @@
 ﻿using MediatR;
 using OfficeManager.Application.Common.Interfaces;
-using OfficeManager.Application.Common.Models;
+using OfficeManager.Application.Wrappers.Abstract;
+using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
 namespace OfficeManager.Application.Feature.UserRoles.Commands
 {
-    public record CreateUserRoles : IRequest<Result>
+    public record CreateUserRoles : IRequest<IResponse>
     {
         public int UserId { get; set; }
         public int RoleId { get; set; }
     }
 
-    public class CreateUserRolesCommandHandler : IRequestHandler<CreateUserRoles, Result>
+    public class CreateUserRolesCommandHandler : IRequestHandler<CreateUserRoles, IResponse>
     {
         private readonly IApplicationDbContext Context;
 
@@ -20,7 +21,7 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
             Context = context;
         }
 
-        public async Task<Result> Handle(CreateUserRoles request, CancellationToken cancellationToken)
+        public async Task<IResponse> Handle(CreateUserRoles request, CancellationToken cancellationToken)
         {
             Context.BeginTransaction();
             await Context.UserRoleMapping.AddAsync(new UserRoleMapping()
@@ -30,7 +31,7 @@ namespace OfficeManager.Application.Feature.UserRoles.Commands
             });
             await Context.SaveChangesAsync(cancellationToken);
             Context.CommitTransaction();
-            return Result.Success(Messages.AddedSuccesfully, string.Empty);
+            return new SuccessResponse(StatusCodes.Accepted, Messages.AddedSuccesfully);
         }
     }
 }

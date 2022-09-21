@@ -1,6 +1,7 @@
 ﻿using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Feature.UserRoles.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.UserRoles.Commands
 {
@@ -17,9 +18,11 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Commands
         {
             var result = await handler.Handle(AddUserRoleCommand(), CancellationToken.None);
 
-            result.ShouldBeOfType<Result>();
+            result.ShouldBeOfType<SuccessResponse>();
 
-            result.Message.ShouldBe(Messages.AddedSuccesfully);
+            SuccessResponse response = (SuccessResponse)result;
+
+            response.Message.ShouldBe(Messages.AddedSuccesfully);
 
             var userRoleMappings = mockContext.Object.UserRoleMapping;
 

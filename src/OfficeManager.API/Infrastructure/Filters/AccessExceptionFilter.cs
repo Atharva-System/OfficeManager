@@ -11,12 +11,12 @@ namespace OfficeManager.API.Infrastructure.Filters
         {
             if(context.Exception is UnauthorizedAccessException)
             {
-                context.Result = new UnauthorizedObjectResult(new ErrorResponse(401, context.Exception.Message));
+                context.Result = new UnauthorizedObjectResult(new ErrorResponse(Application.Common.Constant.StatusCodes.Forbidden, context.Exception.Message));
                 return;
             }
             if (context.Exception is ForbiddenAccessException)
             {
-                context.Result = new UnauthorizedObjectResult(new ErrorResponse(401, context.Exception.Message));
+                context.Result = new UnauthorizedObjectResult(new ErrorResponse(Application.Common.Constant.StatusCodes.Forbidden, context.Exception.Message));
                 return;
             }
         }

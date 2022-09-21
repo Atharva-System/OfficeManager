@@ -10,11 +10,11 @@ using OfficeManager.Application.Wrappers.Abstract;
 using OfficeManager.Application.Wrappers.Concrete;
 using OfficeManager.Domain.Entities;
 
-namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
+namespace OfficeManager.Application.Feature.Users.Commands
 {
     public record LoginUser : IRequest<IResponse>
     {
-        public int EmployeeNo { get; init; }
+        public string EmployeeNo { get; init; }
         public string Password { get; init; } = string.Empty;
     }
 
@@ -37,7 +37,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
             try
             {
                 var user = await Context.Users.Include(x => x.Employee)
-                .FirstOrDefaultAsync(a => a.Employee.EmployeeNo == request.EmployeeNo);
+                .FirstOrDefaultAsync(a => a.Employee.EmployeeNo == Convert.ToInt32(request.EmployeeNo));
 
                 if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 {
@@ -52,7 +52,7 @@ namespace OfficeManager.Application.Feature.ApplicationUsers.Commands
 
                 CurrentUserService.loggedInUser = loggedInUser;
 
-                return new DataResponse<TokenDTO>(_tokenService.CreateToken(loggedInUser), 200);
+                return new DataResponse<TokenDTO>(_tokenService.CreateToken(loggedInUser), StatusCodes.Accepted);
             }
             catch(ValidationException ex)
             {

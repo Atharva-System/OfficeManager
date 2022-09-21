@@ -2,6 +2,7 @@
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.UserRoles.Queries
 {
@@ -15,9 +16,11 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
 
             var result = await handler.Handle(new GetUserRoles(), CancellationToken.None);
 
-            result.ShouldBeOfType<Response<List<RolesDTO>>>();
+            result.ShouldBeOfType<DataResponse<List<RolesDTO>>>();
 
-            result._Data.Count.ShouldBe(2);
+            DataResponse<List<RolesDTO>> response = (DataResponse<List<RolesDTO>>)result;
+
+            response.Data.Count.ShouldBe(2);
         }
     }
 }

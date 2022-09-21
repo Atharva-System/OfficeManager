@@ -25,7 +25,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             var response = (DataResponse<List<DepartmentDTO>>)result;
 
-            response.StatusCode.ShouldBe(200);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
             response.Success.ShouldBe(true);
 
@@ -44,7 +44,7 @@ namespace OfficeManager.Application.UnitTests.Departments.Queries
 
             var response = (ErrorResponse)result;
 
-            response.StatusCode.ShouldBe(500);
+            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
             response.Success.ShouldBe(false);
 
