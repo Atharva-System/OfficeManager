@@ -18,6 +18,7 @@ namespace OfficeManager.Application.Common.Interfaces
         DbSet<SkillLevel> SkillLevel { get; set; }
         DbSet<SkillRate> SkillRate { get; set; }
         DbSet<EmployeeSkill> EmployeeSkills { get; set; }
+        DbSet<RefreshToken> RefreshToken { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         Task<int> SaveChangesWithoutLogAsync(CancellationToken cancellationToken);
         void BeginTransaction();

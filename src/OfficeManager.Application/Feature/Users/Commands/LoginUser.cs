@@ -23,13 +23,13 @@ namespace OfficeManager.Application.Feature.Users.Commands
         private readonly IApplicationDbContext Context;
         private readonly IMapper Mapper;
         private readonly ICurrentUserServices CurrentUserService;
-        private readonly ITokenService _tokenService;
+        private readonly ITokenService TokenService;
         public LoginUserCommandHandler(IApplicationDbContext context, IMapper mapper, ICurrentUserServices currentUserService , ITokenService tokenService)
         {
             Context = context;
             Mapper = mapper;
             CurrentUserService = currentUserService;
-            _tokenService = tokenService;
+            TokenService = tokenService;
         }
 
         public async Task<IResponse> Handle(LoginUser request, CancellationToken cancellationToken)
@@ -49,10 +49,11 @@ namespace OfficeManager.Application.Feature.Users.Commands
 
                 LoggedInUserDTO loggedInUser = Mapper.Map<UserMaster, LoggedInUserDTO>(user);
                 loggedInUser.Roles = userRoles;
+                var tokendto = TokenService.CreateToken(loggedInUser);
 
                 CurrentUserService.loggedInUser = loggedInUser;
 
-                return new DataResponse<TokenDTO>(_tokenService.CreateToken(loggedInUser), StatusCodes.Accepted);
+                return new DataResponse<TokenDTO>(TokenService.CreateToken(loggedInUser), StatusCodes.Accepted);
             }
             catch(ValidationException ex)
             {

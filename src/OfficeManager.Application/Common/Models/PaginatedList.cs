@@ -24,6 +24,18 @@ namespace OfficeManager.Application.Common.Models
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
             var count = await source.CountAsync();
+
+            #region evaluation of pageno and pagesize
+            if (pageNumber <= 0)
+            {
+                pageNumber = 1;
+            }
+            if (pageSize <= 0)
+            {
+                pageSize = 10;
+            }
+            #endregion
+
             var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
             return new PaginatedList<T>(items, count, pageNumber, pageSize);
@@ -32,6 +44,18 @@ namespace OfficeManager.Application.Common.Models
         public static async Task<PaginatedList<T>> CreateAsync(List<T> source, int pageNumber, int pageSize)
         {
             var count = source.Count();
+
+            #region evaluation of pageno and pagesize
+            if (pageNumber <= 0)
+            {
+                pageNumber = 1;
+            }
+            if (pageSize <= 0)
+            {
+                pageSize = 10;
+            }
+            #endregion
+
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             return new PaginatedList<T>(items, count, pageNumber, pageSize);

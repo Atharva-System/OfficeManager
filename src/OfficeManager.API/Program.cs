@@ -10,6 +10,8 @@ using OfficeManager.Infrastructure;
 using OfficeManager.Infrastructure.Persistence;
 using OfficeManager.Infrastructure.Settings;
 using System.Text;
+using WatchDog;
+using WatchDog.src.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,13 +32,12 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            ValidateIssuer = true,
-            //ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience[0],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)),
+            ClockSkew = TimeSpan.Zero
         };
     });
 
@@ -53,6 +54,7 @@ builder.Services.AddEndpointsApiExplorer();
 //swagger
 builder.Services.AddSwaggerGen(c =>
 {
+    c.EnableAnnotations();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Office Manager - Api", Version = "v1", });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -79,6 +81,19 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+var postgreSqlConnection = builder.Configuration.GetConnectionString("PostgreSqlConnection");
+if (!string.IsNullOrEmpty(postgreSqlConnection))
+{
+    //WatchDog
+    builder.Services.AddWatchDogServices(opt =>
+    {
+        opt.IsAutoClear = false;
+        // opt.ClearTimeSchedule = WatchDogAutoClearScheduleEnum.Weekly;
+        opt.SetExternalDbConnString = postgreSqlConnection;
+        opt.SqlDriverOption = WatchDogSqlDriverEnum.PostgreSql;
+    });
+}
 
 var app = builder.Build();
 
@@ -126,7 +141,6 @@ app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAn
 //    settings.DocumentPath = "/api/specification.json";
 //});
 
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -135,8 +149,24 @@ app.MapControllers();
 InitializeDatabase(app);
 app.MapFallbackToFile("index.html"); ;
 
-app.Run();
+if (!string.IsNullOrEmpty(postgreSqlConnection))
+{
+    var watchDogSettings = builder.Configuration.GetSection("WatchDogSettings").Get<WatchDogSettings>();
 
+    // inject into the middleware
+    app.UseWatchDogExceptionLogger();
+
+    if (!string.IsNullOrEmpty(watchDogSettings.Username)
+        && !string.IsNullOrEmpty(watchDogSettings.Password))
+    {
+        app.UseWatchDog(opt =>
+        {
+            opt.WatchPageUsername = watchDogSettings.Username;
+            opt.WatchPagePassword = watchDogSettings.Password;
+        });
+    }
+}
+app.Run();
 
 void InitializeDatabase(IApplicationBuilder app)
 {
