@@ -32,14 +32,12 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            ValidateIssuer = true,
-            //ValidateAudience = true,
             ValidateLifetime = true,
-            RequireExpirationTime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience[0],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)),
+            ClockSkew = TimeSpan.Zero
         };
     });
 
@@ -125,7 +123,7 @@ if (!Directory.Exists(resourcesPath))
 app.UseStaticFiles(new StaticFileOptions()
 {
     FileProvider = new PhysicalFileProvider(resourcesPath),
-    RequestPath = new PathString("/Resources")    
+    RequestPath = new PathString("/Resources")
 });
 
 app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
@@ -135,7 +133,6 @@ app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAn
 //    settings.Path = "/api";
 //    settings.DocumentPath = "/api/specification.json";
 //});
-
 
 app.UseRouting();
 app.UseAuthentication();
@@ -163,7 +160,6 @@ if (!string.IsNullOrEmpty(postgreSqlConnection))
     }
 }
 app.Run();
-
 
 void InitializeDatabase(IApplicationBuilder app)
 {
