@@ -6,7 +6,7 @@ using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class SkillController : ApiControllerBase
     {
         //return paginated result useful for search and listing features

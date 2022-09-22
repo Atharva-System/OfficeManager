@@ -34,31 +34,43 @@ namespace OfficeManager.Application.Feature.Users.Commands
 
         public async Task<IResponse> Handle(LoginUser request, CancellationToken cancellationToken)
         {
-            try
+            var user = await Context.Users.Include(x => x.Employee)
+            .FirstOrDefaultAsync(a => a.Employee.EmployeeNo == Convert.ToInt32(request.EmployeeNo));
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                var user = await Context.Users.Include(x => x.Employee)
-                .FirstOrDefaultAsync(a => a.Employee.EmployeeNo == Convert.ToInt32(request.EmployeeNo));
-
-                if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                {
-                    throw new ApiException(400, Messages.InvalidCredentials);
-                }
-
-                var userRoles = await Context.UserRoleMapping.Include(x => x.Roles).Where(d => d.UserId == user.Id)
-                                    .ProjectTo<UserRoleDTO>(Mapper.ConfigurationProvider).ToListAsync();
-
-                LoggedInUserDTO loggedInUser = Mapper.Map<UserMaster, LoggedInUserDTO>(user);
-                loggedInUser.Roles = userRoles;
-                var tokendto = TokenService.CreateToken(loggedInUser);
-
-                CurrentUserService.loggedInUser = loggedInUser;
-
-                return new DataResponse<TokenDTO>(TokenService.CreateToken(loggedInUser), StatusCodes.Accepted);
+                throw new ApiException(400, Messages.InvalidCredentials);
             }
-            catch(ValidationException ex)
+
+            var userRoles = await Context.UserRoleMapping.Include(x => x.Roles).Where(d => d.UserId == user.Id)
+                                .ProjectTo<UserRoleDTO>(Mapper.ConfigurationProvider).ToListAsync();
+
+            LoggedInUserDTO loggedInUser = Mapper.Map<UserMaster, LoggedInUserDTO>(user);
+            loggedInUser.Roles = userRoles;
+            var tokendto = TokenService.CreateToken(loggedInUser);
+
+            if (tokendto == null && tokendto.AccessToken == null)
             {
-                throw ex;
+                return new ErrorResponse(StatusCodes.InternalServerError,Messages.IssueWithData);
             }
+
+            RefreshToken refreshToken = new RefreshToken
+            {
+                UserId = loggedInUser.UserId,
+                Code = tokendto.RefreshToken,
+                Expiration = tokendto.RefreshTokenExpiration
+            };
+
+            Context.BeginTransaction();
+
+            Context.RefreshToken.Add(refreshToken);
+            await Context.SaveChangesAsync(cancellationToken);
+
+            Context.CommitTransaction();
+
+            CurrentUserService.loggedInUser = loggedInUser;
+
+            return new DataResponse<TokenDTO>(tokendto, StatusCodes.Accepted);
         }
     }
 }

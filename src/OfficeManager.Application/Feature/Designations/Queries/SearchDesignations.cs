@@ -33,24 +33,27 @@ namespace OfficeManager.Application.Feature.Designations.Queries
 
         public async Task<IResponse> Handle(SearchDesignations request, CancellationToken cancellationToken)
         {
-            DataResponse<PaginatedList<DesignationDTO>> response = new DataResponse<PaginatedList<DesignationDTO>>(new PaginatedList<DesignationDTO>(new List<DesignationDTO>(), 0, request.Page_No, request.Page_Size), StatusCodes.Accepted, Messages.DataFound);
-
             var designations = _context.Designation.AsQueryable().OrderBy(request.SortingColumn, (request.SortingDirection.ToLower() == "desc" ? false : true));
+            PaginatedList<DesignationDTO> pagedDesignation = new PaginatedList<DesignationDTO>(new List<DesignationDTO>(),0,request.Page_No,request.Page_Size);
             if (string.IsNullOrEmpty(request.Search))
             {
-                response.Data = await designations
+                pagedDesignation = await designations
                     .ProjectTo<DesignationDTO>(_mapper.ConfigurationProvider)
                     .PaginatedListAsync<DesignationDTO>(request.Page_No, request.Page_Size);
             }
             else
             {
-                response.Data = await designations
+                pagedDesignation = await designations
                     .AsNoTracking()
                     .Where(d => d.Name.Contains(request.Search))
                     .ProjectTo<DesignationDTO>(_mapper.ConfigurationProvider)
                     .PaginatedListAsync<DesignationDTO>(request.Page_No, request.Page_Size);
             }
-            return response;
+            if(pagedDesignation.Items.Count == 0)
+            {
+                return new ErrorResponse(StatusCodes.BadRequest, Messages.NoDataFound);
+            }
+            return new DataResponse<PaginatedList<DesignationDTO>>(pagedDesignation, StatusCodes.Accepted, Messages.DataFound);
         }
     }
 }

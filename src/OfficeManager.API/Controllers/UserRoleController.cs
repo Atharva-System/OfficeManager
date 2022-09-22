@@ -7,7 +7,7 @@ using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/v1/UserRoles")]
     public class UserRoleController : ApiControllerBase
     {

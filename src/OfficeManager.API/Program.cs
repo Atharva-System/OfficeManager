@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -41,8 +43,13 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+var policy = new AuthorizationPolicyBuilder()
+.RequireAuthenticatedUser()
+.Build();
+
 builder.Services.AddControllers(options =>
 {
+    options.Filters.Add(new AuthorizeFilter(policy));
     options.Filters.Add(new ApiValidationExceptionFilter());
     options.Filters.Add(new AccessExceptionFilter());
     options.Filters.Add(new NotFoundExceptionFilter());

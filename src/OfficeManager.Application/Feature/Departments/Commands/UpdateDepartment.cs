@@ -42,7 +42,7 @@ namespace OfficeManager.Application.Feature.Employees.Commands
                 Context.Department.Update(department);
                 await Context.SaveChangesAsync(cancellationToken);
                 Context.CommitTransaction();
-                return new SuccessResponse(StatusCodes.Accepted,Messages.AddedSuccesfully);
+                return new SuccessResponse(StatusCodes.Accepted,Messages.UpdatedSuccessfully);
             }
             return new ErrorResponse(StatusCodes.NotFound,Messages.NoDataFound);
         }

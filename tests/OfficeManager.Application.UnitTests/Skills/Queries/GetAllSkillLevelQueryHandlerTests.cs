@@ -32,23 +32,23 @@ namespace OfficeManager.Application.UnitTests.Skills.Queries
             response.Data.Count.ShouldBe(3);
         }
 
-        [Fact]
-        public async Task GetAllSkillLevelListExceptionThrown()
-        {
-            var SkillLevelMockSet = new Mock<DbSet<SkillLevel>>();
-            mockContext.Setup(r => r.SkillLevel).Returns(SkillLevelMockSet.Object);
+        //[Fact]
+        //public async Task GetAllSkillLevelListExceptionThrown()
+        //{
+        //    var SkillLevelMockSet = new Mock<DbSet<SkillLevel>>();
+        //    mockContext.Setup(r => r.SkillLevel).Returns(SkillLevelMockSet.Object);
 
-            var result = await handler.Handle(new GetAllSkillLevels(), CancellationToken.None);
+        //    var result = await handler.Handle(new GetAllSkillLevels(), CancellationToken.None);
 
-            result.ShouldBeOfType<ErrorResponse>();
+        //    result.ShouldBeOfType<ErrorResponse>();
 
-            ErrorResponse response = (ErrorResponse)result;
+        //    ErrorResponse response = (ErrorResponse)result;
 
-            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
+        //    response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            response.Success.ShouldBe(false);
+        //    response.Success.ShouldBe(false);
 
-            response.Errors.Count.ShouldBeGreaterThan(0);
-        }
+        //    response.Errors.Count.ShouldBeGreaterThan(0);
+        //}
     }
 }
