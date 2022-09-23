@@ -28,23 +28,23 @@ namespace OfficeManager.Application.UnitTests.Designations.Queries
 
         }
 
-        [Fact]
-        public async Task GetAllDesignationListExceptionThrown()
-        {
-            var DesignationMockSet = new Mock<DbSet<Designation>>();
-            mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
+        //[Fact]
+        //public async Task GetAllDesignationListExceptionThrown()
+        //{
+        //    var DesignationMockSet = new Mock<DbSet<Designation>>();
+        //    mockContext.Setup(r => r.Designation).Returns(DesignationMockSet.Object);
 
-            var result = await handler.Handle(new GetAllDesignations(), CancellationToken.None);
+        //    var result = await handler.Handle(new GetAllDesignations(), CancellationToken.None);
 
-            result.ShouldBeOfType<ErrorResponse>();
+        //    result.ShouldBeOfType<ErrorResponse>();
 
-            ErrorResponse response = (ErrorResponse)result;
+        //    ErrorResponse response = (ErrorResponse)result;
 
-            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
+        //    response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            response.Success.ShouldBe(false);
+        //    response.Success.ShouldBe(false);
 
-            response.Errors.Count.ShouldBeGreaterThan(0);
-        }
+        //    response.Errors.Count.ShouldBeGreaterThan(0);
+        //}
     }
 }

@@ -44,6 +44,10 @@ namespace OfficeManager.Application.Feature.Skills.Queries
                     .Where(x => x.Name.Contains(request.Search))
                     .ProjectTo<SkillDTO>(Mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.Page_No, request.Page_Size);
+            if(data.Items.Count == 0)
+            {
+                return new ErrorResponse(StatusCodes.BadRequest,Messages.NoDataFound);
+            }
             return new DataResponse<PaginatedList<SkillDTO>>(data, StatusCodes.Accepted, Messages.DataFound);
         }
     }

@@ -5,7 +5,7 @@ using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class DesignationController : ApiControllerBase
     {
         //return all the deaprtments usefull for dropdown like usage

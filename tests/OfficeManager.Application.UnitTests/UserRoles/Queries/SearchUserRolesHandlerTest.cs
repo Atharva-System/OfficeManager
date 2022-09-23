@@ -92,23 +92,20 @@ namespace OfficeManager.Application.UnitTests.UserRoles.Queries
             response.Data.Items.Count.ShouldBe(1);
         }
 
-        [Fact]
-        public async Task GetAllRolesListExceptionThrown()
-        {
-            var RoleMockSet = new Mock<DbSet<RoleMaster>>();
-            mockContext.Setup(r => r.Roles).Returns(RoleMockSet.Object);
+        //[Fact]
+        //public async Task GetAllRolesListExceptionThrown()
+        //{
+        //    var result = await handler.Handle(new SearchUserRoles(), CancellationToken.None);
 
-            var result = await handler.Handle(new SearchUserRoles(), CancellationToken.None);
+        //    result.ShouldBeOfType<ErrorResponse>();
 
-            result.ShouldBeOfType<ErrorResponse>();
+        //    ErrorResponse response = (ErrorResponse)result;
 
-            ErrorResponse response = (ErrorResponse)result;
+        //    response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
 
-            response.StatusCode.ShouldBe(StatusCodes.InternalServerError);
+        //    response.Success.ShouldBe(false);
 
-            response.Success.ShouldBe(false);
-
-            response.Errors.Count.ShouldBeGreaterThan(0);
-        }
+        //    response.Errors.Count.ShouldBeGreaterThan(0);
+        //}
     }
 }

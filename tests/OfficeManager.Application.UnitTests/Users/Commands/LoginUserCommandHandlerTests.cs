@@ -1,47 +1,55 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Feature.Users.Commands;
 using OfficeManager.Application.UnitTests.Mocks;
+using OfficeManager.Application.Wrappers.Concrete;
 
 namespace OfficeManager.Application.UnitTests.Users.Commands
 {
     public class LoginUserCommandHandlerTests : MockApplicationUserContext
     {
         private readonly LoginUserCommandHandler handler;
+        protected readonly Mock<ITokenService> tokenService;
+
         public LoginUserCommandHandlerTests()
         {
-            
+            handler = new LoginUserCommandHandler(mockContext.Object, mapper, currentUserService.Object, tokenService.Object);
             //handler = new LoginUserCommandHandler(mockContext.Object, mapper, currentUserService.Object);
         }
 
-        //[Fact]
-        //public async Task User_LoggedIn_Success()
-        //{
-        //    var result = await handler.Handle(new LoginUser { EmployeeNo = 99999 , Password = "Atharva@123"}, CancellationToken.None);
+        [Fact]
+        public async Task User_LoggedIn_Success()
+        {
+            var result = await handler.Handle(new LoginUser { EmployeeNo = "99999", Password = "Atharva@123" }, CancellationToken.None);
 
-        //    result.ShouldBeOfType<Response<LoggedInUserDTO>>();
+            result.ShouldBeOfType<DataResponse<TokenDTO>>();
 
-        //    result.StatusCode.ShouldBe(StausCodes.Accepted);
+            DataResponse<TokenDTO> response = (DataResponse<TokenDTO>)result;
 
-        //    result.IsSuccess.ShouldBe(true);
+            response.StatusCode.ShouldBe(StatusCodes.Accepted);
 
-        //    result.Message.ShouldBe(Messages.Success);
-        //}
+            response.Success.ShouldBe(true);
 
-        //[Fact]
-        //public async Task User_LoggedIn_Fail()
-        //{
-        //    var result = await handler.Handle(new LoginUser { EmployeeNo = 99999, Password = "Admin@123" }, CancellationToken.None);
+            response.Message.ShouldBe(Messages.Success);
+        }
 
-        //    result.ShouldBeOfType<Response<LoggedInUserDTO>>();
+        [Fact]
+        public async Task User_LoggedIn_Fail()
+        {
+            var result = await handler.Handle(new LoginUser { EmployeeNo = "99999", Password = "Admin@123" }, CancellationToken.None);
 
-        //    result.StatusCode.ShouldBe(StausCodes.BadRequest);
+            result.ShouldBeOfType<DataResponse<TokenDTO>>();
 
-        //    result.IsSuccess.ShouldBe(false);
+            DataResponse<TokenDTO> response = (DataResponse<TokenDTO>)result;
 
-        //    result.Message.ShouldBe(Messages.CheckCredentials);
-        //}
+            response.StatusCode.ShouldBe(StatusCodes.BadRequest);
+
+            response.Success.ShouldBe(false);
+
+            response.Message.ShouldBe(Messages.CheckCredentials);
+        }
 
         //[Fact]
         //public async Task User_LoggIn_ExceptionThrown()

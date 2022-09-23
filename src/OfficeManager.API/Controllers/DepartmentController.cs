@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class DepartmentController : ApiControllerBase
     {
         //return all the deaprtments usefull for dropdown like usage

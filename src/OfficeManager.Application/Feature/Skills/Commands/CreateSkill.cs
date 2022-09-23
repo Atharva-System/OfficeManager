@@ -31,7 +31,7 @@ namespace OfficeManager.Application.Feature.Skills.Commands
             await Context.SaveChangesAsync(cancellationToken);
             Context.CommitTransaction();
 
-            return new SuccessResponse(StatusCodes.Accepted, "Skill created successfully");
+            return new SuccessResponse(StatusCodes.Accepted, Messages.AddedSuccesfully);
         }
     }
 }

@@ -5,7 +5,7 @@ using OfficeManager.Application.Wrappers.Abstract;
 
 namespace OfficeManager.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class SkillRateController : ApiControllerBase
     {
         [HttpGet]
