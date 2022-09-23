@@ -11,7 +11,6 @@ namespace OfficeManager.Application.UnitTests.Users.Commands
     public class LoginUserCommandHandlerTests : MockApplicationUserContext
     {
         private readonly LoginUserCommandHandler handler;
-        protected readonly Mock<ITokenService> tokenService;
 
         public LoginUserCommandHandlerTests()
         {
@@ -40,15 +39,15 @@ namespace OfficeManager.Application.UnitTests.Users.Commands
         {
             var result = await handler.Handle(new LoginUser { EmployeeNo = "99999", Password = "Admin@123" }, CancellationToken.None);
 
-            result.ShouldBeOfType<DataResponse<TokenDTO>>();
+            result.ShouldBeOfType<ErrorResponse>();
 
-            DataResponse<TokenDTO> response = (DataResponse<TokenDTO>)result;
+            ErrorResponse response = (ErrorResponse)result;
 
             response.StatusCode.ShouldBe(StatusCodes.BadRequest);
 
             response.Success.ShouldBe(false);
 
-            response.Message.ShouldBe(Messages.CheckCredentials);
+            response.Errors.Count.ShouldBeGreaterThan(0);
         }
 
         //[Fact]
