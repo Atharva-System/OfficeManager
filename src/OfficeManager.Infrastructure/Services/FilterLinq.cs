@@ -42,7 +42,18 @@ namespace OfficeManager.Infrastructure.Services
 
                     object info = GetValueWithType<T>(fieldItem.Key, fieldItem.Value);
 
+<<<<<<< Updated upstream
                     Expression e1 = Expression.Equal(columnNameProperty, Expression.Constant(info));
+=======
+                    Expression e1 = null;
+                    if (info.GetType().ToString().Contains("System.String"))
+                    {
+                        MethodInfo contains = info.GetType().GetMethods().Where(a => a.Name == "Contains").FirstOrDefault();
+                        e1 = Expression.Call(columnNameProperty, contains, Expression.Constant(info, typeof(string)));
+                    } 
+                    else
+                        e1 = Expression.Equal(columnNameProperty, Expression.Constant(info));  
+>>>>>>> Stashed changes
 
                     if (combined == null)
                     {
