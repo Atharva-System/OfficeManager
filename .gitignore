@@ -281,3 +281,4 @@ __pycache__/
 /src/OfficeManager.Infrastructure/obj
 /tests/OfficeManager.Application.UnitTests/obj
 /obj/Docker
+/tests/OfficeManager.Architecture.Tests/obj
