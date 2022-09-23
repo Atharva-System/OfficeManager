@@ -39,7 +39,7 @@ namespace OfficeManager.Application.Feature.Users.Commands
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                throw new ApiException(400, Messages.InvalidCredentials);
+                return new ErrorResponse(StatusCodes.BadRequest,Messages.InvalidCredentials);
             }
 
             var userRoles = await Context.UserRoleMapping.Include(x => x.Roles).Where(d => d.UserId == user.Id)
@@ -70,7 +70,7 @@ namespace OfficeManager.Application.Feature.Users.Commands
 
             CurrentUserService.loggedInUser = loggedInUser;
 
-            return new DataResponse<TokenDTO>(tokendto, StatusCodes.Accepted);
+            return new DataResponse<TokenDTO>(tokendto, StatusCodes.Accepted,Messages.Success);
         }
     }
 }
