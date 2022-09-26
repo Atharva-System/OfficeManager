@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OfficeManager.Application.Common.Exceptions;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Wrappers.Abstract;
@@ -32,60 +33,79 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
         public async Task<IResponse> Handle(AddEmployee request, CancellationToken cancellationToken)
         {
-            Context.BeginTransaction();
-
-            Employee employee = new Employee
+            try
             {
-                EmployeeNo = request.employeeNo,
-                EmployeeName = request.employeeName,
-                Email = request.email,
-                DateOfBirth = request.dateOfBirth,
-                DateOfJoining = request.dateOfJoining,
-                DepartmentId = request.departmentId,
-                DesignationId = request.designationId
-            };
+                Context.BeginTransaction();
 
-            Context.Employees.Add(employee);
-            await Context.SaveChangesAsync(cancellationToken);
-
-            UserMaster user = new UserMaster
-            {
-                EmployeeID = employee.Id,
-                Email = request.email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123")
-            };
-
-            Context.Users.Add(user);
-
-            foreach (EmployeeSkill skill in request.skills)
-            {
-                var existingSkill = Context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
-                if (existingSkill == null)
+                Employee employee = new Employee
                 {
-                    skill.EmployeeId = employee.Id;
-                    Context.EmployeeSkills.Add(skill);
-                }
-                else
+                    EmployeeNo = request.employeeNo,
+                    EmployeeName = request.employeeName,
+                    Email = request.email,
+                    DateOfBirth = request.dateOfBirth,
+                    DateOfJoining = request.dateOfJoining,
+                    DepartmentId = request.departmentId,
+                    DesignationId = request.designationId
+                };
+
+                Context.Employees.Add(employee);
+                await Context.SaveChangesAsync(cancellationToken);
+
+                UserMaster user = new UserMaster
                 {
-                    existingSkill.skillId = skill.skillId;
-                    existingSkill.levelId = skill.levelId;
-                    existingSkill.rateId = skill.rateId;
+                    EmployeeID = employee.Id,
+                    Email = request.email,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Atharva@123")
+                };
+
+                Context.Users.Add(user);
+
+                foreach (EmployeeSkill skill in request.skills)
+                {
+                    var existingSkill = Context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
+                    if (existingSkill == null)
+                    {
+                        skill.EmployeeId = employee.Id;
+                        Context.EmployeeSkills.Add(skill);
+                    }
+                    else
+                    {
+                        existingSkill.skillId = skill.skillId;
+                        existingSkill.levelId = skill.levelId;
+                        existingSkill.rateId = skill.rateId;
+                    }
                 }
+                await Context.SaveChangesAsync(cancellationToken);
+
+                UserRoleMapping userRole = new UserRoleMapping
+                {
+                    UserId = user.Id,
+                    RoleId = request.roleId
+                };
+
+                Context.UserRoleMapping.Add(userRole);
+                await Context.SaveChangesAsync(cancellationToken);
+
+                Context.CommitTransaction();
+
+                return new SuccessResponse(StatusCodes.Accepted, "Employee created successfully");
             }
-            await Context.SaveChangesAsync(cancellationToken);
-
-            UserRoleMapping userRole = new UserRoleMapping
+            catch (ValidationException exception)
             {
-                UserId = user.Id,
-                RoleId = request.roleId
-            };
-
-            Context.UserRoleMapping.Add(userRole);
-            await Context.SaveChangesAsync(cancellationToken);
-
-            Context.CommitTransaction();
-
-            return new SuccessResponse(StatusCodes.Accepted,"Employee created successfully");
+                throw exception;
+            }
+            catch (ForbiddenAccessException exception)
+            {
+                throw exception;
+            }
+            catch (NotFoundException exception)
+            {
+                throw exception;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse(StatusCodes.InternalServerError, ex.Message);
+            }
         }
     }
 }

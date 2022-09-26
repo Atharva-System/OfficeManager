@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OfficeManager.Application.Common.Exceptions;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Common.Models;
 using OfficeManager.Application.Wrappers.Abstract;
@@ -31,61 +32,80 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
         public async Task<IResponse> Handle(UpdateEmployee request, CancellationToken cancellationToken)
         {
-            Employee employee = Context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
-            if (employee == null)
+            try
             {
-                return new ErrorResponse(StatusCodes.NotFound,"Employee related to id not found.");
-            }
-            Context.BeginTransaction();
+                Employee employee = Context.Employees.FirstOrDefault(emp => emp.Id == request.employeeId);
+                if (employee == null)
+                {
+                    return new ErrorResponse(StatusCodes.NotFound, "Employee related to id not found.");
+                }
+                Context.BeginTransaction();
 
-            employee.EmployeeNo = request.employeeNo;
-            employee.EmployeeName = request.employeeName;
-            employee.Email = request.email;
-            employee.DateOfBirth = request.dateOfBirth;
-            employee.DateOfJoining = request.dateOfJoining;
-            employee.DepartmentId = request.departmentId;
-            employee.DesignationId = request.designationId;
+                employee.EmployeeNo = request.employeeNo;
+                employee.EmployeeName = request.employeeName;
+                employee.Email = request.email;
+                employee.DateOfBirth = request.dateOfBirth;
+                employee.DateOfJoining = request.dateOfJoining;
+                employee.DepartmentId = request.departmentId;
+                employee.DesignationId = request.designationId;
 
-            await Context.SaveChangesAsync(cancellationToken);
-
-            UserRoleMapping userRole = Context.UserRoleMapping.FirstOrDefault(ur => ur.Users.EmployeeID == request.employeeId);
-            if (userRole != null)
-            {
-                userRole.RoleId = request.roleId;
                 await Context.SaveChangesAsync(cancellationToken);
-            }
 
-            List<EmployeeSkill> skillList = Context.EmployeeSkills.Where(empSk => empSk.EmployeeId == employee.Id).ToList();
-            skillList.ForEach(sk =>
-            {
-                sk.IsActive = false;
-            });
-
-            await Context.SaveChangesAsync(cancellationToken);
-
-            foreach (EmployeeSkill skill in request.skills)
-            {
-                var existingSkill = Context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
-                if (existingSkill == null)
+                UserRoleMapping userRole = Context.UserRoleMapping.FirstOrDefault(ur => ur.Users.EmployeeID == request.employeeId);
+                if (userRole != null)
                 {
-                    skill.EmployeeId = request.employeeId;
-                    Context.EmployeeSkills.Add(skill);
+                    userRole.RoleId = request.roleId;
+                    await Context.SaveChangesAsync(cancellationToken);
                 }
-                else
+
+                List<EmployeeSkill> skillList = Context.EmployeeSkills.Where(empSk => empSk.EmployeeId == employee.Id).ToList();
+                skillList.ForEach(sk =>
                 {
-                    existingSkill.skillId = skill.skillId;
-                    existingSkill.levelId = skill.levelId;
-                    existingSkill.rateId = skill.rateId;
-                    existingSkill.IsActive = true;
+                    sk.IsActive = false;
+                });
+
+                await Context.SaveChangesAsync(cancellationToken);
+
+                foreach (EmployeeSkill skill in request.skills)
+                {
+                    var existingSkill = Context.EmployeeSkills.FirstOrDefault(empSk => empSk.skillId == skill.skillId && empSk.EmployeeId == request.employeeId);
+                    if (existingSkill == null)
+                    {
+                        skill.EmployeeId = request.employeeId;
+                        Context.EmployeeSkills.Add(skill);
+                    }
+                    else
+                    {
+                        existingSkill.skillId = skill.skillId;
+                        existingSkill.levelId = skill.levelId;
+                        existingSkill.rateId = skill.rateId;
+                        existingSkill.IsActive = true;
+                    }
                 }
+
+
+                await Context.SaveChangesAsync(cancellationToken);
+
+                Context.CommitTransaction();
+
+                return new SuccessResponse(StatusCodes.Accepted, Messages.UpdatedSuccessfully);
             }
-
-
-            await Context.SaveChangesAsync(cancellationToken);
-
-            Context.CommitTransaction();
-
-            return new SuccessResponse(StatusCodes.Accepted,Messages.UpdatedSuccessfully);
+            catch (ValidationException exception)
+            {
+                throw exception;
+            }
+            catch (ForbiddenAccessException exception)
+            {
+                throw exception;
+            }
+            catch (NotFoundException exception)
+            {
+                throw exception;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse(StatusCodes.InternalServerError, ex.Message);
+            }
         }
     }
 }

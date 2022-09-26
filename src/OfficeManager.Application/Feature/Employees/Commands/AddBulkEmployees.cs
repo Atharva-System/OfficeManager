@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using OfficeManager.Application.Common.Exceptions;
 using OfficeManager.Application.Common.Interfaces;
 using OfficeManager.Application.Dtos;
 using OfficeManager.Application.Wrappers.Abstract;
@@ -36,58 +37,103 @@ namespace OfficeManager.Application.Feature.Employees.Commands
 
         public async Task<IResponse> Handle(AddBulkEmployees request, CancellationToken cancellationToken)
         {
-            long size = request.files.Sum(f => f.Length);
-            var folderName = Path.Combine("Resources");
-            string path = "";
-            foreach (var file in request.files)
+            try
             {
-                if (file.Length > 0)
+                long size = request.files.Sum(f => f.Length);
+                var folderName = Path.Combine("Resources");
+                string path = "";
+                foreach (var file in request.files)
                 {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(request.path, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    if (file.Length > 0)
                     {
-                        file.CopyTo(stream);
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var fullPath = Path.Combine(request.path, fileName);
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+                        }
+                        path = fullPath;
                     }
-                    path = fullPath;
                 }
-            }
 
-            var employees = await service.ReadEmployeeExcel(path);
+                var employees = await service.ReadEmployeeExcel(path);
 
-            RoleMaster role = await Context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+                RoleMaster role = await Context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
 
-            if ((request.departments != null && request.departments.Count > 0
-               || request.designations != null && request.designations.Count > 0) && employees.Count > 0)
-            {
-                employees.ForEach(async emp =>
+                BulkImportEmployeeValidInvalidListDTO data = new BulkImportEmployeeValidInvalidListDTO();
+
+                if ((request.departments != null && request.departments.Count > 0
+                   || request.designations != null && request.designations.Count > 0) && employees.Count > 0)
                 {
-                    var department = request.departments.FirstOrDefault(dept => dept.Name.Replace(" ", "").ToLower().Trim().Equals(emp.Department.Replace(" ", "").ToLower().Trim()));
-                    var designation = request.designations.FirstOrDefault(des => des.Name.Replace(" ", "").ToLower().Trim().Equals(emp.Designation.Replace(" ", "").ToLower().Trim()));
-                    if (department != null)
+                    employees.ForEach(async emp =>
                     {
-                        emp.DepartmentId = department.Id;
-                    }
-                    else
-                    {
-                        emp.IsValid = false;
-                        emp.ValidationErros.Add("Department is missing!");
-                    }
+                        var department = request.departments.FirstOrDefault(dept => dept.Name.Replace(" ", "").ToLower().Trim().Equals(emp.Department.Replace(" ", "").ToLower().Trim()));
+                        var designation = request.designations.FirstOrDefault(des => des.Name.Replace(" ", "").ToLower().Trim().Equals(emp.Designation.Replace(" ", "").ToLower().Trim()));
+                        var employee = Context.Employees.FirstOrDefault(emp2 => emp2.EmployeeNo == emp.EmployeeNo);
 
-                    if (designation != null)
-                    {
-                        emp.DesignationId = designation.Id;
-                    }
-                    else
-                    {
-                        emp.IsValid = false;
-                        emp.ValidationErros.Add("Designtion is missing!");
-                    }
-                    emp.RoleId = role != null ? role.Id : Context.Roles.FirstOrDefault().Id;
-                });
-                return new DataResponse<List<BulkImportEmployeeDTO>>(employees, StatusCodes.Accepted, Messages.DataFound);
+
+                        emp.RoleId = role != null ? role.Id : Context.Roles.FirstOrDefault().Id;
+
+                        if (department == null || designation == null)
+                        {
+                            emp.IsValid = false;
+                            if (department == null)
+                            {
+                                emp.ValidationErros.Add("Department is missing!");
+                            }
+                            if (designation == null)
+                            {
+                                emp.ValidationErros.Add("Designtion is missing!");
+                            }
+                            if (employee != null)
+                            {
+                                emp.Id = employee.Id;
+                            }
+                            data.InvalidImportEmployeeList.Add(emp);
+                        }
+                        else
+                        {
+                            if (department != null)
+                            {
+                                emp.DepartmentId = department.Id;
+                            }
+                            if (designation != null)
+                            {
+                                emp.DesignationId = designation.Id;
+                            }
+
+                            if (employee != null)
+                            {
+                                emp.Id = employee.Id;
+                                data.UpdateEmployeeList.Add(emp);
+                            }
+                            else
+                            {
+                                data.NewEmployeeList.Add(emp);
+                            }
+                        }
+
+                    });
+                    return new DataResponse<BulkImportEmployeeValidInvalidListDTO>(data, StatusCodes.Accepted, Messages.DataFound);
+                }
+                return new ErrorResponse(StatusCodes.BadRequest, "Uploaded sheet has some issue please check");
             }
-            return new ErrorResponse(StatusCodes.BadRequest, "Uploaded sheet has some issue please check");
+            catch(ValidationException exception)
+            {
+                throw exception;
+            }
+            catch(ForbiddenAccessException exception)
+            {
+                throw exception;
+            }
+            catch(NotFoundException exception)
+            {
+                throw exception;
+            }
+            catch(Exception ex)
+            {
+                return new ErrorResponse(StatusCodes.InternalServerError, ex.Message);
+            }
         }
     }
 }
