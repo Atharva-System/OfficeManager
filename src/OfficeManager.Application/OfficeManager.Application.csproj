@@ -7,16 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\Enums\**" />
     <Compile Remove="Feature\Users\Queries\**" />
     <Compile Remove="Clients\**" />
     <Compile Remove="Feature\Designations\Commands\**" />
     <Compile Remove="Feature\Skills\Commands\DeactivateSkill\**" />
     <Compile Remove="Feature\Skills\Commands\UpdateSkill\**" />
+    <EmbeddedResource Remove="Common\Enums\**" />
     <EmbeddedResource Remove="Feature\Users\Queries\**" />
     <EmbeddedResource Remove="Clients\**" />
     <EmbeddedResource Remove="Feature\Designations\Commands\**" />
     <EmbeddedResource Remove="Feature\Skills\Commands\DeactivateSkill\**" />
     <EmbeddedResource Remove="Feature\Skills\Commands\UpdateSkill\**" />
+    <None Remove="Common\Enums\**" />
     <None Remove="Feature\Users\Queries\**" />
     <None Remove="Clients\**" />
     <None Remove="Feature\Designations\Commands\**" />
@@ -42,10 +45,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OfficeManager.Domain\OfficeManager.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Enums\" />
   </ItemGroup>
 
 </Project>

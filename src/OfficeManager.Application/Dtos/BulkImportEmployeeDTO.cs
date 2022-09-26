@@ -23,6 +23,13 @@ namespace OfficeManager.Application.Dtos
         public List<string> ValidationErros { get; set; } = new List<string>();
     }
 
+    public class BulkImportEmployeeValidInvalidListDTO
+    {
+        public List<BulkImportEmployeeDTO> NewEmployeeList { get; set; } = new List<BulkImportEmployeeDTO>();
+        public List<BulkImportEmployeeDTO> UpdateEmployeeList { get; set; } = new List<BulkImportEmployeeDTO>();
+        public List<BulkImportEmployeeDTO> InvalidImportEmployeeList { get; set; } = new List<BulkImportEmployeeDTO>();
+    }
+
     public class BulkImportEmployee
     {
         public int EmployeeNo { get; set; }
